@@ -5,6 +5,9 @@ export interface UserProfile {
   budget: number;
   cookingTime: string;
   pantry: string[];
+  energy: number;
+  mood: string;
+  equipment: string[];
 }
 
 export interface Recipe {
@@ -23,4 +26,12 @@ export interface GroceryItem {
   name: string;
   category: string;
   inPantry: boolean;
+}
+
+export interface MealPlanResult {
+  moodAnalysis: string;
+  weeklyMenu: DayMenu[];
+  groceryList: GroceryItem[];
+  smartTips: string[];
+  estimatedCost: number;
 }

@@ -13,9 +13,11 @@ import {
   allergyOptions,
   goalOptions,
   cookingTimeOptions,
+  moodOptions,
+  equipmentOptions,
 } from "@/data/mockData";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 7;
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -62,15 +64,33 @@ const Profile = () => {
     });
   };
 
+  const toggleEquipment = (eq: string) => {
+    const has = profile.equipment.includes(eq);
+    updateProfile({
+      equipment: has
+        ? profile.equipment.filter((e) => e !== eq)
+        : [...profile.equipment, eq],
+    });
+  };
+
   const canProceed = () => {
     switch (step) {
       case 1: return !!profile.diet;
       case 2: return true;
       case 3: return profile.goals.length > 0;
       case 4: return true;
-      case 5: return true;
+      case 5: return !!profile.mood;
+      case 6: return profile.equipment.length > 0;
+      case 7: return true;
       default: return false;
     }
+  };
+
+  const energyLabel = (val: number) => {
+    if (val <= 3) return "Molto stanco 😴";
+    if (val <= 5) return "Poca energia 😐";
+    if (val <= 7) return "In forma 🙂";
+    return "Carico! 💪";
   };
 
   return (
@@ -202,8 +222,78 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 5: Dispensa */}
+          {/* Step 5: Mood & Energia */}
           {step === 5 && (
+            <div>
+              <h2 className="mb-2 text-2xl font-semibold text-foreground">Come ti senti questa settimana?</h2>
+              <p className="mb-6 text-sm text-muted-foreground">Il tuo mood influenza le ricette che sceglieremo per te. Niente è giusto o sbagliato!</p>
+
+              <div className="grid gap-3 sm:grid-cols-2 mb-10">
+                {moodOptions.map((m) => (
+                  <button
+                    key={m.value}
+                    onClick={() => updateProfile({ mood: m.value })}
+                    className={`rounded-xl border-2 p-4 text-left transition-all ${
+                      profile.mood === m.value
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/40"
+                    }`}
+                  >
+                    <div className="font-medium text-foreground">{m.label}</div>
+                    <div className="text-xs text-muted-foreground">{m.description}</div>
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <label className="mb-3 block text-sm font-medium text-foreground">
+                  Livello di energia: <span className="text-primary font-semibold">{profile.energy}/10 — {energyLabel(profile.energy)}</span>
+                </label>
+                <Slider
+                  value={[profile.energy]}
+                  onValueChange={([v]) => updateProfile({ energy: v })}
+                  min={1}
+                  max={10}
+                  step={1}
+                />
+                <div className="mt-2 flex justify-between text-xs text-muted-foreground">
+                  <span>1 — Esausto</span>
+                  <span>10 — Super carico</span>
+                </div>
+                {profile.energy < 5 && (
+                  <p className="mt-3 text-xs text-primary italic">
+                    💡 Ti proporremo ricette rapide e facili, perfette per le giornate no.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Step 6: Attrezzatura */}
+          {step === 6 && (
+            <div>
+              <h2 className="mb-2 text-2xl font-semibold text-foreground">Che attrezzatura hai?</h2>
+              <p className="mb-6 text-sm text-muted-foreground">Così proporremo solo ricette che puoi preparare davvero.</p>
+              <div className="grid grid-cols-2 gap-3">
+                {equipmentOptions.map((eq) => (
+                  <button
+                    key={eq.value}
+                    onClick={() => toggleEquipment(eq.value)}
+                    className={`rounded-xl border-2 p-4 text-center transition-all ${
+                      profile.equipment.includes(eq.value)
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/40"
+                    }`}
+                  >
+                    <div className="font-medium text-foreground">{eq.label}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Step 7: Dispensa */}
+          {step === 7 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Cosa hai già in dispensa?</h2>
               <p className="mb-6 text-sm text-muted-foreground">Così evitiamo di farti comprare quello che hai già. Scrivi e premi Invio.</p>
