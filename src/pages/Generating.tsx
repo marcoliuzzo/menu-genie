@@ -1,14 +1,56 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Leaf } from "lucide-react";
+import { useProfile } from "@/context/ProfileContext";
+import { fallbackMealPlan } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const Generating = () => {
   const navigate = useNavigate();
+  const { profile, setMealPlan } = useProfile();
+  const calledRef = useRef(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => navigate("/risultati"), 3000);
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    if (calledRef.current) return;
+    calledRef.current = true;
+
+    const generate = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          "generate-meal-plan",
+          { body: { profile } }
+        );
+
+        if (error) {
+          console.error("Edge function error:", error);
+          toast({
+            title: "Stiamo usando un menu di esempio",
+            description: "Non siamo riusciti a generare il piano AI. Ecco un menu di esempio!",
+            variant: "destructive",
+          });
+          setMealPlan(fallbackMealPlan);
+        } else if (data?.error) {
+          console.error("AI error:", data.error);
+          toast({
+            title: "Menu di esempio",
+            description: data.error,
+            variant: "destructive",
+          });
+          setMealPlan(fallbackMealPlan);
+        } else {
+          setMealPlan(data);
+        }
+      } catch (err) {
+        console.error("Network error:", err);
+        setMealPlan(fallbackMealPlan);
+      }
+
+      navigate("/risultati");
+    };
+
+    generate();
+  }, [profile, navigate, setMealPlan]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
@@ -17,10 +59,10 @@ const Generating = () => {
           <Leaf className="h-16 w-16 text-primary" />
         </div>
         <h1 className="mb-3 text-2xl font-semibold text-foreground">
-          Stiamo creando il tuo menu ideale…
+          SmartBite sta creando il tuo piano…
         </h1>
         <p className="text-muted-foreground">
-          Ci vorrà solo un momento. Stiamo scegliendo le ricette perfette per te.
+          Analizziamo il tuo mood, energia e preferenze per il menu perfetto.
         </p>
         <div className="mt-10 flex gap-1.5">
           {[0, 1, 2].map((i) => (

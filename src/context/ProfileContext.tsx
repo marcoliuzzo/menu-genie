@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { UserProfile } from "@/types";
+import { UserProfile, MealPlanResult } from "@/types";
 
 interface ProfileContextType {
   profile: UserProfile;
   updateProfile: (updates: Partial<UserProfile>) => void;
+  mealPlan: MealPlanResult | null;
+  setMealPlan: (plan: MealPlanResult | null) => void;
 }
 
 const defaultProfile: UserProfile = {
@@ -13,19 +15,23 @@ const defaultProfile: UserProfile = {
   budget: 60,
   cookingTime: "30",
   pantry: [],
+  energy: 7,
+  mood: "",
+  equipment: ["fornelli"],
 };
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
+  const [mealPlan, setMealPlan] = useState<MealPlanResult | null>(null);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     setProfile((prev) => ({ ...prev, ...updates }));
   };
 
   return (
-    <ProfileContext.Provider value={{ profile, updateProfile }}>
+    <ProfileContext.Provider value={{ profile, updateProfile, mealPlan, setMealPlan }}>
       {children}
     </ProfileContext.Provider>
   );

@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { Clock, ChefHat, ShoppingCart, Check, RotateCcw, Settings, Download } from "lucide-react";
+import { Clock, ChefHat, ShoppingCart, Check, RotateCcw, Settings, Download, Sparkles, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useProfile } from "@/context/ProfileContext";
-import { weeklyMenu, groceryList } from "@/data/mockData";
+import { fallbackMealPlan } from "@/data/mockData";
 
 const difficultyColor = {
   facile: "bg-primary/10 text-primary",
@@ -16,26 +16,28 @@ const difficultyColor = {
 
 const Results = () => {
   const navigate = useNavigate();
-  const { profile } = useProfile();
+  const { profile, mealPlan } = useProfile();
 
-  // Group grocery by category
-  const grouped = groceryList.reduce<Record<string, typeof groceryList>>((acc, item) => {
+  const plan = mealPlan || fallbackMealPlan;
+
+  // Group grocery by category, mark pantry items
+  const grouped = plan.groceryList.reduce<Record<string, typeof plan.groceryList>>((acc, item) => {
     if (!acc[item.category]) acc[item.category] = [];
     acc[item.category].push({
       ...item,
-      inPantry: profile.pantry.some(
+      inPantry: item.inPantry || profile.pantry.some(
         (p) => p.toLowerCase() === item.name.toLowerCase()
       ),
     });
     return acc;
   }, {});
 
-  const totalItems = groceryList.length;
+  const totalItems = plan.groceryList.length;
   const inPantryCount = Object.values(grouped)
     .flat()
     .filter((i) => i.inPantry).length;
 
-  const estimatedCost = 52;
+  const estimatedCost = plan.estimatedCost;
   const budgetPercent = Math.min((estimatedCost / profile.budget) * 100, 100);
 
   return (
@@ -47,16 +49,29 @@ const Results = () => {
           {/* Heading */}
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-foreground md:text-4xl">
-              Il tuo menu settimanale
+              Il tuo piano SmartBite
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Ecco il piano che abbiamo preparato per te. Buon appetito!
+              Ecco il piano personalizzato che abbiamo creato per te. Buon appetito!
             </p>
           </div>
 
+          {/* Mood Analysis */}
+          {plan.moodAnalysis && (
+            <div className="mb-8 rounded-2xl border bg-primary/5 p-6 shadow-sm">
+              <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Analisi del tuo Mood
+              </h2>
+              <p className="text-sm leading-relaxed text-foreground/80">
+                {plan.moodAnalysis}
+              </p>
+            </div>
+          )}
+
           {/* Weekly menu grid */}
           <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {weeklyMenu.map((day) => (
+            {plan.weeklyMenu.map((day) => (
               <div
                 key={day.day}
                 className="rounded-2xl border bg-card p-5 shadow-sm"
@@ -107,6 +122,23 @@ const Results = () => {
                 : "Leggermente sopra budget. Prova a modificare le preferenze."}
             </p>
           </div>
+
+          {/* Smart Tips */}
+          {plan.smartTips && plan.smartTips.length > 0 && (
+            <div className="mb-8 rounded-2xl border bg-card p-6 shadow-sm">
+              <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+                <Lightbulb className="h-5 w-5 text-primary" />
+                Smart Tips
+              </h2>
+              <div className="space-y-3">
+                {plan.smartTips.map((tip, i) => (
+                  <div key={i} className="rounded-xl bg-secondary/50 px-4 py-3 text-sm text-foreground leading-relaxed">
+                    {tip}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Grocery list */}
           <div className="mb-8 rounded-2xl border bg-card p-6 shadow-sm">
