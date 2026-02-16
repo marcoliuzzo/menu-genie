@@ -4,51 +4,49 @@
 
 @layer base {
   :root {
-    /* Spesa Intelligente palette */
-    /* Background: bianco caldo */
-    --background: 40 33% 98%;
-    --foreground: 0 0% 18%;
+    /* Spesa Smart — Tech Minimal palette */
+    --background: 50 20% 98%;        /* #FAFAF8 */
+    --foreground: 0 0% 12%;          /* #1F1F1F */
 
-    /* Card: bianco */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
+    --card-foreground: 0 0% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
+    --popover-foreground: 0 0% 12%;
 
-    /* Primary: verde salvia #6B8F71 */
-    --primary: 130 15% 49%;
+    /* Primary: Verde salvia #3A7D6B */
+    --primary: 160 36% 36%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: beige chiaro #F5F1EB */
-    --secondary: 36 30% 94%;
-    --secondary-foreground: 0 0% 18%;
+    /* Accent: Blu elettrico #2F6BFF */
+    --accent: 222 100% 59%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Secondary: Sabbia chiaro #F4EFEA */
+    --secondary: 30 26% 93%;
+    --secondary-foreground: 0 0% 12%;
 
     /* Muted */
-    --muted: 36 20% 93%;
-    --muted-foreground: 0 0% 45%;
-
-    /* Accent: verde oliva #4F6F52 */
-    --accent: 133 17% 37%;
-    --accent-foreground: 0 0% 100%;
+    --muted: 30 12% 93%;
+    --muted-foreground: 0 0% 42%;    /* #6B6B6B */
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 36 20% 88%;
-    --input: 36 20% 88%;
-    --ring: 130 15% 49%;
+    --border: 30 12% 90%;
+    --input: 30 12% 90%;
+    --ring: 160 36% 36%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 36 30% 94%;
-    --sidebar-foreground: 0 0% 18%;
-    --sidebar-primary: 130 15% 49%;
+    --sidebar-background: 30 26% 93%;
+    --sidebar-foreground: 0 0% 12%;
+    --sidebar-primary: 160 36% 36%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 133 17% 37%;
+    --sidebar-accent: 222 100% 59%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 36 20% 88%;
-    --sidebar-ring: 130 15% 49%;
+    --sidebar-border: 30 12% 90%;
+    --sidebar-ring: 160 36% 36%;
   }
 }
 
@@ -59,5 +57,17 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(160 36% 36%), hsl(222 100% 59%));
+  }
+  .gradient-primary-text {
+    background: linear-gradient(135deg, hsl(160 36% 36%), hsl(222 100% 59%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
