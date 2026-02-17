@@ -1,19 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  LayoutDashboard,
-  CalendarDays,
-  ShoppingCart,
-  Store,
-  Settings,
-  Sparkles,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
+  LayoutDashboard, CalendarDays, ShoppingCart, Store, Settings,
+  Sparkles, RefreshCw, ChevronLeft, ChevronRight, Loader2, Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
+import RecipeDetail from "@/components/RecipeDetail";
+import SmartShoppingList from "@/components/SmartShoppingList";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
@@ -33,20 +27,41 @@ const weekMenu = [
   { day: "Domenica", pranzo: "Pizza fatta in casa", cena: "Zuppa di legumi", cal: "1480 kcal" },
 ];
 
-const shoppingList = [
-  { category: "🥦 Frutta e Verdura", items: ["Zucca 500g", "Spinaci 300g", "Broccoli 400g", "Avocado x2", "Pomodorini 250g"] },
-  { category: "🥩 Proteine", items: ["Petto di pollo 400g", "Salmone 300g", "Uova x6", "Ceci cotti 2 barattoli"] },
-  { category: "🍝 Secco e Dispensa", items: ["Quinoa 250g", "Farro 300g", "Pasta integrale 500g", "Riso arborio 300g", "Noci 100g"] },
-];
-
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [expandedMeal, setExpandedMeal] = useState<string | null>(null);
 
   const handleRegenerate = () => {
     setIsRegenerating(true);
     setTimeout(() => setIsRegenerating(false), 2000);
+  };
+
+  const MealCard = ({ day, meal, label }: { day: string; meal: string; label: string }) => {
+    const mealKey = `${day}-${label}`;
+    const isExpanded = expandedMeal === mealKey;
+
+    return (
+      <div>
+        <button
+          onClick={() => setExpandedMeal(isExpanded ? null : mealKey)}
+          className="w-full text-left group"
+        >
+          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">{label}</div>
+          <p className="text-sm text-foreground group-hover:text-primary transition-colors">{meal}</p>
+          <p className="text-xs text-accent mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+            <Sparkles className="h-3 w-3" /> Vedi ricetta AI
+          </p>
+        </button>
+        {isExpanded && (
+          <RecipeDetail
+            mealName={meal}
+            onClose={() => setExpandedMeal(null)}
+          />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -54,16 +69,9 @@ const Dashboard = () => {
       <Header />
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside
-          className={`hidden md:flex flex-col border-r border-border/40 bg-card transition-all duration-300 ${
-            sidebarCollapsed ? "w-16" : "w-56"
-          }`}
-        >
+        <aside className={`hidden md:flex flex-col border-r border-border/40 bg-card transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-56"}`}>
           <div className="flex items-center justify-end p-2">
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1.5 rounded-lg text-muted-foreground hover:bg-secondary transition-colors"
-            >
+            <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-1.5 rounded-lg text-muted-foreground hover:bg-secondary transition-colors">
               {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </button>
           </div>
@@ -75,9 +83,7 @@ const Dashboard = () => {
                   key={item.id}
                   onClick={() => !item.link && setActiveSection(item.id)}
                   className={`w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
@@ -97,22 +103,12 @@ const Dashboard = () => {
         <div className="md:hidden flex border-b border-border/40 overflow-x-auto px-2 py-2 gap-1 bg-card">
           {sidebarItems.map((item) =>
             item.link ? (
-              <Link
-                key={item.id}
-                to={item.link}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground whitespace-nowrap"
-              >
+              <Link key={item.id} to={item.link} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground whitespace-nowrap">
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
             ) : (
-              <button
-                key={item.id}
-                onClick={() => setActiveSection(item.id)}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors ${
-                  activeSection === item.id ? "bg-primary/10 text-primary" : "text-muted-foreground"
-                }`}
-              >
+              <button key={item.id} onClick={() => setActiveSection(item.id)} className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}>
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </button>
@@ -130,13 +126,7 @@ const Dashboard = () => {
                   <h1 className="text-2xl font-bold text-foreground">La tua settimana</h1>
                   <p className="text-sm text-muted-foreground mt-1">Piano generato per mood: Relax 🧘</p>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full gap-2"
-                  onClick={handleRegenerate}
-                  disabled={isRegenerating}
-                >
+                <Button variant="outline" size="sm" className="rounded-full gap-2" onClick={handleRegenerate} disabled={isRegenerating}>
                   {isRegenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                   Rigenera piano
                 </Button>
@@ -165,8 +155,10 @@ const Dashboard = () => {
                       <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
                       <span className="text-xs text-muted-foreground">{d.cal}</span>
                     </div>
-                    <p className="text-sm text-foreground">{d.pranzo}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{d.cena}</p>
+                    <MealCard day={d.day} meal={d.pranzo} label="Pranzo" />
+                    <div className="mt-2">
+                      <MealCard day={d.day} meal={d.cena} label="Cena" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -182,7 +174,8 @@ const Dashboard = () => {
           {/* Full menu */}
           {activeSection === "menu" && (
             <div className="max-w-5xl animate-fade-in">
-              <h1 className="text-2xl font-bold text-foreground mb-6">Menù settimanale</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">Menù settimanale</h1>
+              <p className="text-sm text-muted-foreground mb-6">Clicca su un pasto per esplorare la ricetta interattiva AI.</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {weekMenu.map((d) => (
                   <div key={d.day} className="rounded-xl border border-border/60 bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
@@ -190,33 +183,20 @@ const Dashboard = () => {
                       <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
                       <span className="text-xs text-muted-foreground">{d.cal}</span>
                     </div>
-                    <p className="text-sm text-foreground">{d.pranzo}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{d.cena}</p>
+                    <MealCard day={d.day} meal={d.pranzo} label="Pranzo" />
+                    <div className="mt-3">
+                      <MealCard day={d.day} meal={d.cena} label="Cena" />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Shopping list */}
+          {/* Smart Shopping list */}
           {activeSection === "lista" && (
             <div className="max-w-3xl animate-fade-in">
-              <h1 className="text-2xl font-bold text-foreground mb-6">Lista della spesa</h1>
-              <div className="space-y-6">
-                {shoppingList.map((cat) => (
-                  <div key={cat.category}>
-                    <h3 className="text-sm font-semibold text-foreground mb-3">{cat.category}</h3>
-                    <div className="space-y-1">
-                      {cat.items.map((item) => (
-                        <div key={item} className="flex items-center gap-3 rounded-lg border border-border/40 bg-card px-4 py-2.5 transition-colors hover:bg-secondary/30">
-                          <div className="h-4 w-4 rounded border-2 border-border shrink-0" />
-                          <span className="text-sm text-foreground">{item}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <SmartShoppingList />
             </div>
           )}
 
