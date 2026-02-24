@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import { useProfile } from "@/context/ProfileContext";
+import DietUpload from "@/components/DietUpload";
 import {
   dietOptions,
   allergyOptions,
@@ -17,7 +18,7 @@ import {
   equipmentOptions,
 } from "@/data/mockData";
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -77,11 +78,12 @@ const Profile = () => {
     switch (step) {
       case 1: return !!profile.diet;
       case 2: return true;
-      case 3: return profile.goals.length > 0;
-      case 4: return true;
-      case 5: return !!profile.mood;
-      case 6: return profile.equipment.length > 0;
-      case 7: return true;
+      case 3: return true;
+      case 4: return profile.goals.length > 0;
+      case 5: return true;
+      case 6: return !!profile.mood;
+      case 7: return profile.equipment.length > 0;
+      case 8: return true;
       default: return false;
     }
   };
@@ -129,8 +131,17 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 2: Allergie */}
+          {/* Step 2: Dieta specifica */}
           {step === 2 && (
+            <div>
+              <h2 className="mb-2 text-2xl font-semibold text-foreground">Hai un piano alimentare?</h2>
+              <p className="mb-6 text-sm text-muted-foreground">Se hai una dieta dal nutrizionista, l'AI la integrerà nella pianificazione.</p>
+              <DietUpload />
+            </div>
+          )}
+
+          {/* Step 3: Allergie */}
+          {step === 3 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Hai allergie o intolleranze?</h2>
               <p className="mb-6 text-sm text-muted-foreground">Seleziona tutto ciò che vuoi evitare. Nessuna selezione? Nessun problema, vai avanti!</p>
@@ -152,8 +163,8 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 3: Obiettivi */}
-          {step === 3 && (
+          {/* Step 4: Obiettivi */}
+          {step === 4 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Quali sono i tuoi obiettivi?</h2>
               <p className="mb-6 text-sm text-muted-foreground">Puoi selezionarne più di uno. Ci aiuterai a creare un piano perfetto per te.</p>
@@ -175,8 +186,8 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 4: Budget e tempo */}
-          {step === 4 && (
+          {/* Step 5: Budget e tempo */}
+          {step === 5 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Budget e tempo</h2>
               <p className="mb-8 text-sm text-muted-foreground">Non preoccuparti della precisione, serve solo come riferimento.</p>
@@ -222,8 +233,8 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 5: Mood & Energia */}
-          {step === 5 && (
+          {/* Step 6: Mood & Energia */}
+          {step === 6 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Come ti senti questa settimana?</h2>
               <p className="mb-6 text-sm text-muted-foreground">Il tuo mood influenza le ricette che sceglieremo per te. Niente è giusto o sbagliato!</p>
@@ -269,8 +280,8 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 6: Attrezzatura */}
-          {step === 6 && (
+          {/* Step 7: Attrezzatura */}
+          {step === 7 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Che attrezzatura hai?</h2>
               <p className="mb-6 text-sm text-muted-foreground">Così proporremo solo ricette che puoi preparare davvero.</p>
@@ -292,8 +303,8 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Step 7: Dispensa */}
-          {step === 7 && (
+          {/* Step 8: Dispensa */}
+          {step === 8 && (
             <div>
               <h2 className="mb-2 text-2xl font-semibold text-foreground">Cosa hai già in dispensa?</h2>
               <p className="mb-6 text-sm text-muted-foreground">Così evitiamo di farti comprare quello che hai già. Scrivi e premi Invio.</p>
