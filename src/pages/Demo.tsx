@@ -9,11 +9,14 @@ import {
   PartyPopper,
   ArrowRight,
   Loader2,
+  Repeat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import DietUpload from "@/components/DietUpload";
 
 const diets = ["Onnivoro", "Vegetariano", "Vegano", "Keto", "Mediterraneo"];
 const allergies = ["Glutine", "Lattosio", "Frutta a guscio", "Uova", "Nessuna"];
@@ -72,6 +75,7 @@ const Demo = () => {
   const [selectedOccasion, setSelectedOccasion] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [schisciaEnabled, setSchisciaEnabled] = useState(false);
 
   const handleMoodSelect = (label: string) => {
     setSelectedMood(label);
@@ -187,10 +191,31 @@ const Demo = () => {
                   ))}
                 </div>
               </div>
+              </div>
             </div>
-          </div>
 
-          {/* ─── MOOD SELECTOR ─── */}
+            {/* Diet Upload */}
+            <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
+              <DietUpload />
+            </div>
+
+            {/* Schiscia Mode */}
+            <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${schisciaEnabled ? "bg-primary/10" : "bg-secondary"}`}>
+                    <Repeat className={`h-5 w-5 ${schisciaEnabled ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Schiscia Mode</p>
+                    <p className="text-xs text-muted-foreground">Porzioni doppie a cena → pranzo del giorno dopo</p>
+                  </div>
+                </div>
+                <Switch checked={schisciaEnabled} onCheckedChange={setSchisciaEnabled} />
+              </div>
+            </div>
+
+            {/* ─── MOOD SELECTOR ─── */}
           <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground mb-2">Come ti vuoi sentire questa settimana?</h2>
             <p className="text-sm text-muted-foreground mb-6">
