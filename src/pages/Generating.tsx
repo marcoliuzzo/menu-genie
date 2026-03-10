@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Leaf } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useProfile } from "@/context/ProfileContext";
 import { fallbackMealPlan } from "@/data/mockData";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,12 +56,12 @@ const Generating = () => {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="flex flex-col items-center text-center">
         <div className="mb-8 animate-pulse-soft">
-          <Leaf className="h-16 w-16 text-primary" />
+          <Sparkles className="h-16 w-16 text-primary" />
         </div>
-        <h1 className="mb-3 text-2xl font-semibold text-foreground">
-          SmartBite sta creando il tuo piano…
+        <h1 className="mb-3 text-xl font-semibold text-foreground md:text-2xl">
+          Spesa Smart sta creando il tuo piano…
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-sm md:text-base">
           Analizziamo il tuo mood, energia e preferenze per il menu perfetto.
         </p>
         <div className="mt-10 flex gap-1.5">

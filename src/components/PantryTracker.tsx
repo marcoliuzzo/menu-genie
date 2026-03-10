@@ -42,12 +42,25 @@ const getStatusLabel = (daysLeft: number) => {
   return "Fresco";
 };
 
+// Use current date for realistic mock data
+const today = new Date();
+const daysAgo = (n: number) => {
+  const d = new Date(today);
+  d.setDate(d.getDate() - n);
+  return d.toISOString().split("T")[0];
+};
+const daysFromNow = (n: number) => {
+  const d = new Date(today);
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split("T")[0];
+};
+
 const mockPantry: PantryItem[] = [
-  { id: "1", name: "Spinaci freschi", purchaseDate: "2026-02-22", quantity: "300g", category: "fresco", estimatedExpiry: "2026-02-27", daysLeft: 3 },
-  { id: "2", name: "Yogurt greco", purchaseDate: "2026-02-20", quantity: "2 vasetti", category: "fresco", estimatedExpiry: "2026-02-25", daysLeft: 1 },
-  { id: "3", name: "Pasta integrale", purchaseDate: "2026-02-01", quantity: "500g", category: "confezionato", estimatedExpiry: "2026-08-01", daysLeft: 158 },
-  { id: "4", name: "Petto di pollo", purchaseDate: "2026-02-18", quantity: "400g", category: "congelato", estimatedExpiry: "2026-05-18", daysLeft: 82 },
-  { id: "5", name: "Mozzarella", purchaseDate: "2026-02-23", quantity: "125g", category: "fresco", estimatedExpiry: "2026-02-26", daysLeft: 2 },
+  { id: "1", name: "Spinaci freschi", purchaseDate: daysAgo(2), quantity: "300g", category: "fresco", estimatedExpiry: daysFromNow(3), daysLeft: 3 },
+  { id: "2", name: "Yogurt greco", purchaseDate: daysAgo(4), quantity: "2 vasetti", category: "fresco", estimatedExpiry: daysFromNow(1), daysLeft: 1 },
+  { id: "3", name: "Pasta integrale", purchaseDate: daysAgo(30), quantity: "500g", category: "confezionato", estimatedExpiry: daysFromNow(150), daysLeft: 150 },
+  { id: "4", name: "Petto di pollo", purchaseDate: daysAgo(10), quantity: "400g", category: "congelato", estimatedExpiry: daysFromNow(80), daysLeft: 80 },
+  { id: "5", name: "Mozzarella", purchaseDate: daysAgo(3), quantity: "125g", category: "fresco", estimatedExpiry: daysFromNow(2), daysLeft: 2 },
 ];
 
 const PantryTracker = () => {
@@ -87,18 +100,18 @@ const PantryTracker = () => {
   const expiringSoon = sorted.filter((i) => i.daysLeft <= 5);
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 animate-fade-in">
+      <div className="flex items-center justify-between gap-2">
         <div>
-          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+          <h2 className="text-lg font-bold text-foreground flex items-center gap-2 md:text-xl">
             <Package className="h-5 w-5 text-primary" />
             Dispensa
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">{items.length} prodotti · {expiringSoon.length} da consumare presto</p>
+          <p className="text-xs text-muted-foreground mt-1 md:text-sm">{items.length} prodotti · {expiringSoon.length} da consumare presto</p>
         </div>
         <Button variant="outline" size="sm" className="rounded-full gap-1.5" onClick={() => setShowForm(!showForm)}>
           <Plus className="h-4 w-4" />
-          Aggiungi
+          <span className="hidden sm:inline">Aggiungi</span>
         </Button>
       </div>
 
@@ -147,13 +160,13 @@ const PantryTracker = () => {
         {sorted.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-3 rounded-lg border border-border/40 bg-card px-4 py-3 transition-all hover:shadow-sm"
+            className="flex items-center gap-3 rounded-lg border border-border/40 bg-card px-3 py-2.5 transition-all hover:shadow-sm md:px-4 md:py-3"
           >
-            <div className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-bold ${getStatusColor(item.daysLeft)}`}>
+            <div className={`flex h-7 w-7 items-center justify-center rounded-full border text-[10px] font-bold md:h-8 md:w-8 md:text-xs ${getStatusColor(item.daysLeft)}`}>
               {item.daysLeft <= 0 ? "!" : item.daysLeft}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-medium text-foreground">{item.name}</span>
                 {item.daysLeft <= 5 && (
                   <Badge variant="secondary" className={`text-[10px] px-1.5 py-0 ${item.daysLeft <= 2 ? "bg-destructive/10 text-destructive" : "bg-amber-50 text-amber-600"}`}>
@@ -164,10 +177,10 @@ const PantryTracker = () => {
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                 <span>{item.quantity}</span>
                 <span>·</span>
-                <span className="flex items-center gap-0.5"><Clock className="h-3 w-3" />Scade ~{item.estimatedExpiry}</span>
+                <span className="flex items-center gap-0.5 truncate"><Clock className="h-3 w-3 shrink-0" />Scade ~{item.estimatedExpiry}</span>
               </div>
             </div>
-            <button onClick={() => removeItem(item.id)} className="p-1 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+            <button onClick={() => removeItem(item.id)} className="p-1 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors shrink-0">
               <X className="h-4 w-4" />
             </button>
           </div>

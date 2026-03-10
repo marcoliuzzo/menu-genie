@@ -42,40 +42,40 @@ const HowItWorks = () => {
     <div className="flex min-h-screen flex-col">
       <Header />
 
-      <section className="px-4 py-20 md:py-28">
+      <section className="px-4 py-12 md:py-28">
         <div className="container max-w-3xl">
           <div className="text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 text-sm font-medium text-accent">
               <Sparkles className="h-4 w-4" />
               Il processo
             </span>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+            <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground md:mt-6 md:text-5xl">
               Come funziona <span className="gradient-primary-text">Spesa Smart</span>
             </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-lg">
               Quattro passaggi. Zero stress. Un piano su misura in pochi secondi.
             </p>
           </div>
 
           {/* Vertical timeline */}
-          <div className="mt-20 relative">
+          <div className="mt-12 relative md:mt-20">
             {/* Vertical line */}
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-border md:left-1/2 md:-translate-x-px" />
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-border md:left-1/2 md:-translate-x-px" />
 
-            <div className="space-y-16">
+            <div className="space-y-10 md:space-y-16">
               {steps.map((s, i) => (
-                <div key={s.step} className="relative flex flex-col md:flex-row md:items-start gap-6">
-                  {/* Step number dot */}
-                  <div className="absolute left-8 md:left-1/2 -translate-x-1/2 flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-border bg-card shadow-sm z-10">
-                    <s.icon className="h-7 w-7 text-primary" />
+                <div key={s.step} className="relative flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+                  {/* Step icon */}
+                  <div className="absolute left-6 md:left-1/2 -translate-x-1/2 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-border bg-card shadow-sm z-10 md:h-16 md:w-16">
+                    <s.icon className="h-5 w-5 text-primary md:h-7 md:w-7" />
                   </div>
 
-                  {/* Content - alternating sides on desktop */}
-                  <div className={`ml-20 md:ml-0 md:w-1/2 ${i % 2 === 0 ? "md:pr-16 md:text-right" : "md:pl-16 md:ml-auto"}`}>
+                  {/* Content */}
+                  <div className={`ml-16 md:ml-0 md:w-1/2 ${i % 2 === 0 ? "md:pr-16 md:text-right" : "md:pl-16 md:ml-auto"}`}>
                     <span className="text-xs font-bold uppercase tracking-widest text-accent">Step {s.step}</span>
-                    <h3 className="mt-2 text-xl font-semibold text-foreground">{s.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
-                    <div className="mt-4 rounded-xl border border-border/60 bg-secondary/50 p-4">
+                    <h3 className="mt-1 text-lg font-semibold text-foreground md:mt-2 md:text-xl">{s.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground md:mt-2">{s.desc}</p>
+                    <div className="mt-3 rounded-xl border border-border/60 bg-secondary/50 p-3 md:mt-4 md:p-4">
                       <p className="text-xs leading-relaxed text-muted-foreground">{s.detail}</p>
                     </div>
                   </div>
@@ -84,7 +84,7 @@ const HowItWorks = () => {
             </div>
           </div>
 
-          <div className="mt-20 text-center">
+          <div className="mt-12 text-center md:mt-20">
             <Button
               size="lg"
               className="rounded-full bg-accent px-8 text-base font-semibold text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-200 hover:shadow-xl hover:scale-105"
