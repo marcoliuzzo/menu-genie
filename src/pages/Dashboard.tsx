@@ -16,7 +16,7 @@ import IngredientSwap from "@/components/IngredientSwap";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
-  { icon: CalendarDays, label: "Menù settimanale", id: "menu" },
+  { icon: CalendarDays, label: "Menù", id: "menu" },
   { icon: ShoppingCart, label: "Lista spesa", id: "lista" },
   { icon: Package, label: "Dispensa", id: "dispensa" },
   { icon: Flame, label: "Nutrizione", id: "nutrizione" },
@@ -34,8 +34,7 @@ const weekMenu = [
   { day: "Domenica", pranzo: "Pizza fatta in casa", cena: "Zuppa di legumi", cal: "1480 kcal", calNum: 1480, protein: 63, carbs: 185, fat: 51 },
 ];
 
-// Schiscia pairs: dinner index → next day lunch uses leftovers
-const schisciaPairs = new Set([0, 2, 4]); // Lun, Mer, Ven cena → Mar, Gio, Sab pranzo
+const schisciaPairs = new Set([0, 2, 4]);
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -67,12 +66,12 @@ const Dashboard = () => {
           onContextMenu={(e) => { e.preventDefault(); handleLongPress(meal); }}
           className="w-full text-left group"
         >
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">{label}</div>
             {isSchisciaLunch && <SchisciaBadge />}
             {isDoubleDinner && <DoublePrepBadge />}
           </div>
-          <p className="text-sm text-foreground group-hover:text-primary transition-colors">{meal}</p>
+          <p className="text-sm text-foreground group-hover:text-primary transition-colors leading-snug">{meal}</p>
           {isDoubleDinner && (
             <p className="text-[10px] text-primary mt-0.5">💡 Prepara 2 porzioni in più per domani</p>
           )}
@@ -93,9 +92,9 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className={`hidden md:flex flex-col border-r border-border/40 bg-card transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-56"}`}>
+      <div className="flex flex-1 flex-col md:flex-row">
+        {/* Sidebar - desktop */}
+        <aside className={`hidden md:flex flex-col border-r border-border/40 bg-card transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-52"}`}>
           <div className="flex items-center justify-end p-2">
             <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-1.5 rounded-lg text-muted-foreground hover:bg-secondary transition-colors">
               {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -104,7 +103,7 @@ const Dashboard = () => {
           <nav className="flex-1 px-2 space-y-1">
             {sidebarItems.map((item) => {
               const isActive = activeSection === item.id;
-              const content = (
+              const btn = (
                 <button
                   key={item.id}
                   onClick={() => !item.link && setActiveSection(item.id)}
@@ -113,28 +112,28 @@ const Dashboard = () => {
                   }`}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
-                  {!sidebarCollapsed && <span>{item.label}</span>}
+                  {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                 </button>
               );
               return item.link ? (
-                <Link to={item.link} key={item.id}>{content}</Link>
+                <Link to={item.link} key={item.id}>{btn}</Link>
               ) : (
-                <div key={item.id}>{content}</div>
+                <div key={item.id}>{btn}</div>
               );
             })}
           </nav>
         </aside>
 
         {/* Mobile nav */}
-        <div className="md:hidden flex border-b border-border/40 overflow-x-auto px-2 py-2 gap-1 bg-card">
+        <div className="md:hidden flex border-b border-border/40 overflow-x-auto px-2 py-2 gap-1 bg-card scrollbar-none">
           {sidebarItems.map((item) =>
             item.link ? (
-              <Link key={item.id} to={item.link} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground whitespace-nowrap">
+              <Link key={item.id} to={item.link} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground whitespace-nowrap shrink-0">
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
             ) : (
-              <button key={item.id} onClick={() => setActiveSection(item.id)} className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}>
+              <button key={item.id} onClick={() => setActiveSection(item.id)} className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium whitespace-nowrap shrink-0 transition-colors ${activeSection === item.id ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}>
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </button>
@@ -147,44 +146,43 @@ const Dashboard = () => {
           {/* Dashboard overview */}
           {activeSection === "dashboard" && (
             <div className="max-w-5xl animate-fade-in">
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
                 <div>
-                  <h1 className="text-2xl font-bold text-foreground">La tua settimana</h1>
+                  <h1 className="text-xl font-bold text-foreground md:text-2xl">La tua settimana</h1>
                   <p className="text-sm text-muted-foreground mt-1">Piano generato per mood: Relax 🧘</p>
                 </div>
-                <Button variant="outline" size="sm" className="rounded-full gap-2" onClick={handleRegenerate} disabled={isRegenerating}>
+                <Button variant="outline" size="sm" className="rounded-full gap-2 self-start" onClick={handleRegenerate} disabled={isRegenerating}>
                   {isRegenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                   Rigenera piano
                 </Button>
               </div>
 
-              {/* Schiscia Mode toggle */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <SchisciaMode enabled={schisciaEnabled} onToggle={setSchisciaEnabled} />
               </div>
 
               {/* Stats */}
-              <div className="grid gap-4 grid-cols-2 md:grid-cols-4 mb-8">
+              <div className="grid gap-3 grid-cols-2 md:grid-cols-4 mb-6">
                 {[
                   { label: "Budget", value: "€55 / €70", accent: false },
                   { label: "Risparmio", value: "€12.40", accent: true },
                   { label: "Ricette", value: "14", accent: false },
                   { label: "Tempo medio", value: schisciaEnabled ? "15 min" : "22 min", accent: false },
                 ].map((s) => (
-                  <div key={s.label} className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+                  <div key={s.label} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm">
                     <p className="text-xs text-muted-foreground">{s.label}</p>
-                    <p className={`mt-1 text-xl font-bold ${s.accent ? "text-primary" : "text-foreground"}`}>{s.value}</p>
+                    <p className={`mt-1 text-lg font-bold md:text-xl ${s.accent ? "text-primary" : "text-foreground"}`}>{s.value}</p>
                   </div>
                 ))}
               </div>
 
               {/* Quick week view */}
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {weekMenu.slice(0, 4).map((d, i) => (
-                  <div key={d.day} className="rounded-xl border border-border/60 bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-                    <div className="flex items-center justify-between mb-3">
+                  <div key={d.day} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
-                      <span className="text-xs text-muted-foreground">{d.cal}</span>
+                      <span className="text-[10px] text-muted-foreground">{d.cal}</span>
                     </div>
                     <MealCard day={d.day} meal={d.pranzo} label="Pranzo" dayIndex={i} />
                     <div className="mt-2">
@@ -205,20 +203,20 @@ const Dashboard = () => {
           {/* Full menu */}
           {activeSection === "menu" && (
             <div className="max-w-5xl animate-fade-in">
-              <h1 className="text-2xl font-bold text-foreground mb-2">Menù settimanale</h1>
-              <p className="text-sm text-muted-foreground mb-6">Clicca su un pasto per la ricetta AI. Tieni premuto su un ingrediente per sostituirlo.</p>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <h1 className="text-xl font-bold text-foreground mb-1 md:text-2xl">Menù settimanale</h1>
+              <p className="text-sm text-muted-foreground mb-4">Clicca su un pasto per la ricetta AI. Tieni premuto per sostituire un ingrediente.</p>
+              <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {weekMenu.map((d, i) => (
-                  <div key={d.day} className="rounded-xl border border-border/60 bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
-                    <div className="flex items-center justify-between mb-3">
+                  <div key={d.day} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
                       <div className="text-right">
-                        <span className="text-xs text-muted-foreground">{d.cal}</span>
-                        <div className="text-[10px] text-muted-foreground">P:{d.protein}g C:{d.carbs}g F:{d.fat}g</div>
+                        <span className="text-[10px] text-muted-foreground">{d.cal}</span>
+                        <div className="text-[9px] text-muted-foreground">P:{d.protein}g C:{d.carbs}g F:{d.fat}g</div>
                       </div>
                     </div>
                     <MealCard day={d.day} meal={d.pranzo} label="Pranzo" dayIndex={i} />
-                    <div className="mt-3">
+                    <div className="mt-2">
                       <MealCard day={d.day} meal={d.cena} label="Cena" dayIndex={i} />
                     </div>
                   </div>
@@ -250,12 +248,12 @@ const Dashboard = () => {
 
           {/* Settings */}
           {activeSection === "settings" && (
-            <div className="max-w-lg animate-fade-in space-y-6">
-              <h1 className="text-2xl font-bold text-foreground">Impostazioni</h1>
-              <div className="rounded-xl border border-border/60 bg-card p-6">
+            <div className="max-w-lg animate-fade-in space-y-4">
+              <h1 className="text-xl font-bold text-foreground md:text-2xl">Impostazioni</h1>
+              <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
                 <DietUpload />
               </div>
-              <div className="rounded-xl border border-border/60 bg-card p-6">
+              <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
                 <SchisciaMode enabled={schisciaEnabled} onToggle={setSchisciaEnabled} />
               </div>
             </div>
