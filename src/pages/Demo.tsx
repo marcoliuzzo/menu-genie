@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Loader2,
   Repeat,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -17,9 +18,10 @@ import { Switch } from "@/components/ui/switch";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DietUpload from "@/components/DietUpload";
+import { getDemoMenuForMoodAndDiet, validateRecipeName } from "@/lib/dietaryConstraints";
 
 const diets = ["Onnivoro", "Vegetariano", "Vegano", "Keto", "Mediterraneo"];
-const allergies = ["Glutine", "Lattosio", "Frutta a guscio", "Uova", "Nessuna"];
+const allergies = ["Glutine", "Lattosio", "Frutta a guscio", "Uova", "Crostacei", "Pesce", "Soia", "Sesamo", "Nessuna"];
 
 const moods = [
   { emoji: "🧘", label: "Relax", colorClass: "bg-primary/10 border-primary/30 text-primary" },
@@ -37,7 +39,8 @@ const occasions = [
   { icon: Film, label: "Serata film" },
 ];
 
-const moodMenus: Record<string, { day: string; pranzo: string; cena: string; tempo: string }[]> = {
+// Fallback default menus (onnivoro)
+const defaultMoodMenus: Record<string, { day: string; pranzo: string; cena: string; tempo: string }[]> = {
   Relax: [
     { day: "Lunedì", pranzo: "Zuppa di lenticchie con pane croccante", cena: "Risotto ai funghi porcini", tempo: "25 min" },
     { day: "Martedì", pranzo: "Insalata tiepida di farro e verdure", cena: "Vellutata di zucca con crostini", tempo: "20 min" },
@@ -68,7 +71,7 @@ const moodMenus: Record<string, { day: string; pranzo: string; cena: string; tem
 const Demo = () => {
   const navigate = useNavigate();
   const [diet, setDiet] = useState("Onnivoro");
-  const [allergy, setAllergy] = useState("Nessuna");
+  const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
   const [budget, setBudget] = useState([60]);
   const [timeMode, setTimeMode] = useState<"rapido" | "elaborato">("rapido");
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
@@ -76,6 +79,16 @@ const Demo = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [schisciaEnabled, setSchisciaEnabled] = useState(false);
+
+  const toggleAllergy = (a: string) => {
+    if (a === "Nessuna") {
+      setSelectedAllergies([]);
+      return;
+    }
+    setSelectedAllergies(prev =>
+      prev.includes(a) ? prev.filter(x => x !== a) : [...prev.filter(x => x !== "Nessuna"), a]
+    );
+  };
 
   const handleMoodSelect = (label: string) => {
     setSelectedMood(label);
@@ -87,7 +100,29 @@ const Demo = () => {
     }, 1800);
   };
 
-  const currentMenu = selectedMood ? moodMenus[selectedMood] : null;
+  // Get diet-aware menu
+  const getMenu = () => {
+    if (!selectedMood) return null;
+    const dietKey = diet.toLowerCase();
+    const dietAwareMenu = getDemoMenuForMoodAndDiet(selectedMood, dietKey, selectedAllergies);
+    if (dietAwareMenu) return dietAwareMenu;
+    // Fallback to default onnivoro menus
+    return defaultMoodMenus[selectedMood] || null;
+  };
+
+  const currentMenu = getMenu();
+
+  // Count constraint violations for visual feedback
+  const getDietLabel = () => {
+    const labels: Record<string, string> = {
+      Onnivoro: "🍽️ Nessuna restrizione",
+      Vegetariano: "🥬 No carne, no pesce",
+      Vegano: "🌱 Solo vegetale",
+      Keto: "🥑 Low-carb, high-fat",
+      Mediterraneo: "🫒 Tradizione mediterranea",
+    };
+    return labels[diet] || "";
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -131,18 +166,24 @@ const Demo = () => {
                     </button>
                   ))}
                 </div>
+                {diet !== "Onnivoro" && (
+                  <p className="mt-2 text-xs text-primary flex items-center gap-1">
+                    <ShieldCheck className="h-3 w-3" />
+                    {getDietLabel()}
+                  </p>
+                )}
               </div>
 
-              {/* Allergies */}
+              {/* Allergies - multi-select */}
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Allergie / Intolleranze</label>
                 <div className="flex flex-wrap gap-2">
                   {allergies.map((a) => (
                     <button
                       key={a}
-                      onClick={() => setAllergy(a)}
+                      onClick={() => toggleAllergy(a)}
                       className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
-                        allergy === a
+                        (a === "Nessuna" && selectedAllergies.length === 0) || selectedAllergies.includes(a)
                           ? "border-primary bg-primary/10 text-primary"
                           : "border-border text-muted-foreground hover:border-muted-foreground/30"
                       }`}
@@ -151,6 +192,12 @@ const Demo = () => {
                     </button>
                   ))}
                 </div>
+                {selectedAllergies.length > 0 && (
+                  <p className="mt-2 text-xs text-primary flex items-center gap-1">
+                    <ShieldCheck className="h-3 w-3" />
+                    Filtro attivo: {selectedAllergies.join(", ")}
+                  </p>
+                )}
               </div>
 
               {/* Budget */}
@@ -258,32 +305,59 @@ const Demo = () => {
             {isGenerating && (
               <div className="mt-8 flex flex-col items-center gap-3 animate-fade-in">
                 <Loader2 className="h-8 w-8 text-accent animate-spin" />
-                <p className="text-sm font-medium text-accent">L'AI sta creando il tuo piano…</p>
+                <p className="text-sm font-medium text-accent">
+                  L'AI sta creando il tuo piano {diet !== "Onnivoro" ? `(${diet})` : ""}…
+                </p>
+                {(diet !== "Onnivoro" || selectedAllergies.length > 0) && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <ShieldCheck className="h-3 w-3" />
+                    Applicando vincoli dietetici e allergie
+                  </p>
+                )}
               </div>
             )}
 
             {/* Results */}
             {showResults && currentMenu && (
               <div className="mt-6 animate-fade-in">
-                <p className="mb-3 text-sm font-medium text-primary flex items-center gap-1">
+                <p className="mb-1 text-sm font-medium text-primary flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5" />
                   Piano generato per mood: {selectedMood}
                   {selectedOccasion && ` — ${selectedOccasion}`}
                 </p>
+                {(diet !== "Onnivoro" || selectedAllergies.length > 0) && (
+                  <p className="mb-3 text-xs text-primary/70 flex items-center gap-1">
+                    <ShieldCheck className="h-3 w-3" />
+                    {diet !== "Onnivoro" && `Dieta: ${diet}`}
+                    {diet !== "Onnivoro" && selectedAllergies.length > 0 && " · "}
+                    {selectedAllergies.length > 0 && `Senza: ${selectedAllergies.join(", ")}`}
+                  </p>
+                )}
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {currentMenu.map((d) => (
-                    <div
-                      key={d.day}
-                      className="rounded-xl border border-border/60 bg-secondary/30 p-3 md:p-4 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
-                        <span className="text-xs text-muted-foreground">{d.tempo}</span>
+                  {currentMenu.map((d) => {
+                    // Visual validation badges
+                    const lunchValid = validateRecipeName(d.pranzo, diet.toLowerCase(), selectedAllergies).valid;
+                    const dinnerValid = validateRecipeName(d.cena, diet.toLowerCase(), selectedAllergies).valid;
+                    return (
+                      <div
+                        key={d.day}
+                        className="rounded-xl border border-border/60 bg-secondary/30 p-3 md:p-4 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
+                          <span className="text-xs text-muted-foreground">{d.tempo}</span>
+                        </div>
+                        <div className="flex items-start gap-1">
+                          {lunchValid && <ShieldCheck className="h-3 w-3 text-primary mt-0.5 shrink-0" />}
+                          <p className="text-sm text-foreground">{d.pranzo}</p>
+                        </div>
+                        <div className="flex items-start gap-1 mt-1">
+                          {dinnerValid && <ShieldCheck className="h-3 w-3 text-primary mt-0.5 shrink-0" />}
+                          <p className="text-sm text-muted-foreground">{d.cena}</p>
+                        </div>
                       </div>
-                      <p className="text-sm text-foreground">{d.pranzo}</p>
-                      <p className="text-sm text-muted-foreground mt-1">{d.cena}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="mt-6 text-center">
                   <Button
