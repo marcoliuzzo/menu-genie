@@ -27,6 +27,8 @@ interface RecipeData {
 
 interface RecipeDetailProps {
   mealName: string;
+  diet?: string;
+  allergies?: string[];
   onClose: () => void;
 }
 
@@ -57,7 +59,7 @@ const fallbackRecipe: RecipeData = {
   chefNotes: "Per un risotto ancora più ricco, aggiungi un filo di tartufo a crudo. Se vuoi una versione vegana, sostituisci burro e parmigiano con olio EVO e lievito alimentare.",
 };
 
-const RecipeDetail = ({ mealName, onClose }: RecipeDetailProps) => {
+const RecipeDetail = ({ mealName, diet = "", allergies = [], onClose }: RecipeDetailProps) => {
   const [recipe, setRecipe] = useState<RecipeData>(fallbackRecipe);
   const [isLoading, setIsLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -74,7 +76,7 @@ const RecipeDetail = ({ mealName, onClose }: RecipeDetailProps) => {
       setIsLoading(true);
       try {
         const { data, error } = await supabase.functions.invoke("generate-recipe", {
-          body: { mealName, servings: 2 },
+          body: { mealName, servings: 2, diet, allergies },
         });
         if (error) throw error;
         if (data && data.title) {

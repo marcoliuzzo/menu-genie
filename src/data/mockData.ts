@@ -88,6 +88,7 @@ export const dietOptions = [
   { value: "pescetariano", label: "Pescetariano", description: "Niente carne, sì al pesce" },
   { value: "flexitariano", label: "Flexitariano", description: "Prevalentemente vegetale, con eccezioni" },
   { value: "keto", label: "Keto", description: "Pochi carboidrati, molti grassi sani" },
+  { value: "mediterraneo", label: "Mediterraneo", description: "Tradizione mediterranea: verdure, pesce, olio EVO" },
 ];
 
 export const allergyOptions = [
