@@ -27,6 +27,8 @@ interface RecipeData {
 
 interface RecipeDetailProps {
   mealName: string;
+  diet?: string;
+  allergies?: string[];
   onClose: () => void;
 }
 
