@@ -14,7 +14,6 @@ import NutritionMonitor from "@/components/NutritionMonitor";
 import DietUpload from "@/components/DietUpload";
 import IngredientSwap from "@/components/IngredientSwap";
 import { useProfile } from "@/context/ProfileContext";
-import { getDietAwareMenu } from "@/lib/dietaryConstraints";
 
 const sidebarItems = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
@@ -29,16 +28,14 @@ const sidebarItems = [
 const schisciaPairs = new Set([0, 2, 4]);
 
 const Dashboard = () => {
-  const { profile } = useProfile();
+  const { profile, updateProfile, weekMenu } = useProfile();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [expandedMeal, setExpandedMeal] = useState<string | null>(null);
-  const [schisciaEnabled, setSchisciaEnabled] = useState(false);
   const [swapIngredient, setSwapIngredient] = useState<string | null>(null);
 
-  // Get diet-aware menu based on profile
-  const weekMenu = getDietAwareMenu(profile.diet || "onnivoro", profile.allergies || []);
+  const schisciaEnabled = profile.schisciaMode;
 
   const handleRegenerate = () => {
     setIsRegenerating(true);
@@ -145,14 +142,13 @@ const Dashboard = () => {
 
         {/* Main content */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto">
-          {/* Dashboard overview */}
           {activeSection === "dashboard" && (
             <div className="max-w-5xl animate-fade-in">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
                 <div>
                   <h1 className="text-xl font-bold text-foreground md:text-2xl">La tua settimana</h1>
                   <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <p className="text-sm text-muted-foreground">Piano generato per mood: Relax 🧘</p>
+                    <p className="text-sm text-muted-foreground">Piano generato per mood: {profile.mood || "Relax"} 🧘</p>
                     {dietLabel && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                         <ShieldCheck className="h-3 w-3" />
@@ -173,13 +169,15 @@ const Dashboard = () => {
               </div>
 
               <div className="mb-4">
-                <SchisciaMode enabled={schisciaEnabled} onToggle={setSchisciaEnabled} />
+                <SchisciaMode
+                  enabled={schisciaEnabled}
+                  onToggle={(v) => updateProfile({ schisciaMode: v })}
+                />
               </div>
 
-              {/* Stats */}
               <div className="grid gap-3 grid-cols-2 md:grid-cols-4 mb-6">
                 {[
-                  { label: "Budget", value: "€55 / €70", accent: false },
+                  { label: "Budget", value: `€${Math.round(profile.budget * 0.78)} / €${profile.budget}`, accent: false },
                   { label: "Risparmio", value: "€12.40", accent: true },
                   { label: "Ricette", value: "14", accent: false },
                   { label: "Tempo medio", value: schisciaEnabled ? "15 min" : "22 min", accent: false },
@@ -191,7 +189,6 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              {/* Quick week view */}
               <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {weekMenu.slice(0, 4).map((d, i) => (
                   <div key={d.day} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
@@ -215,7 +212,6 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Full menu */}
           {activeSection === "menu" && (
             <div className="max-w-5xl animate-fade-in">
               <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -248,28 +244,24 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Smart Shopping list */}
           {activeSection === "lista" && (
             <div className="max-w-3xl animate-fade-in">
               <SmartShoppingList />
             </div>
           )}
 
-          {/* Pantry */}
           {activeSection === "dispensa" && (
             <div className="max-w-3xl animate-fade-in">
               <PantryTracker />
             </div>
           )}
 
-          {/* Nutrition */}
           {activeSection === "nutrizione" && (
             <div className="max-w-3xl animate-fade-in">
               <NutritionMonitor />
             </div>
           )}
 
-          {/* Settings */}
           {activeSection === "settings" && (
             <div className="max-w-lg animate-fade-in space-y-4">
               <h1 className="text-xl font-bold text-foreground md:text-2xl">Impostazioni</h1>
@@ -277,14 +269,16 @@ const Dashboard = () => {
                 <DietUpload />
               </div>
               <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
-                <SchisciaMode enabled={schisciaEnabled} onToggle={setSchisciaEnabled} />
+                <SchisciaMode
+                  enabled={schisciaEnabled}
+                  onToggle={(v) => updateProfile({ schisciaMode: v })}
+                />
               </div>
             </div>
           )}
         </main>
       </div>
 
-      {/* Ingredient Swap Panel */}
       {swapIngredient && (
         <IngredientSwap
           ingredient={swapIngredient}
