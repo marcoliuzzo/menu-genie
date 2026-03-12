@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Sparkles,
-  Film,
-  Dumbbell,
-  Wine,
-  Users,
-  PartyPopper,
-  ArrowRight,
-  Loader2,
-  Repeat,
-  ShieldCheck,
+  Sparkles, Film, Dumbbell, Wine, Users, PartyPopper,
+  ArrowRight, Loader2, Repeat, ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -18,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DietUpload from "@/components/DietUpload";
+import { useProfile } from "@/context/ProfileContext";
 import { getDemoMenuForMoodAndDiet, validateRecipeName } from "@/lib/dietaryConstraints";
 
 const diets = ["Onnivoro", "Vegetariano", "Vegano", "Keto", "Mediterraneo"];
@@ -39,7 +32,6 @@ const occasions = [
   { icon: Film, label: "Serata film" },
 ];
 
-// Fallback default menus (onnivoro)
 const defaultMoodMenus: Record<string, { day: string; pranzo: string; cena: string; tempo: string }[]> = {
   Relax: [
     { day: "Lunedì", pranzo: "Zuppa di lenticchie con pane croccante", cena: "Risotto ai funghi porcini", tempo: "25 min" },
@@ -70,6 +62,7 @@ const defaultMoodMenus: Record<string, { day: string; pranzo: string; cena: stri
 
 const Demo = () => {
   const navigate = useNavigate();
+  const { updateProfile } = useProfile();
   const [diet, setDiet] = useState("Onnivoro");
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
   const [budget, setBudget] = useState([60]);
@@ -81,10 +74,7 @@ const Demo = () => {
   const [schisciaEnabled, setSchisciaEnabled] = useState(false);
 
   const toggleAllergy = (a: string) => {
-    if (a === "Nessuna") {
-      setSelectedAllergies([]);
-      return;
-    }
+    if (a === "Nessuna") { setSelectedAllergies([]); return; }
     setSelectedAllergies(prev =>
       prev.includes(a) ? prev.filter(x => x !== a) : [...prev.filter(x => x !== "Nessuna"), a]
     );
@@ -100,19 +90,29 @@ const Demo = () => {
     }, 1800);
   };
 
-  // Get diet-aware menu
+  const handleGoToDashboard = () => {
+    // Sync demo selections to global profile
+    updateProfile({
+      diet: diet.toLowerCase(),
+      allergies: selectedAllergies,
+      budget: budget[0],
+      cookingTime: timeMode === "rapido" ? "20" : "45",
+      mood: selectedMood || "",
+      schisciaMode: schisciaEnabled,
+    });
+    navigate("/dashboard");
+  };
+
   const getMenu = () => {
     if (!selectedMood) return null;
     const dietKey = diet.toLowerCase();
     const dietAwareMenu = getDemoMenuForMoodAndDiet(selectedMood, dietKey, selectedAllergies);
     if (dietAwareMenu) return dietAwareMenu;
-    // Fallback to default onnivoro menus
     return defaultMoodMenus[selectedMood] || null;
   };
 
   const currentMenu = getMenu();
 
-  // Count constraint violations for visual feedback
   const getDietLabel = () => {
     const labels: Record<string, string> = {
       Onnivoro: "🍽️ Nessuna restrizione",
@@ -146,107 +146,68 @@ const Demo = () => {
           {/* PROFILO */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground mb-4 md:mb-6">Il tuo profilo</h2>
-
             <div className="grid gap-5 md:grid-cols-2">
-              {/* Diet */}
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Regime alimentare</label>
                 <div className="flex flex-wrap gap-2">
                   {diets.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => setDiet(d)}
+                    <button key={d} onClick={() => setDiet(d)}
                       className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
-                        diet === d
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-muted-foreground/30"
-                      }`}
-                    >
-                      {d}
-                    </button>
+                        diet === d ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-muted-foreground/30"
+                      }`}>{d}</button>
                   ))}
                 </div>
                 {diet !== "Onnivoro" && (
                   <p className="mt-2 text-xs text-primary flex items-center gap-1">
-                    <ShieldCheck className="h-3 w-3" />
-                    {getDietLabel()}
+                    <ShieldCheck className="h-3 w-3" />{getDietLabel()}
                   </p>
                 )}
               </div>
 
-              {/* Allergies - multi-select */}
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Allergie / Intolleranze</label>
                 <div className="flex flex-wrap gap-2">
                   {allergies.map((a) => (
-                    <button
-                      key={a}
-                      onClick={() => toggleAllergy(a)}
+                    <button key={a} onClick={() => toggleAllergy(a)}
                       className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
                         (a === "Nessuna" && selectedAllergies.length === 0) || selectedAllergies.includes(a)
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-muted-foreground/30"
-                      }`}
-                    >
-                      {a}
-                    </button>
+                          ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-muted-foreground/30"
+                      }`}>{a}</button>
                   ))}
                 </div>
                 {selectedAllergies.length > 0 && (
                   <p className="mt-2 text-xs text-primary flex items-center gap-1">
-                    <ShieldCheck className="h-3 w-3" />
-                    Filtro attivo: {selectedAllergies.join(", ")}
+                    <ShieldCheck className="h-3 w-3" />Filtro attivo: {selectedAllergies.join(", ")}
                   </p>
                 )}
               </div>
 
-              {/* Budget */}
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">
                   Budget settimanale: <span className="text-accent font-bold">€{budget[0]}</span>
                 </label>
-                <Slider
-                  value={budget}
-                  onValueChange={setBudget}
-                  min={20}
-                  max={150}
-                  step={5}
-                  className="mt-3"
-                />
-                <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                  <span>€20</span>
-                  <span>€150</span>
-                </div>
+                <Slider value={budget} onValueChange={setBudget} min={20} max={150} step={5} className="mt-3" />
+                <div className="flex justify-between mt-1 text-xs text-muted-foreground"><span>€20</span><span>€150</span></div>
               </div>
 
-              {/* Time mode */}
               <div>
                 <label className="text-sm font-medium text-foreground mb-2 block">Tempo disponibile</label>
                 <div className="flex gap-2">
                   {(["rapido", "elaborato"] as const).map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setTimeMode(t)}
+                    <button key={t} onClick={() => setTimeMode(t)}
                       className={`flex-1 rounded-xl border py-3 text-xs md:text-sm font-medium transition-all duration-200 ${
-                        timeMode === t
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:border-muted-foreground/30"
-                      }`}
-                    >
-                      {t === "rapido" ? "⚡ Rapido (< 20 min)" : "👨‍🍳 Elaborato (> 30 min)"}
-                    </button>
+                        timeMode === t ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-muted-foreground/30"
+                      }`}>{t === "rapido" ? "⚡ Rapido (< 20 min)" : "👨‍🍳 Elaborato (> 30 min)"}</button>
                   ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Diet Upload */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <DietUpload />
           </div>
 
-          {/* Schiscia Mode */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -265,43 +226,30 @@ const Demo = () => {
           {/* MOOD SELECTOR */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground mb-2">Come ti vuoi sentire questa settimana?</h2>
-            <p className="text-sm text-muted-foreground mb-4 md:mb-6">
-              Seleziona un mood e un'occasione. L'AI adatterà tutto per te.
-            </p>
+            <p className="text-sm text-muted-foreground mb-4 md:mb-6">Seleziona un mood e un'occasione. L'AI adatterà tutto per te.</p>
 
             <div className="flex flex-wrap gap-2 md:gap-3">
               {moods.map((m) => (
-                <button
-                  key={m.label}
-                  onClick={() => handleMoodSelect(m.label)}
+                <button key={m.label} onClick={() => handleMoodSelect(m.label)}
                   className={`flex items-center gap-2 rounded-full border px-4 py-2 md:px-5 md:py-2.5 text-sm font-medium transition-all duration-200 hover:scale-105 ${
                     selectedMood === m.label ? m.colorClass + " shadow-md" : "border-border bg-card hover:border-muted-foreground/20"
-                  }`}
-                >
-                  <span className="text-lg">{m.emoji}</span>
-                  {m.label}
+                  }`}>
+                  <span className="text-lg">{m.emoji}</span>{m.label}
                 </button>
               ))}
             </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {occasions.map((o) => (
-                <button
-                  key={o.label}
-                  onClick={() => setSelectedOccasion(o.label)}
+                <button key={o.label} onClick={() => setSelectedOccasion(o.label)}
                   className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
-                    selectedOccasion === o.label
-                      ? "border-accent/30 bg-accent/10 text-accent"
-                      : "border-border text-muted-foreground hover:border-muted-foreground/20"
-                  }`}
-                >
-                  <o.icon className="h-3.5 w-3.5" />
-                  {o.label}
+                    selectedOccasion === o.label ? "border-accent/30 bg-accent/10 text-accent" : "border-border text-muted-foreground hover:border-muted-foreground/20"
+                  }`}>
+                  <o.icon className="h-3.5 w-3.5" />{o.label}
                 </button>
               ))}
             </div>
 
-            {/* Loading state */}
             {isGenerating && (
               <div className="mt-8 flex flex-col items-center gap-3 animate-fade-in">
                 <Loader2 className="h-8 w-8 text-accent animate-spin" />
@@ -310,14 +258,12 @@ const Demo = () => {
                 </p>
                 {(diet !== "Onnivoro" || selectedAllergies.length > 0) && (
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <ShieldCheck className="h-3 w-3" />
-                    Applicando vincoli dietetici e allergie
+                    <ShieldCheck className="h-3 w-3" />Applicando vincoli dietetici e allergie
                   </p>
                 )}
               </div>
             )}
 
-            {/* Results */}
             {showResults && currentMenu && (
               <div className="mt-6 animate-fade-in">
                 <p className="mb-1 text-sm font-medium text-primary flex items-center gap-1">
@@ -335,14 +281,10 @@ const Demo = () => {
                 )}
                 <div className="grid gap-3 sm:grid-cols-3">
                   {currentMenu.map((d) => {
-                    // Visual validation badges
                     const lunchValid = validateRecipeName(d.pranzo, diet.toLowerCase(), selectedAllergies).valid;
                     const dinnerValid = validateRecipeName(d.cena, diet.toLowerCase(), selectedAllergies).valid;
                     return (
-                      <div
-                        key={d.day}
-                        className="rounded-xl border border-border/60 bg-secondary/30 p-3 md:p-4 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
-                      >
+                      <div key={d.day} className="rounded-xl border border-border/60 bg-secondary/30 p-3 md:p-4 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
                           <span className="text-xs text-muted-foreground">{d.tempo}</span>
@@ -360,10 +302,7 @@ const Demo = () => {
                   })}
                 </div>
                 <div className="mt-6 text-center">
-                  <Button
-                    className="rounded-full bg-accent px-8 text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-200 hover:scale-105"
-                    onClick={() => navigate("/dashboard")}
-                  >
+                  <Button className="rounded-full bg-accent px-8 text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-200 hover:scale-105" onClick={handleGoToDashboard}>
                     Vai alla dashboard
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
