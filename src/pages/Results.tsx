@@ -38,7 +38,7 @@ const Results = () => {
     .filter((i) => i.inPantry).length;
 
   const estimatedCost = plan.estimatedCost;
-  const budgetPercent = Math.min((estimatedCost / profile.budget) * 100, 100);
+  const budgetPercent = Math.min((estimatedCost / profile.weeklyBudget) * 100, 100);
 
   return (
     <div className="flex min-h-screen flex-col">
