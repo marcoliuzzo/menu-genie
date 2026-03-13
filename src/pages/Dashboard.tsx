@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   LayoutDashboard, CalendarDays, ShoppingCart, Store, Settings,
-  Sparkles, RefreshCw, ChevronLeft, ChevronRight, Loader2, Flame, Package, ShieldCheck
+  Sparkles, RefreshCw, ChevronLeft, ChevronRight, Loader2, Flame, Package, ShieldCheck,
+  Recycle, Leaf, TrendingDown, Coffee, Sun, Moon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
@@ -28,7 +29,7 @@ const sidebarItems = [
 const schisciaPairs = new Set([0, 2, 4]);
 
 const Dashboard = () => {
-  const { profile, updateProfile, weekMenu } = useProfile();
+  const { profile, updateProfile, weekMenu, weekOptimization, recomputeSystem } = useProfile();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
@@ -39,36 +40,51 @@ const Dashboard = () => {
 
   const handleRegenerate = () => {
     setIsRegenerating(true);
-    setTimeout(() => setIsRegenerating(false), 2000);
-  };
-
-  const handleLongPress = (ingredient: string) => {
-    setSwapIngredient(ingredient);
+    recomputeSystem();
+    setTimeout(() => setIsRegenerating(false), 1500);
   };
 
   const dietLabel = profile.diet && profile.diet !== "onnivoro"
     ? profile.diet.charAt(0).toUpperCase() + profile.diet.slice(1)
     : null;
 
-  const MealCard = ({ day, meal, label, dayIndex }: { day: string; meal: string; label: string; dayIndex: number }) => {
+  const MealCard = ({ day, meal, label, dayIndex, mealType }: {
+    day: string; meal: string; label: string; dayIndex: number;
+    mealType: "colazione" | "pranzo" | "cena";
+  }) => {
     const mealKey = `${day}-${label}`;
     const isExpanded = expandedMeal === mealKey;
-    const isSchisciaLunch = schisciaEnabled && label === "Pranzo" && dayIndex > 0 && schisciaPairs.has(dayIndex - 1);
-    const isDoubleDinner = schisciaEnabled && label === "Cena" && schisciaPairs.has(dayIndex);
+    const isSchisciaLunch = schisciaEnabled && mealType === "pranzo" && dayIndex > 0 && schisciaPairs.has(dayIndex - 1);
+    const isDoubleDinner = schisciaEnabled && mealType === "cena" && schisciaPairs.has(dayIndex);
+    const explain = weekMenu[dayIndex]?.explain?.[mealType];
+
+    const MealIcon = mealType === "colazione" ? Coffee : mealType === "pranzo" ? Sun : Moon;
 
     return (
       <div>
         <button
           onClick={() => setExpandedMeal(isExpanded ? null : mealKey)}
-          onContextMenu={(e) => { e.preventDefault(); handleLongPress(meal); }}
+          onContextMenu={(e) => { e.preventDefault(); setSwapIngredient(meal); }}
           className="w-full text-left group"
         >
           <div className="flex items-center gap-1.5 flex-wrap">
-            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">{label}</div>
+            <MealIcon className="h-3 w-3 text-muted-foreground" />
+            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</div>
             {isSchisciaLunch && <SchisciaBadge />}
             {isDoubleDinner && <DoublePrepBadge />}
           </div>
-          <p className="text-sm text-foreground group-hover:text-primary transition-colors leading-snug">{meal}</p>
+          <p className="text-sm text-foreground group-hover:text-primary transition-colors leading-snug mt-0.5">{meal}</p>
+          {/* Explainable AI tags */}
+          {explain && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {explain.pantryIngredients.length > 0 && (
+                <span className="text-[9px] rounded-full bg-primary/10 text-primary px-1.5 py-0.5">🏠 In dispensa</span>
+              )}
+              {explain.reusedIngredients.length > 0 && (
+                <span className="text-[9px] rounded-full bg-accent/10 text-accent px-1.5 py-0.5">♻️ Riutilizzo</span>
+              )}
+            </div>
+          )}
           {isDoubleDinner && (
             <p className="text-[10px] text-primary mt-0.5">💡 Prepara 2 porzioni in più per domani</p>
           )}
@@ -88,11 +104,51 @@ const Dashboard = () => {
     );
   };
 
+  const OptimizationSection = () => (
+    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-4">
+      <h3 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-3">
+        <Recycle className="h-4 w-4 text-primary" />
+        Ottimizzazione della settimana
+      </h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="text-center">
+          <p className="text-lg font-bold text-primary">{weekOptimization.totalMeals}</p>
+          <p className="text-[10px] text-muted-foreground">Pasti pianificati</p>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-bold text-accent">{weekOptimization.reusedIngredients.length}</p>
+          <p className="text-[10px] text-muted-foreground">Ingredienti riutilizzati</p>
+        </div>
+        <div className="text-center">
+          <p className="text-lg font-bold text-foreground">{weekOptimization.pantryUsed.length}</p>
+          <p className="text-[10px] text-muted-foreground">Da dispensa</p>
+        </div>
+        <div className="text-center">
+          <p className={`text-lg font-bold ${weekOptimization.budgetRespected ? "text-primary" : "text-destructive"}`}>
+            €{weekOptimization.estimatedWeeklyCost}
+          </p>
+          <p className="text-[10px] text-muted-foreground">
+            {weekOptimization.budgetRespected ? "✓ Nel budget" : `Sopra budget (€${profile.weeklyBudget})`}
+          </p>
+        </div>
+      </div>
+      {weekOptimization.reusedIngredients.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {weekOptimization.reusedIngredients.slice(0, 6).map(r => (
+            <span key={r.name} className="text-[10px] rounded-full bg-accent/10 text-accent px-2 py-0.5 border border-accent/20">
+              ♻️ {r.name} ({r.meals.length} pasti)
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="flex flex-1 flex-col md:flex-row">
-        {/* Sidebar - desktop */}
+        {/* Sidebar desktop */}
         <aside className={`hidden md:flex flex-col border-r border-border/40 bg-card transition-all duration-300 ${sidebarCollapsed ? "w-16" : "w-52"}`}>
           <div className="flex items-center justify-end p-2">
             <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-1.5 rounded-lg text-muted-foreground hover:bg-secondary transition-colors">
@@ -140,7 +196,7 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Main content */}
+        {/* Main */}
         <main className="flex-1 p-4 md:p-8 overflow-y-auto">
           {activeSection === "dashboard" && (
             <div className="max-w-5xl animate-fade-in">
@@ -148,11 +204,12 @@ const Dashboard = () => {
                 <div>
                   <h1 className="text-xl font-bold text-foreground md:text-2xl">La tua settimana</h1>
                   <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <p className="text-sm text-muted-foreground">Piano generato per mood: {profile.mood || "Relax"} 🧘</p>
+                    <p className="text-sm text-muted-foreground">
+                      21 pasti · Mood: {profile.mood || "Relax"} (peso: {Math.round((profile.moodWeight || 0.5) * 100)}%)
+                    </p>
                     {dietLabel && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                        <ShieldCheck className="h-3 w-3" />
-                        {dietLabel}
+                        <ShieldCheck className="h-3 w-3" />{dietLabel}
                       </span>
                     )}
                     {profile.allergies.length > 0 && (
@@ -168,18 +225,17 @@ const Dashboard = () => {
                 </Button>
               </div>
 
+              <OptimizationSection />
+
               <div className="mb-4">
-                <SchisciaMode
-                  enabled={schisciaEnabled}
-                  onToggle={(v) => updateProfile({ schisciaMode: v })}
-                />
+                <SchisciaMode enabled={schisciaEnabled} onToggle={(v) => updateProfile({ schisciaMode: v })} />
               </div>
 
               <div className="grid gap-3 grid-cols-2 md:grid-cols-4 mb-6">
                 {[
-                  { label: "Budget", value: `€${Math.round(profile.budget * 0.78)} / €${profile.budget}`, accent: false },
-                  { label: "Risparmio", value: "€12.40", accent: true },
-                  { label: "Ricette", value: "14", accent: false },
+                  { label: "Budget", value: `€${weekOptimization.estimatedWeeklyCost} / €${profile.weeklyBudget}`, accent: false },
+                  { label: "Risparmio", value: weekOptimization.budgetRespected ? `€${profile.weeklyBudget - weekOptimization.estimatedWeeklyCost}` : "—", accent: true },
+                  { label: "Pasti", value: "21", accent: false },
                   { label: "Tempo medio", value: schisciaEnabled ? "15 min" : "22 min", accent: false },
                 ].map((s) => (
                   <div key={s.label} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm">
@@ -189,16 +245,20 @@ const Dashboard = () => {
                 ))}
               </div>
 
-              <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {/* Preview first 4 days */}
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 {weekMenu.slice(0, 4).map((d, i) => (
                   <div key={d.day} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-bold uppercase tracking-wider text-primary">{d.day}</span>
                       <span className="text-[10px] text-muted-foreground">{d.cal}</span>
                     </div>
-                    <MealCard day={d.day} meal={d.pranzo} label="Pranzo" dayIndex={i} />
-                    <div className="mt-2">
-                      <MealCard day={d.day} meal={d.cena} label="Cena" dayIndex={i} />
+                    <MealCard day={d.day} meal={d.colazione} label="Colazione" dayIndex={i} mealType="colazione" />
+                    <div className="mt-2 pt-2 border-t border-border/30">
+                      <MealCard day={d.day} meal={d.pranzo} label="Pranzo" dayIndex={i} mealType="pranzo" />
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-border/30">
+                      <MealCard day={d.day} meal={d.cena} label="Cena" dayIndex={i} mealType="cena" />
                     </div>
                   </div>
                 ))}
@@ -206,7 +266,7 @@ const Dashboard = () => {
 
               <div className="mt-4 text-center">
                 <Button variant="ghost" size="sm" onClick={() => setActiveSection("menu")} className="text-accent gap-1">
-                  Vedi tutti i giorni <ChevronRight className="h-4 w-4" />
+                  Vedi tutti i 7 giorni <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -215,16 +275,18 @@ const Dashboard = () => {
           {activeSection === "menu" && (
             <div className="max-w-5xl animate-fade-in">
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h1 className="text-xl font-bold text-foreground md:text-2xl">Menù settimanale</h1>
+                <h1 className="text-xl font-bold text-foreground md:text-2xl">Menù settimanale completo</h1>
                 {dietLabel && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                    <ShieldCheck className="h-3 w-3" />
-                    {dietLabel}
+                    <ShieldCheck className="h-3 w-3" />{dietLabel}
                   </span>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground mb-4">Clicca su un pasto per la ricetta AI. Tieni premuto per sostituire un ingrediente.</p>
-              <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <p className="text-sm text-muted-foreground mb-4">21 pasti (colazione, pranzo, cena) · Clicca per la ricetta AI</p>
+
+              <OptimizationSection />
+
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {weekMenu.map((d, i) => (
                   <div key={d.day} className="rounded-xl border border-border/60 bg-card p-3 md:p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                     <div className="flex items-center justify-between mb-2">
@@ -234,9 +296,12 @@ const Dashboard = () => {
                         <div className="text-[9px] text-muted-foreground">P:{d.protein}g C:{d.carbs}g F:{d.fat}g</div>
                       </div>
                     </div>
-                    <MealCard day={d.day} meal={d.pranzo} label="Pranzo" dayIndex={i} />
-                    <div className="mt-2">
-                      <MealCard day={d.day} meal={d.cena} label="Cena" dayIndex={i} />
+                    <MealCard day={d.day} meal={d.colazione} label="Colazione" dayIndex={i} mealType="colazione" />
+                    <div className="mt-2 pt-2 border-t border-border/30">
+                      <MealCard day={d.day} meal={d.pranzo} label="Pranzo" dayIndex={i} mealType="pranzo" />
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-border/30">
+                      <MealCard day={d.day} meal={d.cena} label="Cena" dayIndex={i} mealType="cena" />
                     </div>
                   </div>
                 ))}
@@ -269,10 +334,7 @@ const Dashboard = () => {
                 <DietUpload />
               </div>
               <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
-                <SchisciaMode
-                  enabled={schisciaEnabled}
-                  onToggle={(v) => updateProfile({ schisciaMode: v })}
-                />
+                <SchisciaMode enabled={schisciaEnabled} onToggle={(v) => updateProfile({ schisciaMode: v })} />
               </div>
             </div>
           )}
@@ -282,10 +344,7 @@ const Dashboard = () => {
       {swapIngredient && (
         <IngredientSwap
           ingredient={swapIngredient}
-          onSwap={(newIng) => {
-            console.log("Swapped to:", newIng);
-            setSwapIngredient(null);
-          }}
+          onSwap={(newIng) => { console.log("Swapped to:", newIng); setSwapIngredient(null); }}
           onClose={() => setSwapIngredient(null)}
         />
       )}

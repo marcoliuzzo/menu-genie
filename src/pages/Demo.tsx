@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Sparkles, Film, Dumbbell, Wine, Users, PartyPopper,
-  ArrowRight, Loader2, Repeat, ShieldCheck,
+  ArrowRight, Loader2, Repeat, ShieldCheck, Sliders,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -67,6 +67,7 @@ const Demo = () => {
   const [selectedAllergies, setSelectedAllergies] = useState<string[]>([]);
   const [budget, setBudget] = useState([60]);
   const [timeMode, setTimeMode] = useState<"rapido" | "elaborato">("rapido");
+  const [moodWeight, setMoodWeight] = useState([0.5]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [selectedOccasion, setSelectedOccasion] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -91,13 +92,13 @@ const Demo = () => {
   };
 
   const handleGoToDashboard = () => {
-    // Sync demo selections to global profile
     updateProfile({
       diet: diet.toLowerCase(),
       allergies: selectedAllergies,
-      budget: budget[0],
+      weeklyBudget: budget[0],
       cookingTime: timeMode === "rapido" ? "20" : "45",
       mood: selectedMood || "",
+      moodWeight: moodWeight[0],
       schisciaMode: schisciaEnabled,
     });
     navigate("/dashboard");
@@ -124,6 +125,8 @@ const Demo = () => {
     return labels[diet] || "";
   };
 
+  const moodWeightLabel = moodWeight[0] < 0.3 ? "Basso → priorità dieta/budget" : moodWeight[0] > 0.7 ? "Alto → il mood guida le ricette" : "Bilanciato";
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -139,7 +142,7 @@ const Demo = () => {
               Prova <span className="gradient-primary-text">Spesa Smart</span>
             </h1>
             <p className="mt-2 text-sm text-muted-foreground md:mt-3 md:text-base">
-              Configura il tuo profilo e seleziona un mood per vedere il piano generato.
+              Configura il tuo profilo e seleziona un mood per vedere il piano settimanale con 21 pasti.
             </p>
           </div>
 
@@ -208,6 +211,7 @@ const Demo = () => {
             <DietUpload />
           </div>
 
+          {/* Schiscia Mode */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
@@ -226,7 +230,19 @@ const Demo = () => {
           {/* MOOD SELECTOR */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground mb-2">Come ti vuoi sentire questa settimana?</h2>
-            <p className="text-sm text-muted-foreground mb-4 md:mb-6">Seleziona un mood e un'occasione. L'AI adatterà tutto per te.</p>
+            <p className="text-sm text-muted-foreground mb-4 md:mb-6">Seleziona un mood. L'AI adatterà le 21 ricette per te.</p>
+
+            {/* Mood Weight Slider */}
+            <div className="mb-4 rounded-xl border border-border/40 bg-secondary/20 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sliders className="h-4 w-4 text-accent" />
+                <label className="text-sm font-medium text-foreground">
+                  Peso del mood: <span className="text-accent">{Math.round(moodWeight[0] * 100)}%</span>
+                </label>
+              </div>
+              <Slider value={moodWeight} onValueChange={setMoodWeight} min={0} max={1} step={0.1} className="mt-2" />
+              <p className="text-xs text-muted-foreground mt-1">{moodWeightLabel}</p>
+            </div>
 
             <div className="flex flex-wrap gap-2 md:gap-3">
               {moods.map((m) => (
@@ -254,11 +270,11 @@ const Demo = () => {
               <div className="mt-8 flex flex-col items-center gap-3 animate-fade-in">
                 <Loader2 className="h-8 w-8 text-accent animate-spin" />
                 <p className="text-sm font-medium text-accent">
-                  L'AI sta creando il tuo piano {diet !== "Onnivoro" ? `(${diet})` : ""}…
+                  L'AI sta creando il tuo piano di 21 pasti {diet !== "Onnivoro" ? `(${diet})` : ""}…
                 </p>
                 {(diet !== "Onnivoro" || selectedAllergies.length > 0) && (
                   <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <ShieldCheck className="h-3 w-3" />Applicando vincoli dietetici e allergie
+                    <ShieldCheck className="h-3 w-3" />Applicando vincoli: allergie → dieta → budget → mood ({Math.round(moodWeight[0]*100)}%)
                   </p>
                 )}
               </div>
@@ -268,7 +284,7 @@ const Demo = () => {
               <div className="mt-6 animate-fade-in">
                 <p className="mb-1 text-sm font-medium text-primary flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5" />
-                  Piano generato per mood: {selectedMood}
+                  Anteprima piano — Mood: {selectedMood}
                   {selectedOccasion && ` — ${selectedOccasion}`}
                 </p>
                 {(diet !== "Onnivoro" || selectedAllergies.length > 0) && (
@@ -301,9 +317,12 @@ const Demo = () => {
                     );
                   })}
                 </div>
-                <div className="mt-6 text-center">
+                <p className="mt-3 text-xs text-muted-foreground text-center">
+                  Anteprima di 3 giorni su 7 · Il piano completo con colazione sarà nella dashboard
+                </p>
+                <div className="mt-4 text-center">
                   <Button className="rounded-full bg-accent px-8 text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-200 hover:scale-105" onClick={handleGoToDashboard}>
-                    Vai alla dashboard
+                    Vai alla dashboard (21 pasti)
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
