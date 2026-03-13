@@ -2,11 +2,12 @@ export interface UserProfile {
   diet: string;
   allergies: string[];
   goals: string[];
-  budget: number;
+  weeklyBudget: number;
   cookingTime: string;
   pantry: string[];
   energy: number;
   mood: string;
+  moodWeight: number; // 0-1, how much mood influences recipes
   equipment: string[];
   cap: string;
   preferredSupermarkets: string[];
@@ -83,4 +84,40 @@ export interface SupermarketComparison {
   itemCount: number;
   promotionCount: number;
   items: { ingredient: string; product: string; brand: string; price: number; onPromotion: boolean }[];
+}
+
+// ── Meal Plan Types ──
+
+export interface MealExplain {
+  dietMatch: boolean;
+  pantryIngredients: string[];
+  reusedIngredients: string[];
+  onSaleIngredients: string[];
+  prepTime: number;
+}
+
+export interface FullDayMenu {
+  day: string;
+  colazione: string;
+  pranzo: string;
+  cena: string;
+  tempo: string;
+  cal: string;
+  calNum: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  explain: {
+    colazione: MealExplain;
+    pranzo: MealExplain;
+    cena: MealExplain;
+  };
+}
+
+export interface WeekOptimization {
+  reusedIngredients: { name: string; meals: string[] }[];
+  pantryUsed: string[];
+  estimatedWeeklyCost: number;
+  budgetRespected: boolean;
+  totalMeals: number;
 }

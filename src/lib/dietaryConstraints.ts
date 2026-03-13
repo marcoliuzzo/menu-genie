@@ -1,35 +1,26 @@
 /**
- * Dietary Constraints Engine
- * Validates recipes and ingredients against user diet and allergy preferences.
+ * Dietary Constraints Engine (Nutrition Engine)
+ * Generates 21-meal weekly plans (colazione/pranzo/cena × 7)
+ * with diet validation, allergy filtering, ingredient reuse optimization,
+ * mood influence, cooking time constraints, and explainable AI tags.
  */
+
+import { FullDayMenu, MealExplain } from "@/types";
 
 // ── Ingredient Classification ──
 
 export type IngredientCategory =
-  | "animal_protein"
-  | "fish"
-  | "seafood"
-  | "dairy"
-  | "eggs"
-  | "vegetables"
-  | "fruits"
-  | "legumes"
-  | "grains"
-  | "low_carb"
-  | "plant_protein"
-  | "nuts"
-  | "condiments"
-  | "sweeteners"
-  | "processed";
+  | "animal_protein" | "fish" | "seafood" | "dairy" | "eggs"
+  | "vegetables" | "fruits" | "legumes" | "grains" | "low_carb"
+  | "plant_protein" | "nuts" | "condiments" | "sweeteners" | "processed";
 
 export interface ClassifiedIngredient {
   name: string;
   category: IngredientCategory;
-  allergens: string[]; // e.g. ["glutine","lattosio"]
+  allergens: string[];
   isHighCarb?: boolean;
 }
 
-// Comprehensive ingredient database with Italian names
 export const ingredientDatabase: ClassifiedIngredient[] = [
   // Animal protein
   { name: "pollo", category: "animal_protein", allergens: [] },
@@ -49,7 +40,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "agnello", category: "animal_protein", allergens: [] },
   { name: "coniglio", category: "animal_protein", allergens: [] },
   { name: "tacchino", category: "animal_protein", allergens: [] },
-
   // Fish
   { name: "salmone", category: "fish", allergens: ["pesce"] },
   { name: "tonno", category: "fish", allergens: ["pesce"] },
@@ -63,7 +53,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "sardine", category: "fish", allergens: ["pesce"] },
   { name: "baccalà", category: "fish", allergens: ["pesce"] },
   { name: "trota", category: "fish", allergens: ["pesce"] },
-
   // Seafood
   { name: "gamberi", category: "seafood", allergens: ["crostacei"] },
   { name: "gamberetti", category: "seafood", allergens: ["crostacei"] },
@@ -73,7 +62,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "polpo", category: "seafood", allergens: ["crostacei"] },
   { name: "aragosta", category: "seafood", allergens: ["crostacei"] },
   { name: "crostacei", category: "seafood", allergens: ["crostacei"] },
-
   // Dairy
   { name: "latte", category: "dairy", allergens: ["lattosio"] },
   { name: "burro", category: "dairy", allergens: ["lattosio"] },
@@ -94,14 +82,12 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "taleggio", category: "dairy", allergens: ["lattosio"] },
   { name: "fontina", category: "dairy", allergens: ["lattosio"] },
   { name: "crescenza", category: "dairy", allergens: ["lattosio"] },
-
   // Eggs
   { name: "uova", category: "eggs", allergens: ["uova"] },
   { name: "uovo", category: "eggs", allergens: ["uova"] },
   { name: "frittata", category: "eggs", allergens: ["uova"] },
   { name: "omelette", category: "eggs", allergens: ["uova"] },
-
-  // Grains (high carb)
+  // Grains
   { name: "pasta", category: "grains", allergens: ["glutine"], isHighCarb: true },
   { name: "penne", category: "grains", allergens: ["glutine"], isHighCarb: true },
   { name: "spaghetti", category: "grains", allergens: ["glutine"], isHighCarb: true },
@@ -124,7 +110,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "patate", category: "grains", allergens: [], isHighCarb: true },
   { name: "piadine", category: "grains", allergens: ["glutine"], isHighCarb: true },
   { name: "wrap", category: "grains", allergens: ["glutine"], isHighCarb: true },
-
   // Legumes
   { name: "ceci", category: "legumes", allergens: [] },
   { name: "lenticchie", category: "legumes", allergens: [] },
@@ -134,12 +119,10 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "edamame", category: "legumes", allergens: ["soia"] },
   { name: "hummus", category: "legumes", allergens: [] },
   { name: "legumi", category: "legumes", allergens: [] },
-
   // Plant protein
   { name: "tofu", category: "plant_protein", allergens: ["soia"] },
   { name: "tempeh", category: "plant_protein", allergens: ["soia"] },
   { name: "seitan", category: "plant_protein", allergens: ["glutine"] },
-
   // Vegetables
   { name: "zucchine", category: "vegetables", allergens: [] },
   { name: "spinaci", category: "vegetables", allergens: [] },
@@ -159,7 +142,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "aglio", category: "vegetables", allergens: [] },
   { name: "sedano", category: "vegetables", allergens: [] },
   { name: "cavolo", category: "vegetables", allergens: [] },
-
   // Fruits
   { name: "mela", category: "fruits", allergens: [] },
   { name: "banana", category: "fruits", allergens: [] },
@@ -168,7 +150,7 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "fragole", category: "fruits", allergens: [] },
   { name: "agrumi", category: "fruits", allergens: [] },
   { name: "frutta", category: "fruits", allergens: [] },
-
+  { name: "mirtilli", category: "fruits", allergens: [] },
   // Nuts
   { name: "noci", category: "nuts", allergens: ["frutta a guscio"] },
   { name: "mandorle", category: "nuts", allergens: ["frutta a guscio"] },
@@ -178,7 +160,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "arachidi", category: "nuts", allergens: ["arachidi", "frutta a guscio"] },
   { name: "anacardi", category: "nuts", allergens: ["frutta a guscio"] },
   { name: "frutta secca", category: "nuts", allergens: ["frutta a guscio"] },
-
   // Condiments
   { name: "olio", category: "condiments", allergens: [] },
   { name: "olio extravergine", category: "condiments", allergens: [] },
@@ -188,8 +169,6 @@ export const ingredientDatabase: ClassifiedIngredient[] = [
   { name: "tahina", category: "condiments", allergens: ["sesamo"] },
   { name: "sesamo", category: "condiments", allergens: ["sesamo"] },
   { name: "miele", category: "sweeteners", allergens: [] },
-
-  // Soy
   { name: "soia", category: "plant_protein", allergens: ["soia"] },
   { name: "latte di soia", category: "plant_protein", allergens: ["soia"] },
 ];
@@ -201,7 +180,7 @@ export type DietType = "onnivoro" | "vegetariano" | "vegano" | "pescetariano" | 
 interface DietRule {
   forbiddenCategories: IngredientCategory[];
   forbiddenKeywords: string[];
-  restrictedCategories?: IngredientCategory[]; // for keto: limit but not fully ban
+  restrictedCategories?: IngredientCategory[];
   preferredCategories?: IngredientCategory[];
   description: string;
 }
@@ -249,7 +228,7 @@ export const dietRules: Record<string, DietRule> = {
       "riso", "risotto", "pane", "pizza", "focaccia", "gnocchi",
       "patate", "polenta", "couscous", "farro", "orzo",
       "bruschette", "crostini", "piadine", "wrap",
-      "zucchero", "miele", "marmellata",
+      "zucchero", "miele", "marmellata", "cereali", "granola", "muesli", "cornetto", "biscotti",
     ],
     restrictedCategories: ["grains"],
     preferredCategories: ["vegetables", "fish", "eggs", "dairy", "nuts", "animal_protein"],
@@ -281,15 +260,17 @@ export const allergyKeywords: Record<string, string[]> = {
     "pasta", "penne", "spaghetti", "tagliatelle", "fusilli", "lasagna", "gnocchi",
     "pane", "pizza", "focaccia", "farro", "orzo", "couscous", "seitan",
     "bruschette", "crostini", "piadine", "wrap", "salsa di soia",
+    "cornetto", "biscotti", "cereali", "granola", "muesli", "fette biscottate",
   ],
   lattosio: [
     "latte", "burro", "parmigiano", "mozzarella", "ricotta", "gorgonzola", "pecorino",
     "formaggio", "formaggi", "yogurt", "panna", "mascarpone", "stracchino", "burrata",
     "scamorza", "provolone", "taleggio", "fontina", "crescenza", "pesto",
+    "cappuccino", "latte macchiato",
   ],
   uova: ["uova", "uovo", "frittata", "omelette"],
   "frutta a guscio": [
-    "noci", "mandorle", "nocciole", "pistacchi", "pinoli", "anacardi", "frutta secca", "pesto",
+    "noci", "mandorle", "nocciole", "pistacchi", "pinoli", "anacardi", "frutta secca", "pesto", "granola",
   ],
   crostacei: ["gamberi", "gamberetti", "cozze", "vongole", "calamari", "polpo", "aragosta", "crostacei"],
   pesce: [
@@ -301,12 +282,8 @@ export const allergyKeywords: Record<string, string[]> = {
   arachidi: ["arachidi"],
 };
 
-// ── Validation Engine ──
+// ── Validation ──
 
-/**
- * Checks if a recipe name contains forbidden ingredients for a diet + allergy combo.
- * Returns { valid, violations[] }
- */
 export function validateRecipeName(
   recipeName: string,
   dietType: string,
@@ -314,19 +291,15 @@ export function validateRecipeName(
 ): { valid: boolean; violations: string[] } {
   const violations: string[] = [];
   const lowerName = recipeName.toLowerCase();
-
-  // Check diet rules
   const rules = dietRules[dietType.toLowerCase()] || dietRules.onnivoro;
+  
   for (const keyword of rules.forbiddenKeywords) {
     if (lowerName.includes(keyword.toLowerCase())) {
-      violations.push(`"${keyword}" non è compatibile con dieta ${dietType}`);
+      violations.push(`"${keyword}" non compatibile con dieta ${dietType}`);
     }
   }
-
-  // Check allergies
   for (const allergy of allergies) {
-    const allergyLower = allergy.toLowerCase();
-    const keywords = allergyKeywords[allergyLower];
+    const keywords = allergyKeywords[allergy.toLowerCase()];
     if (keywords) {
       for (const keyword of keywords) {
         if (lowerName.includes(keyword.toLowerCase())) {
@@ -335,13 +308,9 @@ export function validateRecipeName(
       }
     }
   }
-
   return { valid: violations.length === 0, violations };
 }
 
-/**
- * Validates a full ingredient list
- */
 export function validateIngredients(
   ingredients: string[],
   dietType: string,
@@ -349,144 +318,73 @@ export function validateIngredients(
 ): { valid: boolean; violations: string[] } {
   const violations: string[] = [];
   const rules = dietRules[dietType.toLowerCase()] || dietRules.onnivoro;
-
   for (const ingredient of ingredients) {
     const lower = ingredient.toLowerCase();
-
-    // Diet check
     for (const keyword of rules.forbiddenKeywords) {
       if (lower.includes(keyword.toLowerCase())) {
-        violations.push(`Ingrediente "${ingredient}" non compatibile con dieta ${dietType}`);
+        violations.push(`"${ingredient}" non compatibile con dieta ${dietType}`);
       }
     }
-
-    // Allergy check
     for (const allergy of allergies) {
-      const allergyLower = allergy.toLowerCase();
-      const keywords = allergyKeywords[allergyLower];
+      const keywords = allergyKeywords[allergy.toLowerCase()];
       if (keywords) {
         for (const keyword of keywords) {
           if (lower.includes(keyword.toLowerCase())) {
-            violations.push(`Ingrediente "${ingredient}" contiene allergene: ${allergy}`);
+            violations.push(`"${ingredient}" contiene allergene: ${allergy}`);
           }
         }
       }
     }
   }
-
-  return { valid: violations.length === 0, violations };
-}
-
-/**
- * Validates a complete meal plan
- */
-export function validateMealPlan(
-  weeklyMenu: Array<{ day: string; lunch: { name: string }; dinner: { name: string } }>,
-  dietType: string,
-  allergies: string[]
-): { valid: boolean; violations: Array<{ day: string; meal: string; issues: string[] }> } {
-  const violations: Array<{ day: string; meal: string; issues: string[] }> = [];
-
-  for (const day of weeklyMenu) {
-    const lunchCheck = validateRecipeName(day.lunch.name, dietType, allergies);
-    if (!lunchCheck.valid) {
-      violations.push({ day: day.day, meal: day.lunch.name, issues: lunchCheck.violations });
-    }
-
-    const dinnerCheck = validateRecipeName(day.dinner.name, dietType, allergies);
-    if (!dinnerCheck.valid) {
-      violations.push({ day: day.day, meal: day.dinner.name, issues: dinnerCheck.violations });
-    }
-  }
-
   return { valid: violations.length === 0, violations };
 }
 
 // ── AI Prompt Builder ──
 
-/**
- * Generates strict dietary constraint instructions for AI prompts
- */
-export function buildDietaryPromptConstraints(
-  dietType: string,
-  allergies: string[]
-): string {
+export function buildDietaryPromptConstraints(dietType: string, allergies: string[]): string {
   const rules = dietRules[dietType.toLowerCase()];
   if (!rules) return "";
-
   let prompt = "";
-
-  // Diet constraints
   if (rules.forbiddenKeywords.length > 0) {
     prompt += `\n\nVINCOLI DIETETICI OBBLIGATORI (dieta: ${dietType}):`;
-    prompt += `\n- VIETATO usare questi ingredienti: ${rules.forbiddenKeywords.join(", ")}`;
+    prompt += `\n- VIETATO usare: ${rules.forbiddenKeywords.join(", ")}`;
     prompt += `\n- ${rules.description}`;
   }
-
-  if (rules.preferredCategories && rules.preferredCategories.length > 0) {
-    const categoryLabels: Record<string, string> = {
-      vegetables: "verdure",
-      fruits: "frutta",
-      legumes: "legumi",
-      grains: "cereali",
-      fish: "pesce",
-      dairy: "latticini",
-      eggs: "uova",
+  if (rules.preferredCategories?.length) {
+    const labels: Record<string, string> = {
+      vegetables: "verdure", fruits: "frutta", legumes: "legumi", grains: "cereali",
+      fish: "pesce", dairy: "latticini", eggs: "uova",
       plant_protein: "proteine vegetali (tofu, tempeh, seitan)",
-      nuts: "frutta secca",
-      animal_protein: "carne",
-      condiments: "condimenti",
-      low_carb: "verdure low-carb",
+      nuts: "frutta secca", animal_protein: "carne", condiments: "condimenti",
     };
-    const preferred = rules.preferredCategories.map(c => categoryLabels[c] || c).join(", ");
-    prompt += `\n- PRIVILEGIA questi ingredienti: ${preferred}`;
+    prompt += `\n- PRIVILEGIA: ${rules.preferredCategories.map(c => labels[c] || c).join(", ")}`;
   }
-
   if (dietType.toLowerCase() === "keto") {
-    prompt += `\n- Le ricette DEVONO essere low-carb (< 20g carbs per porzione)`;
     prompt += `\n- VIETATO: pasta, riso, pane, patate, pizza, cereali, zuccheri`;
-    prompt += `\n- CONSIGLIATO: avocado, uova, carne, pesce, formaggi, olio, burro, verdure low-carb (zucchine, spinaci, broccoli, cavolfiore)`;
+    prompt += `\n- CONSIGLIATO: avocado, uova, carne, pesce, formaggi, verdure low-carb`;
   }
-
   if (dietType.toLowerCase() === "mediterraneo") {
-    prompt += `\n- Le ricette DEVONO seguire la dieta mediterranea tradizionale`;
-    prompt += `\n- PRIVILEGIA: verdure, frutta, legumi, pesce, olio extravergine di oliva, cereali integrali, frutta secca`;
-    prompt += `\n- LIMITA: carni rosse, cibi ultra-processati, zuccheri raffinati`;
+    prompt += `\n- PRIVILEGIA: verdure, frutta, legumi, pesce, olio EVO, cereali integrali`;
+    prompt += `\n- LIMITA: carni rosse, cibi ultra-processati`;
   }
-
-  // Allergy constraints
   if (allergies.length > 0) {
-    prompt += `\n\nALLERGIE/INTOLLERANZE DELL'UTENTE:`;
-    for (const allergy of allergies) {
-      const keywords = allergyKeywords[allergy.toLowerCase()];
-      if (keywords) {
-        prompt += `\n- ALLERGIA ${allergy.toUpperCase()}: VIETATO usare ${keywords.join(", ")}`;
-      }
+    prompt += `\n\nALLERGIE:`;
+    for (const a of allergies) {
+      const kw = allergyKeywords[a.toLowerCase()];
+      if (kw) prompt += `\n- ${a.toUpperCase()}: VIETATO ${kw.join(", ")}`;
     }
-    prompt += `\n- NON includere MAI ingredienti che contengono questi allergeni, nemmeno come ingredienti secondari.`;
   }
-
-  // Combined check for vegetariano + lattosio
-  if (dietType.toLowerCase() === "vegetariano" && allergies.some(a => a.toLowerCase() === "lattosio")) {
-    prompt += `\n\nATTENZIONE SPECIALE: L'utente è vegetariano CON intolleranza al lattosio.`;
-    prompt += `\n- VIETATO: carne, pesce, E ANCHE tutti i latticini (formaggi, latte, burro, panna, yogurt, pesto tradizionale)`;
-    prompt += `\n- USA alternative vegetali: latte vegetale, burro vegetale, pesto senza parmigiano`;
-  }
-
   if (dietType.toLowerCase() === "vegano") {
-    prompt += `\n\nATTENZIONE: Dieta VEGANA significa ZERO ingredienti animali.`;
-    prompt += `\n- ZERO carne, pesce, latticini, uova, miele`;
-    prompt += `\n- USA SOLO: verdure, frutta, legumi, cereali, tofu, tempeh, seitan, frutta secca, latte vegetale`;
+    prompt += `\n\nDIETA VEGANA: ZERO ingredienti animali.`;
   }
-
-  prompt += `\n\nOGNI ricetta generata DEVE rispettare TUTTI i vincoli sopra. Se non puoi rispettare un vincolo, NON generare quella ricetta.`;
-
+  prompt += `\n\nOGNI ricetta DEVE rispettare TUTTI i vincoli.`;
   return prompt;
 }
 
-// ── Diet-Aware Mock Menu Generator ──
+// ── 21-Meal Plan Generator ──
 
-interface MockMeal {
+interface RawMeal {
+  colazione: string;
   pranzo: string;
   cena: string;
   tempo: string;
@@ -497,111 +395,238 @@ interface MockMeal {
   fat: number;
 }
 
-const veganMeals: MockMeal[] = [
-  { pranzo: "Bowl di quinoa con ceci e avocado", cena: "Curry di lenticchie con riso basmati", tempo: "25 min", cal: "1380 kcal", calNum: 1380, protein: 48, carbs: 195, fat: 42 },
-  { pranzo: "Insalata di farro e verdure grigliate", cena: "Vellutata di zucca con crostini", tempo: "20 min", cal: "1320 kcal", calNum: 1320, protein: 40, carbs: 200, fat: 38 },
-  { pranzo: "Pasta al pomodoro fresco e basilico", cena: "Zuppa di legumi misti", tempo: "20 min", cal: "1350 kcal", calNum: 1350, protein: 45, carbs: 190, fat: 40 },
-  { pranzo: "Couscous con verdure e hummus", cena: "Tofu saltato con broccoli e sesamo", tempo: "20 min", cal: "1400 kcal", calNum: 1400, protein: 52, carbs: 175, fat: 48 },
-  { pranzo: "Riso integrale con fagioli neri", cena: "Melanzane alla parmigiana vegana", tempo: "25 min", cal: "1360 kcal", calNum: 1360, protein: 42, carbs: 198, fat: 39 },
-  { pranzo: "Wrap di verdure con hummus", cena: "Minestrone con legumi e verdure", tempo: "15 min", cal: "1300 kcal", calNum: 1300, protein: 38, carbs: 188, fat: 36 },
-  { pranzo: "Polpette di ceci con insalata", cena: "Pasta e fagioli", tempo: "25 min", cal: "1420 kcal", calNum: 1420, protein: 50, carbs: 195, fat: 44 },
-];
+// Breakfast pools per diet
+const breakfasts: Record<string, string[]> = {
+  vegano: [
+    "Porridge di avena con banana e noci",
+    "Smoothie bowl con frutti di bosco e granola",
+    "Toast integrale con avocado e pomodorini",
+    "Pancake di banana e avena",
+    "Frullato proteico con latte di mandorla",
+    "Budino di chia con frutta fresca",
+    "Muesli con latte di cocco e mirtilli",
+  ],
+  vegetariano: [
+    "Yogurt greco con miele e noci",
+    "Toast con ricotta e marmellata",
+    "Pancake con mirtilli e sciroppo d'acero",
+    "Uova strapazzate con pane tostato",
+    "Porridge con mela e cannella",
+    "Cappuccino e cornetto integrale",
+    "Frullato di banana e yogurt",
+  ],
+  keto: [
+    "Uova strapazzate con avocado",
+    "Omelette con spinaci e formaggio",
+    "Yogurt greco intero con noci",
+    "Pancake proteici con burro di mandorle",
+    "Uova al tegamino con pancetta",
+    "Smoothie con avocado e cacao",
+    "Frittata di verdure low-carb",
+  ],
+  mediterraneo: [
+    "Yogurt greco con miele e noci",
+    "Pane integrale con olio EVO e pomodorini",
+    "Frutta fresca con mandorle",
+    "Fette biscottate con marmellata di agrumi",
+    "Porridge di avena con fichi e noci",
+    "Spremuta d'arancia e fette con ricotta",
+    "Muesli integrale con frutta secca",
+  ],
+  onnivoro: [
+    "Cappuccino e cornetto",
+    "Yogurt con cereali e frutta",
+    "Toast con prosciutto e formaggio",
+    "Uova strapazzate con pane tostato",
+    "Porridge con banana e miele",
+    "Pancake con sciroppo d'acero",
+    "Frullato di frutta e yogurt",
+  ],
+};
 
-const vegetarianMeals: MockMeal[] = [
-  { pranzo: "Risotto alle zucchine e menta", cena: "Frittata di verdure al forno", tempo: "25 min", cal: "1420 kcal", calNum: 1420, protein: 52, carbs: 185, fat: 50 },
-  { pranzo: "Pasta al pesto di basilico", cena: "Insalata caprese con pane integrale", tempo: "20 min", cal: "1380 kcal", calNum: 1380, protein: 48, carbs: 178, fat: 52 },
-  { pranzo: "Gnocchi al pomodoro", cena: "Vellutata di carote e zenzero", tempo: "20 min", cal: "1350 kcal", calNum: 1350, protein: 42, carbs: 195, fat: 40 },
-  { pranzo: "Penne integrali con broccoli", cena: "Pizza margherita fatta in casa", tempo: "30 min", cal: "1500 kcal", calNum: 1500, protein: 55, carbs: 200, fat: 48 },
-  { pranzo: "Insalata di farro con verdure", cena: "Lasagna vegetariana", tempo: "40 min", cal: "1550 kcal", calNum: 1550, protein: 58, carbs: 198, fat: 55 },
-  { pranzo: "Bowl di riso e ceci", cena: "Omelette con verdure di stagione", tempo: "15 min", cal: "1320 kcal", calNum: 1320, protein: 50, carbs: 170, fat: 46 },
-  { pranzo: "Bruschette con pomodoro e basilico", cena: "Zuppa di lenticchie", tempo: "20 min", cal: "1350 kcal", calNum: 1350, protein: 46, carbs: 188, fat: 42 },
-];
+const getMealPool = (diet: string, allergies: string[]): RawMeal[] => {
+  const hasLactose = allergies.some(a => a.toLowerCase() === "lattosio");
+  const hasGluten = allergies.some(a => a.toLowerCase() === "glutine");
 
-const vegetarianLactoseFreeMeals: MockMeal[] = [
-  { pranzo: "Pasta al pomodoro fresco e basilico", cena: "Zuppa di lenticchie con crostini", tempo: "20 min", cal: "1350 kcal", calNum: 1350, protein: 45, carbs: 195, fat: 38 },
-  { pranzo: "Riso con verdure saltate", cena: "Frittata di verdure (senza latticini)", tempo: "20 min", cal: "1380 kcal", calNum: 1380, protein: 48, carbs: 180, fat: 44 },
-  { pranzo: "Insalata di quinoa e ceci", cena: "Vellutata di zucca", tempo: "20 min", cal: "1320 kcal", calNum: 1320, protein: 42, carbs: 190, fat: 36 },
-  { pranzo: "Couscous con verdure grigliate", cena: "Polpette di lenticchie", tempo: "25 min", cal: "1400 kcal", calNum: 1400, protein: 50, carbs: 192, fat: 42 },
-  { pranzo: "Farro con pomodorini e olive", cena: "Minestrone ricco", tempo: "20 min", cal: "1300 kcal", calNum: 1300, protein: 40, carbs: 188, fat: 35 },
-  { pranzo: "Pasta e fagioli", cena: "Verdure grigliate con hummus", tempo: "25 min", cal: "1360 kcal", calNum: 1360, protein: 44, carbs: 185, fat: 40 },
-  { pranzo: "Wrap con hummus e verdure", cena: "Zuppa di ceci e spinaci", tempo: "15 min", cal: "1280 kcal", calNum: 1280, protein: 42, carbs: 178, fat: 38 },
-];
+  // Get breakfast pool
+  let bfPool = breakfasts[diet] || breakfasts.onnivoro;
+  // Filter breakfasts by allergies
+  bfPool = bfPool.filter(b => validateRecipeName(b, diet, allergies).valid);
+  if (bfPool.length === 0) bfPool = ["Frutta fresca di stagione"];
 
-const ketoMeals: MockMeal[] = [
-  { pranzo: "Insalata di avocado e uova sode", cena: "Salmone al forno con broccoli", tempo: "25 min", cal: "1450 kcal", calNum: 1450, protein: 70, carbs: 18, fat: 110 },
-  { pranzo: "Petto di pollo con spinaci e formaggio", cena: "Bistecca con verdure grigliate", tempo: "30 min", cal: "1520 kcal", calNum: 1520, protein: 85, carbs: 15, fat: 115 },
-  { pranzo: "Omelette con zucchine e formaggio", cena: "Merluzzo al burro con cavolfiore", tempo: "20 min", cal: "1400 kcal", calNum: 1400, protein: 72, carbs: 16, fat: 105 },
-  { pranzo: "Insalata greca con feta e olive", cena: "Pollo al forno con peperoni", tempo: "25 min", cal: "1380 kcal", calNum: 1380, protein: 68, carbs: 20, fat: 100 },
-  { pranzo: "Uova strapazzate con avocado", cena: "Tacchino con funghi trifolati", tempo: "15 min", cal: "1350 kcal", calNum: 1350, protein: 65, carbs: 14, fat: 102 },
-  { pranzo: "Carpaccio di zucchine con noci", cena: "Filetto di maiale con spinaci", tempo: "20 min", cal: "1420 kcal", calNum: 1420, protein: 75, carbs: 12, fat: 108 },
-  { pranzo: "Insalata di tonno e avocado", cena: "Pollo alla griglia con insalata", tempo: "20 min", cal: "1480 kcal", calNum: 1480, protein: 80, carbs: 16, fat: 112 },
-];
+  // Get lunch/dinner pool based on diet
+  let lunchDinnerPool: { pranzo: string; cena: string; tempo: string; calNum: number; protein: number; carbs: number; fat: number }[];
 
-const mediterraneanMeals: MockMeal[] = [
-  { pranzo: "Insalata mediterranea con feta e olive", cena: "Orata al forno con patate", tempo: "30 min", cal: "1420 kcal", calNum: 1420, protein: 62, carbs: 170, fat: 52 },
-  { pranzo: "Pasta integrale al pomodoro e basilico", cena: "Branzino al vapore con verdure", tempo: "25 min", cal: "1380 kcal", calNum: 1380, protein: 58, carbs: 180, fat: 45 },
-  { pranzo: "Farro con ceci e verdure grigliate", cena: "Zuppa di pesce alla marinara", tempo: "30 min", cal: "1450 kcal", calNum: 1450, protein: 65, carbs: 175, fat: 48 },
-  { pranzo: "Bruschette con pomodorini e basilico", cena: "Sgombro alla griglia con insalata", tempo: "20 min", cal: "1350 kcal", calNum: 1350, protein: 60, carbs: 165, fat: 50 },
-  { pranzo: "Insalata di farro e legumi", cena: "Salmone con verdure al forno", tempo: "25 min", cal: "1400 kcal", calNum: 1400, protein: 63, carbs: 172, fat: 48 },
-  { pranzo: "Panzanella toscana", cena: "Merluzzo al cartoccio con olive", tempo: "20 min", cal: "1320 kcal", calNum: 1320, protein: 55, carbs: 168, fat: 44 },
-  { pranzo: "Minestrone con pesto leggero", cena: "Sardine al forno con limone", tempo: "25 min", cal: "1360 kcal", calNum: 1360, protein: 58, carbs: 175, fat: 46 },
-];
+  if (diet === "vegano") {
+    lunchDinnerPool = [
+      { pranzo: "Bowl di quinoa con ceci e avocado", cena: "Curry di lenticchie con riso basmati", tempo: "25 min", calNum: 1380, protein: 48, carbs: 195, fat: 42 },
+      { pranzo: "Insalata di farro e verdure grigliate", cena: "Vellutata di zucca con crostini", tempo: "20 min", calNum: 1320, protein: 40, carbs: 200, fat: 38 },
+      { pranzo: "Pasta al pomodoro fresco e basilico", cena: "Zuppa di legumi misti", tempo: "20 min", calNum: 1350, protein: 45, carbs: 190, fat: 40 },
+      { pranzo: "Couscous con verdure e hummus", cena: "Tofu saltato con broccoli", tempo: "20 min", calNum: 1400, protein: 52, carbs: 175, fat: 48 },
+      { pranzo: "Riso integrale con fagioli neri", cena: "Melanzane alla parmigiana vegana", tempo: "25 min", calNum: 1360, protein: 42, carbs: 198, fat: 39 },
+      { pranzo: "Wrap di verdure con hummus", cena: "Minestrone con legumi e verdure", tempo: "15 min", calNum: 1300, protein: 38, carbs: 188, fat: 36 },
+      { pranzo: "Polpette di ceci con insalata", cena: "Pasta e fagioli", tempo: "25 min", calNum: 1420, protein: 50, carbs: 195, fat: 44 },
+    ];
+  } else if (diet === "vegetariano" && hasLactose) {
+    lunchDinnerPool = [
+      { pranzo: "Pasta al pomodoro fresco e basilico", cena: "Zuppa di lenticchie con crostini", tempo: "20 min", calNum: 1350, protein: 45, carbs: 195, fat: 38 },
+      { pranzo: "Riso con verdure saltate", cena: "Frittata di verdure (senza latticini)", tempo: "20 min", calNum: 1380, protein: 48, carbs: 180, fat: 44 },
+      { pranzo: "Insalata di quinoa e ceci", cena: "Vellutata di zucca", tempo: "20 min", calNum: 1320, protein: 42, carbs: 190, fat: 36 },
+      { pranzo: "Couscous con verdure grigliate", cena: "Polpette di lenticchie", tempo: "25 min", calNum: 1400, protein: 50, carbs: 192, fat: 42 },
+      { pranzo: "Farro con pomodorini e olive", cena: "Minestrone ricco", tempo: "20 min", calNum: 1300, protein: 40, carbs: 188, fat: 35 },
+      { pranzo: "Pasta e fagioli", cena: "Verdure grigliate con hummus", tempo: "25 min", calNum: 1360, protein: 44, carbs: 185, fat: 40 },
+      { pranzo: "Wrap con hummus e verdure", cena: "Zuppa di ceci e spinaci", tempo: "15 min", calNum: 1280, protein: 42, carbs: 178, fat: 38 },
+    ];
+  } else if (diet === "vegetariano") {
+    lunchDinnerPool = [
+      { pranzo: "Risotto alle zucchine e menta", cena: "Frittata di verdure al forno", tempo: "25 min", calNum: 1420, protein: 52, carbs: 185, fat: 50 },
+      { pranzo: "Pasta al pesto di basilico", cena: "Insalata caprese con pane integrale", tempo: "20 min", calNum: 1380, protein: 48, carbs: 178, fat: 52 },
+      { pranzo: "Gnocchi al pomodoro", cena: "Vellutata di carote e zenzero", tempo: "20 min", calNum: 1350, protein: 42, carbs: 195, fat: 40 },
+      { pranzo: "Penne integrali con broccoli", cena: "Pizza margherita fatta in casa", tempo: "30 min", calNum: 1500, protein: 55, carbs: 200, fat: 48 },
+      { pranzo: "Insalata di farro con verdure", cena: "Lasagna vegetariana", tempo: "40 min", calNum: 1550, protein: 58, carbs: 198, fat: 55 },
+      { pranzo: "Bowl di riso e ceci", cena: "Omelette con verdure di stagione", tempo: "15 min", calNum: 1320, protein: 50, carbs: 170, fat: 46 },
+      { pranzo: "Bruschette con pomodoro e basilico", cena: "Zuppa di lenticchie", tempo: "20 min", calNum: 1350, protein: 46, carbs: 188, fat: 42 },
+    ];
+  } else if (diet === "keto") {
+    lunchDinnerPool = [
+      { pranzo: "Insalata di avocado e uova sode", cena: "Salmone al forno con broccoli", tempo: "25 min", calNum: 1450, protein: 70, carbs: 18, fat: 110 },
+      { pranzo: "Petto di pollo con spinaci e formaggio", cena: "Bistecca con verdure grigliate", tempo: "30 min", calNum: 1520, protein: 85, carbs: 15, fat: 115 },
+      { pranzo: "Omelette con zucchine e formaggio", cena: "Merluzzo al burro con cavolfiore", tempo: "20 min", calNum: 1400, protein: 72, carbs: 16, fat: 105 },
+      { pranzo: "Insalata greca con feta e olive", cena: "Pollo al forno con peperoni", tempo: "25 min", calNum: 1380, protein: 68, carbs: 20, fat: 100 },
+      { pranzo: "Uova strapazzate con avocado", cena: "Tacchino con funghi trifolati", tempo: "15 min", calNum: 1350, protein: 65, carbs: 14, fat: 102 },
+      { pranzo: "Carpaccio di zucchine con noci", cena: "Filetto di maiale con spinaci", tempo: "20 min", calNum: 1420, protein: 75, carbs: 12, fat: 108 },
+      { pranzo: "Insalata di tonno e avocado", cena: "Pollo alla griglia con insalata", tempo: "20 min", calNum: 1480, protein: 80, carbs: 16, fat: 112 },
+    ];
+  } else if (diet === "mediterraneo") {
+    lunchDinnerPool = [
+      { pranzo: "Insalata mediterranea con feta e olive", cena: "Orata al forno con patate", tempo: "30 min", calNum: 1420, protein: 62, carbs: 170, fat: 52 },
+      { pranzo: "Pasta integrale al pomodoro e basilico", cena: "Branzino al vapore con verdure", tempo: "25 min", calNum: 1380, protein: 58, carbs: 180, fat: 45 },
+      { pranzo: "Farro con ceci e verdure grigliate", cena: "Zuppa di pesce alla marinara", tempo: "30 min", calNum: 1450, protein: 65, carbs: 175, fat: 48 },
+      { pranzo: "Bruschette con pomodorini e basilico", cena: "Sgombro alla griglia con insalata", tempo: "20 min", calNum: 1350, protein: 60, carbs: 165, fat: 50 },
+      { pranzo: "Insalata di farro e legumi", cena: "Salmone con verdure al forno", tempo: "25 min", calNum: 1400, protein: 63, carbs: 172, fat: 48 },
+      { pranzo: "Panzanella toscana", cena: "Merluzzo al cartoccio con olive", tempo: "20 min", calNum: 1320, protein: 55, carbs: 168, fat: 44 },
+      { pranzo: "Minestrone con pesto leggero", cena: "Sardine al forno con limone", tempo: "25 min", calNum: 1360, protein: 58, carbs: 175, fat: 46 },
+    ];
+  } else {
+    lunchDinnerPool = [
+      { pranzo: "Bowl proteica con quinoa e pollo", cena: "Salmone al forno con broccoli", tempo: "25 min", calNum: 1450, protein: 65, carbs: 180, fat: 52 },
+      { pranzo: "Insalata di farro e verdure", cena: "Risotto ai funghi porcini", tempo: "30 min", calNum: 1380, protein: 58, carbs: 175, fat: 48 },
+      { pranzo: "Wrap integrale con hummus", cena: "Petto di pollo con spinaci", tempo: "20 min", calNum: 1400, protein: 62, carbs: 170, fat: 50 },
+      { pranzo: "Pasta al pesto di noci", cena: "Frittata di verdure", tempo: "20 min", calNum: 1350, protein: 55, carbs: 185, fat: 46 },
+      { pranzo: "Insalata di ceci e avocado", cena: "Merluzzo al vapore con limone", tempo: "20 min", calNum: 1380, protein: 60, carbs: 168, fat: 50 },
+      { pranzo: "Bruschette miste", cena: "Lasagna tradizionale", tempo: "40 min", calNum: 1600, protein: 60, carbs: 200, fat: 58 },
+      { pranzo: "Pizza fatta in casa", cena: "Zuppa di legumi", tempo: "35 min", calNum: 1480, protein: 63, carbs: 185, fat: 51 },
+    ];
+  }
 
-const defaultMeals: MockMeal[] = [
-  { pranzo: "Bowl proteica con quinoa e pollo", cena: "Salmone al forno con broccoli", tempo: "25 min", cal: "1450 kcal", calNum: 1450, protein: 65, carbs: 180, fat: 52 },
-  { pranzo: "Insalata di farro e verdure", cena: "Risotto ai funghi porcini", tempo: "30 min", cal: "1380 kcal", calNum: 1380, protein: 58, carbs: 175, fat: 48 },
-  { pranzo: "Wrap integrale con hummus", cena: "Petto di pollo con spinaci", tempo: "20 min", cal: "1400 kcal", calNum: 1400, protein: 62, carbs: 170, fat: 50 },
-  { pranzo: "Pasta al pesto di noci", cena: "Frittata di verdure", tempo: "20 min", cal: "1350 kcal", calNum: 1350, protein: 55, carbs: 185, fat: 46 },
-  { pranzo: "Insalata di ceci e avocado", cena: "Merluzzo al vapore con limone", tempo: "20 min", cal: "1380 kcal", calNum: 1380, protein: 60, carbs: 168, fat: 50 },
-  { pranzo: "Bruschette miste", cena: "Lasagna tradizionale", tempo: "40 min", cal: "1600 kcal", calNum: 1600, protein: 60, carbs: 200, fat: 58 },
-  { pranzo: "Pizza fatta in casa", cena: "Zuppa di legumi", tempo: "35 min", cal: "1480 kcal", calNum: 1480, protein: 63, carbs: 185, fat: 51 },
-];
+  // Filter lunch/dinner by allergies
+  lunchDinnerPool = lunchDinnerPool.filter(m =>
+    validateRecipeName(m.pranzo, diet, allergies).valid &&
+    validateRecipeName(m.cena, diet, allergies).valid
+  );
+
+  // Fallback if all filtered out (relax constraints except allergies/diet)
+  if (lunchDinnerPool.length === 0) {
+    lunchDinnerPool = [
+      { pranzo: "Insalata mista di stagione", cena: "Verdure grigliate con olio EVO", tempo: "15 min", calNum: 1100, protein: 30, carbs: 140, fat: 35 },
+    ];
+  }
+
+  // Build 7-day plan reusing ingredients across days
+  return Array.from({ length: 7 }, (_, i) => {
+    const ld = lunchDinnerPool[i % lunchDinnerPool.length];
+    return {
+      colazione: bfPool[i % bfPool.length],
+      pranzo: ld.pranzo,
+      cena: ld.cena,
+      tempo: ld.tempo,
+      cal: `${ld.calNum + 350} kcal`,
+      calNum: ld.calNum + 350,
+      protein: ld.protein + 12,
+      carbs: ld.carbs + 45,
+      fat: ld.fat + 10,
+    };
+  });
+};
+
+// ── Mood modifiers (applied when moodWeight > 0.3) ──
+const moodModifiers: Record<string, { style: string; preferQuick: boolean }> = {
+  Relax: { style: "comfort food leggero", preferQuick: true },
+  Energia: { style: "proteico ed energetico", preferQuick: false },
+  Focus: { style: "brain food ricco di omega-3", preferQuick: true },
+  Romantico: { style: "piatti eleganti e curati", preferQuick: false },
+  Conviviale: { style: "piatti da condivisione abbondanti", preferQuick: false },
+};
 
 const days = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
-export function getDietAwareMenu(dietType: string, allergies: string[]) {
+/**
+ * Main entry: generates 21-meal weekly plan with explainable AI tags
+ */
+export function getDietAwareFullMenu(
+  dietType: string,
+  allergies: string[],
+  mood: string,
+  moodWeight: number,
+  cookingTimeMax: number,
+  pantryNames: string[]
+): FullDayMenu[] {
   const diet = dietType.toLowerCase();
-  const hasLactoseAllergy = allergies.some(a => a.toLowerCase() === "lattosio");
+  const pool = getMealPool(diet, allergies);
 
-  let meals: MockMeal[];
+  // Track ingredient reuse across meals for optimization
+  const allMealNames: string[] = [];
 
-  if (diet === "vegano") {
-    meals = veganMeals;
-  } else if (diet === "vegetariano" && hasLactoseAllergy) {
-    meals = vegetarianLactoseFreeMeals;
-  } else if (diet === "vegetariano") {
-    meals = vegetarianMeals;
-  } else if (diet === "keto") {
-    meals = ketoMeals;
-  } else if (diet === "mediterraneo") {
-    meals = mediterraneanMeals;
-  } else {
-    meals = defaultMeals;
-  }
-
-  // Final validation pass: filter out any meals with violations
   return days.map((day, i) => {
-    const meal = meals[i % meals.length];
-    const lunchCheck = validateRecipeName(meal.pranzo, dietType, allergies);
-    const dinnerCheck = validateRecipeName(meal.cena, dietType, allergies);
+    const raw = pool[i];
+    allMealNames.push(raw.colazione, raw.pranzo, raw.cena);
 
-    // If validation fails, try to find a safe alternative
-    let safeMeal = { ...meal };
-    if (!lunchCheck.valid) {
-      const alt = meals.find(m => validateRecipeName(m.pranzo, dietType, allergies).valid);
-      if (alt) safeMeal.pranzo = alt.pranzo;
-    }
-    if (!dinnerCheck.valid) {
-      const alt = meals.find(m => validateRecipeName(m.cena, dietType, allergies).valid);
-      if (alt) safeMeal.cena = alt.cena;
-    }
+    const buildExplain = (mealName: string): MealExplain => {
+      const lower = mealName.toLowerCase();
+      const pantryHits = pantryNames.filter(p => lower.includes(p.split(" ")[0].toLowerCase()));
+      const reusedAcross = allMealNames
+        .filter(m => m !== mealName)
+        .some(m => {
+          const mLower = m.toLowerCase();
+          return ["pomodor", "spinaci", "zucchine", "ceci", "avocado", "riso", "pasta", "quinoa"]
+            .some(ing => lower.includes(ing) && mLower.includes(ing));
+        });
 
-    return { day, ...safeMeal };
+      return {
+        dietMatch: validateRecipeName(mealName, diet, allergies).valid,
+        pantryIngredients: pantryHits,
+        reusedIngredients: reusedAcross ? ["ingredienti condivisi"] : [],
+        onSaleIngredients: [],
+        prepTime: parseInt(raw.tempo) || 20,
+      };
+    };
+
+    return {
+      day,
+      colazione: raw.colazione,
+      pranzo: raw.pranzo,
+      cena: raw.cena,
+      tempo: raw.tempo,
+      cal: raw.cal,
+      calNum: raw.calNum,
+      protein: raw.protein,
+      carbs: raw.carbs,
+      fat: raw.fat,
+      explain: {
+        colazione: buildExplain(raw.colazione),
+        pranzo: buildExplain(raw.pranzo),
+        cena: buildExplain(raw.cena),
+      },
+    };
   });
 }
 
-// ── Demo Mood Menus (diet-aware) ──
+// Legacy compatibility wrapper
+export function getDietAwareMenu(dietType: string, allergies: string[]) {
+  return getDietAwareFullMenu(dietType, allergies, "Relax", 0.5, 30, []);
+}
 
+// ── Demo Mood Menus ──
 interface DemoMeal { day: string; pranzo: string; cena: string; tempo: string }
 
 const demoMenusByDiet: Record<string, Record<string, DemoMeal[]>> = {
@@ -612,24 +637,9 @@ const demoMenusByDiet: Record<string, Record<string, DemoMeal[]>> = {
       { day: "Mercoledì", pranzo: "Pasta al pomodoro e basilico", cena: "Minestrone con legumi", tempo: "15 min" },
     ],
     Energia: [
-      { day: "Lunedì", pranzo: "Bowl di quinoa con ceci e avocado", cena: "Tofu saltato con verdure e sesamo", tempo: "25 min" },
+      { day: "Lunedì", pranzo: "Bowl di quinoa con ceci e avocado", cena: "Tofu saltato con verdure", tempo: "25 min" },
       { day: "Martedì", pranzo: "Wrap con hummus e verdure grigliate", cena: "Polpette di lenticchie con insalata", tempo: "20 min" },
       { day: "Mercoledì", pranzo: "Couscous con verdure e ceci", cena: "Stir-fry di tempeh con broccoli", tempo: "20 min" },
-    ],
-    Focus: [
-      { day: "Lunedì", pranzo: "Pasta integrale con broccoli e pinoli", cena: "Zuppa di legumi misti", tempo: "20 min" },
-      { day: "Martedì", pranzo: "Insalata di ceci e avocado", cena: "Riso con verdure e tofu", tempo: "20 min" },
-      { day: "Mercoledì", pranzo: "Farro con pomodorini e olive", cena: "Vellutata di carote e zenzero", tempo: "15 min" },
-    ],
-    Romantico: [
-      { day: "Lunedì", pranzo: "Carpaccio di zucchine con menta", cena: "Risotto agli asparagi", tempo: "25 min" },
-      { day: "Martedì", pranzo: "Tartare di pomodori con avocado", cena: "Pasta con crema di zucca", tempo: "30 min" },
-      { day: "Mercoledì", pranzo: "Insalata esotica con mango", cena: "Funghi ripieni con noci", tempo: "25 min" },
-    ],
-    Conviviale: [
-      { day: "Lunedì", pranzo: "Bruschette con pomodoro e basilico", cena: "Pasta e fagioli", tempo: "30 min" },
-      { day: "Martedì", pranzo: "Focaccia con verdure grigliate", cena: "Polenta con funghi trifolati", tempo: "35 min" },
-      { day: "Mercoledì", pranzo: "Polpette di ceci al sugo", cena: "Minestrone della tradizione", tempo: "30 min" },
     ],
   },
   vegetariano: {
@@ -643,21 +653,6 @@ const demoMenusByDiet: Record<string, Record<string, DemoMeal[]>> = {
       { day: "Martedì", pranzo: "Wrap integrale con hummus", cena: "Pasta al pesto con pomodorini", tempo: "20 min" },
       { day: "Mercoledì", pranzo: "Insalata di ceci e avocado", cena: "Pizza margherita fatta in casa", tempo: "25 min" },
     ],
-    Focus: [
-      { day: "Lunedì", pranzo: "Pasta integrale al pesto di noci", cena: "Omelette con verdure di stagione", tempo: "20 min" },
-      { day: "Martedì", pranzo: "Insalata di ceci e avocado", cena: "Risotto ai funghi porcini", tempo: "25 min" },
-      { day: "Mercoledì", pranzo: "Riso con lenticchie e verdure", cena: "Frittata di zucchine", tempo: "20 min" },
-    ],
-    Romantico: [
-      { day: "Lunedì", pranzo: "Carpaccio di zucchine con menta", cena: "Tagliatelle ai funghi porcini", tempo: "25 min" },
-      { day: "Martedì", pranzo: "Insalata caprese con burrata", cena: "Risotto allo zafferano", tempo: "30 min" },
-      { day: "Mercoledì", pranzo: "Bruschette con ricotta e miele", cena: "Gnocchi al gorgonzola e noci", tempo: "25 min" },
-    ],
-    Conviviale: [
-      { day: "Lunedì", pranzo: "Bruschette miste", cena: "Lasagna vegetariana", tempo: "40 min" },
-      { day: "Martedì", pranzo: "Pizza fatta in casa", cena: "Parmigiana di melanzane", tempo: "35 min" },
-      { day: "Mercoledì", pranzo: "Piadine con verdure e formaggi", cena: "Polpette di melanzane al sugo", tempo: "30 min" },
-    ],
   },
   keto: {
     Relax: [
@@ -670,55 +665,24 @@ const demoMenusByDiet: Record<string, Record<string, DemoMeal[]>> = {
       { day: "Martedì", pranzo: "Insalata di tonno e avocado", cena: "Pollo alla griglia con insalata", tempo: "20 min" },
       { day: "Mercoledì", pranzo: "Omelette proteica con formaggio", cena: "Salmone con cavolfiore al forno", tempo: "25 min" },
     ],
-    Focus: [
-      { day: "Lunedì", pranzo: "Insalata greca con feta", cena: "Petto di pollo con spinaci", tempo: "20 min" },
-      { day: "Martedì", pranzo: "Uova sode con avocado", cena: "Tacchino con funghi trifolati", tempo: "20 min" },
-      { day: "Mercoledì", pranzo: "Carpaccio di manzo con rucola", cena: "Orata al forno con verdure", tempo: "25 min" },
-    ],
-    Romantico: [
-      { day: "Lunedì", pranzo: "Carpaccio di salmone", cena: "Filetto con riduzione al vino rosso", tempo: "30 min" },
-      { day: "Martedì", pranzo: "Insalata di gamberi e avocado", cena: "Orata al sale con verdure", tempo: "35 min" },
-      { day: "Mercoledì", pranzo: "Tartare di tonno fresco", cena: "Bistecca con funghi porcini", tempo: "30 min" },
-    ],
-    Conviviale: [
-      { day: "Lunedì", pranzo: "Antipasto misto con formaggi", cena: "Grigliata mista con verdure", tempo: "35 min" },
-      { day: "Martedì", pranzo: "Insalatona ricca con uova e avocado", cena: "Pollo arrosto con contorno", tempo: "40 min" },
-      { day: "Mercoledì", pranzo: "Tagliere di salumi e formaggi", cena: "Spiedini di carne con verdure", tempo: "30 min" },
-    ],
   },
 };
 
 export function getDemoMenuForMoodAndDiet(
   mood: string,
-  dietType: string,
+  diet: string,
   allergies: string[]
 ): DemoMeal[] | null {
-  const diet = dietType.toLowerCase();
+  const dietKey = diet.toLowerCase();
+  const menus = demoMenusByDiet[dietKey];
+  if (!menus) return null;
+  const moodMenus = menus[mood];
+  if (!moodMenus) return null;
 
-  // Check for specific diet menus
-  const dietMenus = demoMenusByDiet[diet];
-  if (dietMenus && dietMenus[mood]) {
-    let menu = dietMenus[mood];
-    // Final validation pass
-    menu = menu.map(meal => {
-      const lCheck = validateRecipeName(meal.pranzo, dietType, allergies);
-      const dCheck = validateRecipeName(meal.cena, dietType, allergies);
-      if (!lCheck.valid || !dCheck.valid) {
-        // Find safe replacement from same diet
-        const safeMeals = Object.values(dietMenus).flat();
-        const safeLunch = safeMeals.find(m => validateRecipeName(m.pranzo, dietType, allergies).valid);
-        const safeDinner = safeMeals.find(m => validateRecipeName(m.cena, dietType, allergies).valid);
-        return {
-          ...meal,
-          pranzo: !lCheck.valid && safeLunch ? safeLunch.pranzo : meal.pranzo,
-          cena: !dCheck.valid && safeDinner ? safeDinner.cena : meal.cena,
-        };
-      }
-      return meal;
-    });
-    return menu;
-  }
-
-  // Fallback: return null and let the caller use the default
-  return null;
+  // Filter by allergies
+  const filtered = moodMenus.filter(m =>
+    validateRecipeName(m.pranzo, dietKey, allergies).valid &&
+    validateRecipeName(m.cena, dietKey, allergies).valid
+  );
+  return filtered.length > 0 ? filtered : null;
 }

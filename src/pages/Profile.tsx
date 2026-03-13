@@ -194,11 +194,11 @@ const Profile = () => {
 
               <div className="mb-10">
                 <label className="mb-3 block text-sm font-medium text-foreground">
-                  Budget settimanale: <span className="text-primary font-semibold">{profile.budget}€</span>
+                  Budget settimanale: <span className="text-primary font-semibold">{profile.weeklyBudget}€</span>
                 </label>
                 <Slider
-                  value={[profile.budget]}
-                  onValueChange={([v]) => updateProfile({ budget: v })}
+                  value={[profile.weeklyBudget]}
+                  onValueChange={([v]) => updateProfile({ weeklyBudget: v })}
                   min={20}
                   max={150}
                   step={5}

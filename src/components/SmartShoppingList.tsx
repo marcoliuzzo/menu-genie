@@ -18,7 +18,7 @@ const priorityOptions: { value: Priority; label: string; icon: typeof TrendingDo
 ];
 
 const SmartShoppingList = () => {
-  const { profile, updateProfile, shoppingList, supermarketComparisons, refreshShoppingData } = useProfile();
+  const { profile, updateProfile, shoppingList, supermarketComparisons, recomputeSystem } = useProfile();
   const [priority, setPriority] = useState<Priority>("equilibrio");
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
@@ -27,7 +27,7 @@ const SmartShoppingList = () => {
 
   // Refresh shopping data when component mounts or profile changes
   useEffect(() => {
-    refreshShoppingData();
+    recomputeSystem();
   }, [profile.diet, profile.allergies, profile.cap]);
 
   const handleCapSearch = () => {
@@ -35,7 +35,7 @@ const SmartShoppingList = () => {
       updateProfile({ cap: capInput.trim() });
       setIsRecalculating(true);
       setTimeout(() => {
-        refreshShoppingData();
+        recomputeSystem();
         setIsRecalculating(false);
       }, 1200);
     }

@@ -38,7 +38,7 @@ const Results = () => {
     .filter((i) => i.inPantry).length;
 
   const estimatedCost = plan.estimatedCost;
-  const budgetPercent = Math.min((estimatedCost / profile.budget) * 100, 100);
+  const budgetPercent = Math.min((estimatedCost / profile.weeklyBudget) * 100, 100);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -113,11 +113,11 @@ const Results = () => {
             </h2>
             <div className="mb-2 flex justify-between text-sm">
               <span className="text-muted-foreground">Spesa stimata</span>
-              <span className="font-semibold text-foreground">{estimatedCost}€ / {profile.budget}€</span>
+              <span className="font-semibold text-foreground">{estimatedCost}€ / {profile.weeklyBudget}€</span>
             </div>
             <Progress value={budgetPercent} className="h-3" />
             <p className="mt-2 text-xs text-muted-foreground">
-              {estimatedCost <= profile.budget
+              {estimatedCost <= profile.weeklyBudget
                 ? "Ottimo! Sei dentro il tuo budget settimanale 🎉"
                 : "Leggermente sopra budget. Prova a modificare le preferenze."}
             </p>
