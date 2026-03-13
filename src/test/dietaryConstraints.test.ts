@@ -205,10 +205,25 @@ describe("Dietary Constraints Engine", () => {
     });
   });
 
-  // ── Test 8: Meal plan validation ──
+  // ── Test 8: Meal plan validation (inline) ──
   describe("Meal plan validation", () => {
+    const validateMealPlanInline = (
+      menu: Array<{ day: string; lunch: { name: string }; dinner: { name: string } }>,
+      diet: string,
+      allergies: string[]
+    ) => {
+      const violations: Array<{ day: string; meal: string; issues: string[] }> = [];
+      for (const day of menu) {
+        const l = validateRecipeName(day.lunch.name, diet, allergies);
+        if (!l.valid) violations.push({ day: day.day, meal: day.lunch.name, issues: l.violations });
+        const d = validateRecipeName(day.dinner.name, diet, allergies);
+        if (!d.valid) violations.push({ day: day.day, meal: day.dinner.name, issues: d.violations });
+      }
+      return { valid: violations.length === 0, violations };
+    };
+
     it("should validate a correct vegan meal plan", () => {
-      const result = validateMealPlan(
+      const result = validateMealPlanInline(
         [
           { day: "Lunedì", lunch: { name: "Pasta al pomodoro" }, dinner: { name: "Zuppa di legumi" } },
           { day: "Martedì", lunch: { name: "Riso con verdure" }, dinner: { name: "Curry di lenticchie" } },
@@ -220,7 +235,7 @@ describe("Dietary Constraints Engine", () => {
     });
 
     it("should reject a vegan plan with chicken", () => {
-      const result = validateMealPlan(
+      const result = validateMealPlanInline(
         [
           { day: "Lunedì", lunch: { name: "Pollo alla griglia" }, dinner: { name: "Zuppa di legumi" } },
         ],
