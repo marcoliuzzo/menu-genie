@@ -18,7 +18,7 @@ const priorityOptions: { value: Priority; label: string; icon: typeof TrendingDo
 ];
 
 const SmartShoppingList = () => {
-  const { profile, updateProfile, shoppingList, supermarketComparisons, refreshShoppingData } = useProfile();
+  const { profile, updateProfile, shoppingList, supermarketComparisons, recomputeSystem } = useProfile();
   const [priority, setPriority] = useState<Priority>("equilibrio");
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
