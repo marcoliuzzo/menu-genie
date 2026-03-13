@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   validateRecipeName,
   validateIngredients,
-  validateMealPlan,
   getDietAwareMenu,
   getDemoMenuForMoodAndDiet,
 } from "@/lib/dietaryConstraints";

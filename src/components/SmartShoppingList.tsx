@@ -35,7 +35,7 @@ const SmartShoppingList = () => {
       updateProfile({ cap: capInput.trim() });
       setIsRecalculating(true);
       setTimeout(() => {
-        refreshShoppingData();
+        recomputeSystem();
         setIsRecalculating(false);
       }, 1200);
     }

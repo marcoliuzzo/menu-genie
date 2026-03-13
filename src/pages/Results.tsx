@@ -117,7 +117,7 @@ const Results = () => {
             </div>
             <Progress value={budgetPercent} className="h-3" />
             <p className="mt-2 text-xs text-muted-foreground">
-              {estimatedCost <= profile.budget
+              {estimatedCost <= profile.weeklyBudget
                 ? "Ottimo! Sei dentro il tuo budget settimanale 🎉"
                 : "Leggermente sopra budget. Prova a modificare le preferenze."}
             </p>
