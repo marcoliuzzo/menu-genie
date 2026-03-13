@@ -113,7 +113,7 @@ const Results = () => {
             </h2>
             <div className="mb-2 flex justify-between text-sm">
               <span className="text-muted-foreground">Spesa stimata</span>
-              <span className="font-semibold text-foreground">{estimatedCost}€ / {profile.budget}€</span>
+              <span className="font-semibold text-foreground">{estimatedCost}€ / {profile.weeklyBudget}€</span>
             </div>
             <Progress value={budgetPercent} className="h-3" />
             <p className="mt-2 text-xs text-muted-foreground">
