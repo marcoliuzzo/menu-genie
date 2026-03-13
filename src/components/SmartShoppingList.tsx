@@ -27,7 +27,7 @@ const SmartShoppingList = () => {
 
   // Refresh shopping data when component mounts or profile changes
   useEffect(() => {
-    refreshShoppingData();
+    recomputeSystem();
   }, [profile.diet, profile.allergies, profile.cap]);
 
   const handleCapSearch = () => {
