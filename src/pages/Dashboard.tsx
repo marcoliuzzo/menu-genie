@@ -14,6 +14,7 @@ import PantryTracker from "@/components/PantryTracker";
 import NutritionMonitor from "@/components/NutritionMonitor";
 import DietUpload from "@/components/DietUpload";
 import IngredientSwap from "@/components/IngredientSwap";
+import DislikedIngredients from "@/components/DislikedIngredients";
 import { useProfile } from "@/context/ProfileContext";
 
 const sidebarItems = [
