@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DietUpload from "@/components/DietUpload";
+import DislikedIngredients from "@/components/DislikedIngredients";
 import { useProfile } from "@/context/ProfileContext";
 import { getDemoMenuForMoodAndDiet, validateRecipeName } from "@/lib/dietaryConstraints";
 
@@ -209,6 +210,11 @@ const Demo = () => {
 
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <DietUpload />
+          </div>
+
+          {/* Cibi da evitare */}
+          <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
+            <DislikedIngredients />
           </div>
 
           {/* Schiscia Mode */}

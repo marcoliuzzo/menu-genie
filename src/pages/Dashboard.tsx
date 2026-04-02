@@ -14,6 +14,7 @@ import PantryTracker from "@/components/PantryTracker";
 import NutritionMonitor from "@/components/NutritionMonitor";
 import DietUpload from "@/components/DietUpload";
 import IngredientSwap from "@/components/IngredientSwap";
+import DislikedIngredients from "@/components/DislikedIngredients";
 import { useProfile } from "@/context/ProfileContext";
 
 const sidebarItems = [
@@ -217,6 +218,11 @@ const Dashboard = () => {
                         Senza: {profile.allergies.join(", ")}
                       </span>
                     )}
+                    {(profile.dislikedIngredients?.length || 0) > 0 && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-600">
+                        Evitati: {profile.dislikedIngredients.slice(0, 3).join(", ")}{profile.dislikedIngredients.length > 3 ? ` +${profile.dislikedIngredients.length - 3}` : ""}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <Button variant="outline" size="sm" className="rounded-full gap-2 self-start" onClick={handleRegenerate} disabled={isRegenerating}>
@@ -330,6 +336,9 @@ const Dashboard = () => {
           {activeSection === "settings" && (
             <div className="max-w-lg animate-fade-in space-y-4">
               <h1 className="text-xl font-bold text-foreground md:text-2xl">Impostazioni</h1>
+              <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
+                <DislikedIngredients />
+              </div>
               <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
                 <DietUpload />
               </div>

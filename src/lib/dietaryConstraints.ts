@@ -287,9 +287,11 @@ export const allergyKeywords: Record<string, string[]> = {
 export function validateRecipeName(
   recipeName: string,
   dietType: string,
-  allergies: string[]
-): { valid: boolean; violations: string[] } {
+  allergies: string[],
+  dislikedIngredients: string[] = []
+): { valid: boolean; violations: string[]; hasDisliked: boolean; dislikedFound: string[] } {
   const violations: string[] = [];
+  const dislikedFound: string[] = [];
   const lowerName = recipeName.toLowerCase();
   const rules = dietRules[dietType.toLowerCase()] || dietRules.onnivoro;
   
@@ -308,7 +310,12 @@ export function validateRecipeName(
       }
     }
   }
-  return { valid: violations.length === 0, violations };
+  for (const disliked of dislikedIngredients) {
+    if (lowerName.includes(disliked.toLowerCase())) {
+      dislikedFound.push(disliked);
+    }
+  }
+  return { valid: violations.length === 0, violations, hasDisliked: dislikedFound.length > 0, dislikedFound };
 }
 
 export function validateIngredients(
@@ -444,14 +451,21 @@ const breakfasts: Record<string, string[]> = {
   ],
 };
 
-const getMealPool = (diet: string, allergies: string[]): RawMeal[] => {
+const getMealPool = (diet: string, allergies: string[], dislikedIngredients: string[] = []): RawMeal[] => {
   const hasLactose = allergies.some(a => a.toLowerCase() === "lattosio");
   const hasGluten = allergies.some(a => a.toLowerCase() === "glutine");
 
   // Get breakfast pool
   let bfPool = breakfasts[diet] || breakfasts.onnivoro;
-  // Filter breakfasts by allergies
-  bfPool = bfPool.filter(b => validateRecipeName(b, diet, allergies).valid);
+  // Filter breakfasts by allergies and dislikes
+  bfPool = bfPool.filter(b => {
+    const v = validateRecipeName(b, diet, allergies, dislikedIngredients);
+    return v.valid && !v.hasDisliked;
+  });
+  if (bfPool.length === 0) {
+    // Fallback: relax dislikes, keep allergies/diet
+    bfPool = (breakfasts[diet] || breakfasts.onnivoro).filter(b => validateRecipeName(b, diet, allergies).valid);
+  }
   if (bfPool.length === 0) bfPool = ["Frutta fresca di stagione"];
 
   // Get lunch/dinner pool based on diet
@@ -519,15 +533,22 @@ const getMealPool = (diet: string, allergies: string[]): RawMeal[] => {
     ];
   }
 
-  // Filter lunch/dinner by allergies
-  lunchDinnerPool = lunchDinnerPool.filter(m =>
-    validateRecipeName(m.pranzo, diet, allergies).valid &&
-    validateRecipeName(m.cena, diet, allergies).valid
-  );
+  // Filter lunch/dinner by allergies and dislikes
+  const strictFiltered = lunchDinnerPool.filter(m => {
+    const pV = validateRecipeName(m.pranzo, diet, allergies, dislikedIngredients);
+    const cV = validateRecipeName(m.cena, diet, allergies, dislikedIngredients);
+    return pV.valid && !pV.hasDisliked && cV.valid && !cV.hasDisliked;
+  });
 
-  // Fallback if all filtered out (relax constraints except allergies/diet)
-  if (lunchDinnerPool.length === 0) {
-    lunchDinnerPool = [
+  if (strictFiltered.length > 0) {
+    lunchDinnerPool = strictFiltered;
+  } else {
+    // Fallback: relax dislikes, keep allergies/diet
+    const relaxed = lunchDinnerPool.filter(m =>
+      validateRecipeName(m.pranzo, diet, allergies).valid &&
+      validateRecipeName(m.cena, diet, allergies).valid
+    );
+    lunchDinnerPool = relaxed.length > 0 ? relaxed : [
       { pranzo: "Insalata mista di stagione", cena: "Verdure grigliate con olio EVO", tempo: "15 min", calNum: 1100, protein: 30, carbs: 140, fat: 35 },
     ];
   }
@@ -569,10 +590,11 @@ export function getDietAwareFullMenu(
   mood: string,
   moodWeight: number,
   cookingTimeMax: number,
-  pantryNames: string[]
+  pantryNames: string[],
+  dislikedIngredients: string[] = []
 ): FullDayMenu[] {
   const diet = dietType.toLowerCase();
-  const pool = getMealPool(diet, allergies);
+  const pool = getMealPool(diet, allergies, dislikedIngredients);
 
   // Track ingredient reuse across meals for optimization
   const allMealNames: string[] = [];

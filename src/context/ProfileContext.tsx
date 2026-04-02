@@ -41,6 +41,7 @@ const defaultProfile: UserProfile = {
   cap: "",
   preferredSupermarkets: [],
   schisciaMode: false,
+  dislikedIngredients: [],
 };
 
 const today = new Date();
@@ -91,6 +92,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 
   // ── Compute 21-meal plan ──
   const pantryNames = useMemo(() => pantryItems.map(p => p.name.toLowerCase()), [pantryItems]);
+  const dislikedNames = useMemo(() => profile.dislikedIngredients || [], [profile.dislikedIngredients]);
 
   const weekMenu = useMemo(() => {
     return getDietAwareFullMenu(
@@ -99,9 +101,10 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       profile.mood || "Relax",
       profile.moodWeight,
       parseInt(profile.cookingTime) || 30,
-      pantryNames
+      pantryNames,
+      dislikedNames
     );
-  }, [profile.diet, profile.allergies, profile.mood, profile.moodWeight, profile.cookingTime, pantryNames, systemVersion]);
+  }, [profile.diet, profile.allergies, profile.mood, profile.moodWeight, profile.cookingTime, pantryNames, dislikedNames, systemVersion]);
 
   // ── Compute optimization stats ──
   const weekOptimization = useMemo((): WeekOptimization => {
@@ -162,7 +165,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   // Auto-recompute on profile/pantry changes
   useEffect(() => {
     recomputeSystem();
-  }, [profile.diet, profile.allergies, profile.cap, profile.weeklyBudget, profile.cookingTime, profile.mood, profile.moodWeight, pantryItems]);
+  }, [profile.diet, profile.allergies, profile.cap, profile.weeklyBudget, profile.cookingTime, profile.mood, profile.moodWeight, profile.dislikedIngredients, pantryItems]);
 
   return (
     <ProfileContext.Provider value={{
