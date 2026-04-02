@@ -590,10 +590,11 @@ export function getDietAwareFullMenu(
   mood: string,
   moodWeight: number,
   cookingTimeMax: number,
-  pantryNames: string[]
+  pantryNames: string[],
+  dislikedIngredients: string[] = []
 ): FullDayMenu[] {
   const diet = dietType.toLowerCase();
-  const pool = getMealPool(diet, allergies);
+  const pool = getMealPool(diet, allergies, dislikedIngredients);
 
   // Track ingredient reuse across meals for optimization
   const allMealNames: string[] = [];

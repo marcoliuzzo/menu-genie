@@ -92,6 +92,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
 
   // ── Compute 21-meal plan ──
   const pantryNames = useMemo(() => pantryItems.map(p => p.name.toLowerCase()), [pantryItems]);
+  const dislikedNames = useMemo(() => profile.dislikedIngredients || [], [profile.dislikedIngredients]);
 
   const weekMenu = useMemo(() => {
     return getDietAwareFullMenu(
@@ -100,9 +101,10 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
       profile.mood || "Relax",
       profile.moodWeight,
       parseInt(profile.cookingTime) || 30,
-      pantryNames
+      pantryNames,
+      dislikedNames
     );
-  }, [profile.diet, profile.allergies, profile.mood, profile.moodWeight, profile.cookingTime, pantryNames, systemVersion]);
+  }, [profile.diet, profile.allergies, profile.mood, profile.moodWeight, profile.cookingTime, pantryNames, dislikedNames, systemVersion]);
 
   // ── Compute optimization stats ──
   const weekOptimization = useMemo((): WeekOptimization => {
