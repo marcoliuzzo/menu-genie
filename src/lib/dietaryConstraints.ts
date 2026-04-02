@@ -287,9 +287,11 @@ export const allergyKeywords: Record<string, string[]> = {
 export function validateRecipeName(
   recipeName: string,
   dietType: string,
-  allergies: string[]
-): { valid: boolean; violations: string[] } {
+  allergies: string[],
+  dislikedIngredients: string[] = []
+): { valid: boolean; violations: string[]; hasDisliked: boolean; dislikedFound: string[] } {
   const violations: string[] = [];
+  const dislikedFound: string[] = [];
   const lowerName = recipeName.toLowerCase();
   const rules = dietRules[dietType.toLowerCase()] || dietRules.onnivoro;
   
@@ -308,7 +310,12 @@ export function validateRecipeName(
       }
     }
   }
-  return { valid: violations.length === 0, violations };
+  for (const disliked of dislikedIngredients) {
+    if (lowerName.includes(disliked.toLowerCase())) {
+      dislikedFound.push(disliked);
+    }
+  }
+  return { valid: violations.length === 0, violations, hasDisliked: dislikedFound.length > 0, dislikedFound };
 }
 
 export function validateIngredients(
