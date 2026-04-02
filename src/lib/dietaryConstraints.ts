@@ -457,8 +457,15 @@ const getMealPool = (diet: string, allergies: string[]): RawMeal[] => {
 
   // Get breakfast pool
   let bfPool = breakfasts[diet] || breakfasts.onnivoro;
-  // Filter breakfasts by allergies
-  bfPool = bfPool.filter(b => validateRecipeName(b, diet, allergies).valid);
+  // Filter breakfasts by allergies and dislikes
+  bfPool = bfPool.filter(b => {
+    const v = validateRecipeName(b, diet, allergies, dislikedIngredients);
+    return v.valid && !v.hasDisliked;
+  });
+  if (bfPool.length === 0) {
+    // Fallback: relax dislikes, keep allergies/diet
+    bfPool = (breakfasts[diet] || breakfasts.onnivoro).filter(b => validateRecipeName(b, diet, allergies).valid);
+  }
   if (bfPool.length === 0) bfPool = ["Frutta fresca di stagione"];
 
   // Get lunch/dinner pool based on diet
