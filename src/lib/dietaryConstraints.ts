@@ -451,7 +451,7 @@ const breakfasts: Record<string, string[]> = {
   ],
 };
 
-const getMealPool = (diet: string, allergies: string[]): RawMeal[] => {
+const getMealPool = (diet: string, allergies: string[], dislikedIngredients: string[] = []): RawMeal[] => {
   const hasLactose = allergies.some(a => a.toLowerCase() === "lattosio");
   const hasGluten = allergies.some(a => a.toLowerCase() === "glutine");
 
