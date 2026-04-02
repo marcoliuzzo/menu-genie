@@ -337,6 +337,9 @@ const Dashboard = () => {
             <div className="max-w-lg animate-fade-in space-y-4">
               <h1 className="text-xl font-bold text-foreground md:text-2xl">Impostazioni</h1>
               <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
+                <DislikedIngredients />
+              </div>
+              <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">
                 <DietUpload />
               </div>
               <div className="rounded-xl border border-border/60 bg-card p-4 md:p-6">

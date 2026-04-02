@@ -212,6 +212,11 @@ const Demo = () => {
             <DietUpload />
           </div>
 
+          {/* Cibi da evitare */}
+          <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
+            <DislikedIngredients />
+          </div>
+
           {/* Schiscia Mode */}
           <div className="rounded-2xl border border-border/60 bg-card p-4 md:p-8 shadow-sm">
             <div className="flex items-center justify-between gap-3">
