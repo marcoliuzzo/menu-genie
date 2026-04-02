@@ -218,6 +218,11 @@ const Dashboard = () => {
                         Senza: {profile.allergies.join(", ")}
                       </span>
                     )}
+                    {(profile.dislikedIngredients?.length || 0) > 0 && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-600">
+                        Evitati: {profile.dislikedIngredients.slice(0, 3).join(", ")}{profile.dislikedIngredients.length > 3 ? ` +${profile.dislikedIngredients.length - 3}` : ""}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <Button variant="outline" size="sm" className="rounded-full gap-2 self-start" onClick={handleRegenerate} disabled={isRegenerating}>
