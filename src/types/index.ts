@@ -12,6 +12,7 @@ export interface UserProfile {
   cap: string;
   preferredSupermarkets: string[];
   schisciaMode: boolean;
+  dislikedIngredients: string[];
 }
 
 export interface PantryItem {

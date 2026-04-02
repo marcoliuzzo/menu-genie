@@ -41,6 +41,7 @@ const defaultProfile: UserProfile = {
   cap: "",
   preferredSupermarkets: [],
   schisciaMode: false,
+  dislikedIngredients: [],
 };
 
 const today = new Date();
