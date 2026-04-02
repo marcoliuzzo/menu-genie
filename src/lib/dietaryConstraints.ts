@@ -533,15 +533,22 @@ const getMealPool = (diet: string, allergies: string[]): RawMeal[] => {
     ];
   }
 
-  // Filter lunch/dinner by allergies
-  lunchDinnerPool = lunchDinnerPool.filter(m =>
-    validateRecipeName(m.pranzo, diet, allergies).valid &&
-    validateRecipeName(m.cena, diet, allergies).valid
-  );
+  // Filter lunch/dinner by allergies and dislikes
+  const strictFiltered = lunchDinnerPool.filter(m => {
+    const pV = validateRecipeName(m.pranzo, diet, allergies, dislikedIngredients);
+    const cV = validateRecipeName(m.cena, diet, allergies, dislikedIngredients);
+    return pV.valid && !pV.hasDisliked && cV.valid && !cV.hasDisliked;
+  });
 
-  // Fallback if all filtered out (relax constraints except allergies/diet)
-  if (lunchDinnerPool.length === 0) {
-    lunchDinnerPool = [
+  if (strictFiltered.length > 0) {
+    lunchDinnerPool = strictFiltered;
+  } else {
+    // Fallback: relax dislikes, keep allergies/diet
+    const relaxed = lunchDinnerPool.filter(m =>
+      validateRecipeName(m.pranzo, diet, allergies).valid &&
+      validateRecipeName(m.cena, diet, allergies).valid
+    );
+    lunchDinnerPool = relaxed.length > 0 ? relaxed : [
       { pranzo: "Insalata mista di stagione", cena: "Verdure grigliate con olio EVO", tempo: "15 min", calNum: 1100, protein: 30, carbs: 140, fat: 35 },
     ];
   }
