@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DietUpload from "@/components/DietUpload";
+import DislikedIngredients from "@/components/DislikedIngredients";
 import { useProfile } from "@/context/ProfileContext";
 import { getDemoMenuForMoodAndDiet, validateRecipeName } from "@/lib/dietaryConstraints";
 
