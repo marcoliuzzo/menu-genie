@@ -165,7 +165,7 @@ export const ProfileProvider = ({ children }: { children: ReactNode }) => {
   // Auto-recompute on profile/pantry changes
   useEffect(() => {
     recomputeSystem();
-  }, [profile.diet, profile.allergies, profile.cap, profile.weeklyBudget, profile.cookingTime, profile.mood, profile.moodWeight, pantryItems]);
+  }, [profile.diet, profile.allergies, profile.cap, profile.weeklyBudget, profile.cookingTime, profile.mood, profile.moodWeight, profile.dislikedIngredients, pantryItems]);
 
   return (
     <ProfileContext.Provider value={{
