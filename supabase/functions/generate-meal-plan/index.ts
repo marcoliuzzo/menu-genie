@@ -104,7 +104,7 @@ serve(async (req) => {
       profile.allergies || []
     );
 
-    const systemPrompt = `Sei Spesa Smart, un assistente AI avanzato per la pianificazione dei pasti. Genera un piano alimentare settimanale ottimizzato.
+    const systemPrompt = `Sei PlanEat, un assistente AI avanzato per la pianificazione dei pasti. Genera un piano alimentare settimanale ottimizzato.
 
 REGOLE:
 1. TRADUZIONE DEL MOOD: Interpreta il mood dell'utente in stile culinario. "Energetico" = piatti colorati, speziati. "Relax" = comfort food, zuppe. "Avventuroso" = cucina etnica, sapori nuovi. "Nostalgico" = ricette della tradizione. "Leggero" = insalate, piatti freschi. "Festivo" = piatti elaborati e conviviali.

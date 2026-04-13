@@ -50,7 +50,7 @@ const HowItWorks = () => {
               Il processo
             </span>
             <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground md:mt-6 md:text-5xl">
-              Come funziona <span className="gradient-primary-text">Spesa Smart</span>
+              Come funziona <span className="gradient-primary-text">PlanEat</span>
             </h1>
             <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-lg">
               Quattro passaggi. Zero stress. Un piano su misura in pochi secondi.

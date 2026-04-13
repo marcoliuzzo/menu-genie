@@ -59,7 +59,7 @@ const Generating = () => {
           <Sparkles className="h-16 w-16 text-primary" />
         </div>
         <h1 className="mb-3 text-xl font-semibold text-foreground md:text-2xl">
-          Spesa Smart sta creando il tuo piano…
+          PlanEat sta creando il tuo piano…
         </h1>
         <p className="text-muted-foreground text-sm md:text-base">
           Analizziamo il tuo mood, energia e preferenze per il menu perfetto.
