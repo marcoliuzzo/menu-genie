@@ -22,7 +22,7 @@ const Header = () => {
             <Sparkles className="h-4 w-4 text-white" />
           </div>
           <span className="text-lg font-semibold tracking-tight text-foreground">
-            Spesa Smart
+            PlanEat
           </span>
         </Link>
 

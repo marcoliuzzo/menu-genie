@@ -140,7 +140,7 @@ const Demo = () => {
               Demo interattiva
             </span>
             <h1 className="mt-4 text-2xl font-bold tracking-tight text-foreground md:mt-6 md:text-5xl">
-              Prova <span className="gradient-primary-text">Spesa Smart</span>
+              Prova <span className="gradient-primary-text">PlanEat</span>
             </h1>
             <p className="mt-2 text-sm text-muted-foreground md:mt-3 md:text-base">
               Configura il tuo profilo e seleziona un mood per vedere il piano settimanale con 21 pasti.
