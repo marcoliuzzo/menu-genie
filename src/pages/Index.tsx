@@ -306,7 +306,10 @@ const Index = () => {
                     const isPlanEat = c.name === "PlanEat";
                     return (
                       <tr key={c.name} className={`border-b border-border/40 ${isPlanEat ? "bg-primary/5" : ""}`}>
-                        <td className={`py-3 px-4 font-medium ${isPlanEat ? "text-primary font-semibold" : "text-foreground"}`}>{c.name}</td>
+                        <td className={`py-3 px-4 ${isPlanEat ? "text-primary font-semibold" : "text-foreground font-medium"}`}>
+                          <div>{c.name}</div>
+                          <div className="text-[10px] text-muted-foreground font-normal">{c.desc}</div>
+                        </td>
                         {[c.lista, c.meal, c.prezzi, c.ai].map((v, i) => (
                           <td key={i} className="py-3 px-4 text-center">
                             {v ? <Check className={`h-4 w-4 mx-auto ${isPlanEat ? "text-primary" : "text-muted-foreground"}`} /> : <X className="h-4 w-4 mx-auto text-border" />}
@@ -320,7 +323,7 @@ const Index = () => {
             </div>
             <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-center">
               <p className="text-sm font-medium text-primary">
-                🎯 PlanEat è l'unico che integra lista spesa, meal planning, confronto prezzi e AI in un'unica soluzione.
+                🎯 Il mercato è frammentato: ogni player copre una singola funzione. PlanEat è l'unico che integra pasti + dispensa + lista + prezzi + AI in un'unica soluzione.
               </p>
             </div>
           </div>
