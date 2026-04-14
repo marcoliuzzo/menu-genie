@@ -19,6 +19,8 @@ import {
   Smile,
   Lightbulb,
   AlertTriangle,
+  PieChart,
+  BarChart3,
   Utensils,
   ShoppingCart,
   Database,
