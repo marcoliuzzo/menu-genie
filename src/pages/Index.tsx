@@ -584,14 +584,14 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground mb-6">Per sempre</p>
                 <ul className="space-y-3">
                   {[
-                    "Pianificazione base dei pasti",
-                    "Lista spesa automatica",
-                    "Gestione dispensa",
-                    "Supporto diete e allergie",
+                    { label: "Pianificazione base dei pasti", driver: "→ meal planning" },
+                    { label: "Lista spesa automatica", driver: "→ integrazione" },
+                    { label: "Gestione dispensa", driver: "→ dispensa" },
+                    { label: "Supporto diete e allergie", driver: "" },
                   ].map((f) => (
-                    <li key={f} className="flex items-center gap-2.5 text-sm text-foreground">
+                    <li key={f.label} className="flex items-center gap-2.5 text-sm text-foreground">
                       <Check className="h-4 w-4 shrink-0 text-primary" />
-                      {f}
+                      <span>{f.label}{f.driver && <span className="text-[10px] text-muted-foreground ml-1">{f.driver}</span>}</span>
                     </li>
                   ))}
                 </ul>
@@ -629,14 +629,17 @@ const Index = () => {
                 <RefreshCw className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-semibold text-foreground md:text-base">Ciclo virtuoso</h3>
               </div>
+              <p className="text-xs text-muted-foreground mb-3">Prima adozione, poi monetizzazione. Il valore gratuito guida la crescita organica.</p>
               <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground md:text-sm">
                 <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Più utenti</span>
                 <ArrowRight className="h-3 w-3 text-primary" />
                 <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Più dati</span>
                 <ArrowRight className="h-3 w-3 text-primary" />
-                <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Algoritmo migliore</span>
+                <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">AI migliore</span>
                 <ArrowRight className="h-3 w-3 text-primary" />
                 <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Più retention</span>
+                <ArrowRight className="h-3 w-3 text-accent" />
+                <span className="rounded-lg bg-accent/10 px-3 py-1.5 font-medium text-accent">Conversione Premium</span>
               </div>
             </div>
           </div>
@@ -654,10 +657,10 @@ const Index = () => {
             </h2>
             <div className="mx-auto mt-8 grid gap-4 sm:grid-cols-2 md:mt-10 max-w-2xl">
               {[
-                { icon: Brain, label: "Problema reale", desc: "Decision fatigue + spreco alimentare: un costo invisibile per milioni di famiglie." },
-                { icon: BarChart3, label: "Soluzione validata", desc: "Ricerca su 240+ utenti, driver coerenti, R² = 61.7%." },
-                { icon: Lock, label: "Posizionamento unico", desc: "Unica piattaforma integrata nel mercato italiano food-tech." },
-                { icon: Handshake, label: "Sfida principale", desc: "Partnership strategiche con la GDO per dati prodotti e prezzi reali." },
+                { icon: Brain, label: "Problema reale", desc: "Decision fatigue + spreco alimentare: un costo invisibile per milioni di famiglie italiane." },
+                { icon: BarChart3, label: "Soluzione validata", desc: "Ricerca su 240+ utenti, driver coerenti, R² = 61.7%. Il bisogno è reale e misurabile." },
+                { icon: Lock, label: "Mercato frammentato", desc: "Nessun competitor integra tutte le funzioni. PlanEat è l'unica piattaforma end-to-end nel food-tech italiano." },
+                { icon: Database, label: "Sfida principale", desc: "Qualità e aggiornamento continuo dei dati sui prezzi: il fattore critico per la credibilità del sistema." },
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-border/60 bg-card p-5 text-left shadow-sm">
                   <div className="flex items-center gap-2 mb-2">
@@ -670,7 +673,7 @@ const Index = () => {
             </div>
             <div className="mt-10 rounded-2xl border border-accent/20 bg-accent/5 p-6 md:mt-12">
               <p className="text-base font-semibold text-foreground md:text-lg">
-                🚀 PlanEat trasforma la spesa da attività complessa a <span className="text-accent">esperienza intelligente e automatizzata.</span>
+                🚀 PlanEat trasforma la spesa da attività frammentata e stressante a <span className="text-accent">esperienza integrata, intelligente e senza sforzo.</span>
               </p>
             </div>
             <Button
