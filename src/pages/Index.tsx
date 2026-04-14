@@ -647,33 +647,105 @@ const Index = () => {
       </RevealSection>
 
       {/* ─── CONCLUSIONE ─── */}
-      <RevealSection>
-        <section className="relative overflow-hidden py-20 px-4 md:py-32">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-secondary/50 to-background" />
-          <div className="container relative z-10 max-w-3xl text-center">
-            <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight tracking-tight text-foreground">
-              Da attività complessa a{" "}
-              <span className="gradient-primary-text">esperienza intelligente.</span>
-            </h2>
-            <div className="mx-auto mt-8 grid gap-4 sm:grid-cols-2 md:mt-10 max-w-2xl">
+      <section className="relative overflow-hidden py-20 px-4 md:py-32">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-secondary/50 to-background" />
+        <div className="container relative z-10 max-w-3xl">
+          {/* Title */}
+          <h2
+            className="text-center text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight tracking-tight text-foreground opacity-0 transition-all duration-[600ms] ease-out"
+            ref={(el) => {
+              if (!el) return;
+              const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; obs.unobserve(el); } }, { threshold: 0.15 });
+              el.style.transform = "translateY(12px)";
+              obs.observe(el);
+            }}
+          >
+            Conclusioni &{" "}
+            <span className="gradient-primary-text">Next Steps</span>
+          </h2>
+
+          {/* Intro paragraph */}
+          <p
+            className="mx-auto mt-6 max-w-2xl text-center text-sm text-muted-foreground md:text-base opacity-0 transition-all duration-[600ms] ease-out"
+            ref={(el) => {
+              if (!el) return;
+              const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setTimeout(() => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; }, 120); obs.unobserve(el); } }, { threshold: 0.15 });
+              el.style.transform = "translateY(12px)";
+              obs.observe(el);
+            }}
+          >
+            PlanEat nasce dalla convergenza di tre elementi: un problema reale e validato, un mercato ampio ma frammentato, e una soluzione coerente con i bisogni profondi degli utenti.
+          </p>
+
+          {/* Positioning criteria */}
+          <div className="mx-auto mt-8 max-w-2xl">
+            <p
+              className="text-sm font-semibold text-foreground mb-3 opacity-0 transition-all duration-[600ms] ease-out"
+              ref={(el) => {
+                if (!el) return;
+                const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setTimeout(() => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; }, 200); obs.unobserve(el); } }, { threshold: 0.15 });
+                el.style.transform = "translateY(12px)";
+                obs.observe(el);
+              }}
+            >
+              Il posizionamento rispetta i quattro criteri classici di efficacia:
+            </p>
+            <ul className="space-y-2">
               {[
-                { icon: Brain, label: "Problema reale", desc: "Decision fatigue + spreco alimentare: un costo invisibile per milioni di famiglie italiane." },
-                { icon: BarChart3, label: "Soluzione validata", desc: "Ricerca su 240+ utenti, driver coerenti, R² = 61.7%. Il bisogno è reale e misurabile." },
-                { icon: Lock, label: "Mercato frammentato", desc: "Nessun competitor integra tutte le funzioni. PlanEat è l'unica piattaforma end-to-end nel food-tech italiano." },
-                { icon: Database, label: "Sfida principale", desc: "Qualità e aggiornamento continuo dei dati sui prezzi: il fattore critico per la credibilità del sistema." },
-              ].map((item) => (
-                <div key={item.label} className="rounded-2xl border border-border/60 bg-card p-5 text-left shadow-sm">
-                  <div className="flex items-center gap-2 mb-2">
-                    <item.icon className="h-4 w-4 text-primary" />
-                    <p className="text-xs font-bold uppercase tracking-widest text-primary">{item.label}</p>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </div>
+                { bold: "Rilevanza", text: "risponde a bisogni reali e documentati — tempo, budget, spreco alimentare." },
+                { bold: "Credibilità", text: "le funzionalità proposte sono tecnicamente realizzabili almeno in un MVP." },
+                { bold: "Distintività", text: "nessun competitor attuale occupa la stessa posizione integrata nel mercato italiano." },
+                { bold: "Sostenibilità", text: "la personalizzazione AI crea switching costs crescenti nel tempo." },
+              ].map((item, i) => (
+                <li
+                  key={item.bold}
+                  className="flex items-start gap-2 text-sm text-muted-foreground opacity-0 transition-all duration-[500ms] ease-out"
+                  ref={(el) => {
+                    if (!el) return;
+                    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setTimeout(() => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; }, 280 + i * 90); obs.unobserve(el); } }, { threshold: 0.15 });
+                    el.style.transform = "translateY(10px)";
+                    obs.observe(el);
+                  }}
+                >
+                  <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <span><span className="font-semibold text-foreground">{item.bold}:</span> {item.text}</span>
+                </li>
               ))}
+            </ul>
+          </div>
+
+          {/* La Sfida Principale */}
+          <div
+            className="mx-auto mt-10 max-w-2xl rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-sm opacity-0 transition-all duration-[600ms] ease-out"
+            ref={(el) => {
+              if (!el) return;
+              const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setTimeout(() => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; }, 650); obs.unobserve(el); } }, { threshold: 0.15 });
+              el.style.transform = "translateY(12px)";
+              obs.observe(el);
+            }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="h-4 w-4 text-accent" />
+              <p className="text-xs font-bold uppercase tracking-widest text-accent">La Sfida Principale</p>
             </div>
-            <div className="mt-10 rounded-2xl border border-accent/20 bg-accent/5 p-6 md:mt-12">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              La coerenza tra posizionamento dichiarato ed esecuzione tecnica. Il valore dell'app dipende in larga misura dalla qualità e dall'aggiornamento dei dati sui prezzi. Senza accordi con la GDO o fonti alternative affidabili, la promessa di risparmio misurabile rimane teorica.
+            </p>
+          </div>
+
+          {/* Closing */}
+          <div
+            className="mt-10 text-center opacity-0 transition-all duration-[600ms] ease-out"
+            ref={(el) => {
+              if (!el) return;
+              const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setTimeout(() => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; }, 800); obs.unobserve(el); } }, { threshold: 0.15 });
+              el.style.transform = "translateY(12px)";
+              obs.observe(el);
+            }}
+          >
+            <div className="rounded-2xl border border-accent/20 bg-accent/5 p-6">
               <p className="text-base font-semibold text-foreground md:text-lg">
-                🚀 PlanEat trasforma la spesa da attività frammentata e stressante a <span className="text-accent">esperienza integrata, intelligente e senza sforzo.</span>
+                Vi ringraziamo per l'attenzione e siamo a disposizione per domande.
               </p>
             </div>
             <Button
@@ -685,8 +757,8 @@ const Index = () => {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
-        </section>
-      </RevealSection>
+        </div>
+      </section>
 
       <Footer />
     </div>
