@@ -17,6 +17,8 @@ import {
   Home,
   Layers,
   Smile,
+  Lightbulb,
+  AlertTriangle,
   PieChart,
   BarChart3,
   Utensils,
@@ -79,16 +81,18 @@ const marketData = [
 ];
 
 const competitors = [
-  { name: "App Lista Spesa", lista: true, meal: false, prezzi: false, ai: false },
-  { name: "App Ricette", lista: false, meal: true, prezzi: false, ai: false },
-  { name: "Volantini online", lista: false, meal: false, prezzi: true, ai: false },
-  { name: "PlanEat", lista: true, meal: true, prezzi: true, ai: true },
+  { name: "Bring! / Listonic", desc: "Lista spesa condivisa, input manuale", lista: true, meal: false, prezzi: false, ai: false },
+  { name: "DoveConviene", desc: "Offerte e volantini digitali", lista: false, meal: false, prezzi: true, ai: false },
+  { name: "Zeuler", desc: "Confronto prezzi e delivery", lista: true, meal: false, prezzi: true, ai: false },
+  { name: "Foodder", desc: "Gestione dispensa anti-spreco", lista: false, meal: false, prezzi: false, ai: false },
+  { name: "EasyPlan", desc: "Nutrizione e meal planning", lista: false, meal: true, prezzi: false, ai: false },
+  { name: "PlanEat", desc: "Ecosistema AI integrato", lista: true, meal: true, prezzi: true, ai: true },
 ];
 
 const personas = [
-  { icon: Briefcase, title: "Giovane professionista", age: "25-35", pain: "Poco tempo, troppe decisioni dopo il lavoro. Mangia fuori troppo spesso.", need: "Piani rapidi, automatici e senza stress" },
-  { icon: Home, title: "Famiglia", age: "30-45", pain: "Bilanciare gusti diversi, allergie dei figli, budget settimanale limitato.", need: "Personalizzazione per più persone e controllo spesa" },
-  { icon: GraduationCap, title: "Studente", age: "18-25", pain: "Budget molto limitato, poca esperienza in cucina, nessuna organizzazione.", need: "Ricette facili, economiche e lista spesa ottimizzata" },
+  { icon: Briefcase, name: "Lisa", title: "Target Primario", age: "27-35", pain: "Usa strumenti separati (note, app ricette, delivery). Frammentazione e perdita di tempo ogni giorno.", need: "Semplificazione totale: un unico flusso, zero decisioni inutili", behavior: "Alto carico decisionale quotidiano. Cerca semplificazione, non solo risparmio. Alta probabilità di adozione." },
+  { icon: Home, name: "Marco", title: "Target Secondario", age: "35-50", pain: "Coordinare pasti, dispensa e budget familiare. Pianificazione parziale e attenzione alle promozioni.", need: "Ottimizzare e avere controllo su spesa e alimentazione familiare", behavior: "Pianifica parzialmente. Più propenso alla conversione Premium." },
+  { icon: GraduationCap, name: "Siria", title: "Target Secondario", age: "20-26", pain: "Budget limitato, comportamento impulsivo, poca organizzazione. Sprechi frequenti e disordine.", need: "Soluzione immediata, semplice, zero configurazione", behavior: "Alta sensibilità al prezzo. Forte fit con la versione gratuita." },
 ];
 
 const differentiators = [
@@ -99,14 +103,14 @@ const differentiators = [
 ];
 
 const canvasItems = [
-  { icon: Handshake, title: "Key Partners", items: ["Provider dati retail (GDO)", "Partner tecnologici AI/ML", "Piattaforme food & delivery"] },
-  { icon: Cpu, title: "Key Activities", items: ["Sviluppo algoritmi AI", "Integrazione dati GDO", "Ottimizzazione UX continua"] },
-  { icon: Database, title: "Key Resources", items: ["Tecnologia e algoritmi proprietari", "Database prodotti e prezzi", "Dati comportamentali utenti"] },
-  { icon: Target, title: "Value Proposition", items: ["Riduzione carico decisionale", "Meal planning automatizzato", "Lista spesa ottimizzata", "Più controllo, meno sforzo"] },
-  { icon: Users, title: "Customer Segments", items: ["Giovani professionisti urbani", "Famiglie con figli", "Studenti universitari"] },
+  { icon: Handshake, title: "Key Partners", items: ["Provider dati retail", "Partner tecnologici AI/ML", "Piattaforme food & delivery"] },
+  { icon: Cpu, title: "Key Activities", items: ["Sviluppo AI e personalizzazione", "Integrazione dati prodotti/prezzi", "Ottimizzazione UX e onboarding"] },
+  { icon: Database, title: "Key Resources", items: ["Algoritmo AI proprietario", "Database prodotti e prezzi", "Dati comportamentali utenti"] },
+  { icon: Target, title: "Value Proposition", items: ["Riduzione decision fatigue", "Automazione scelte quotidiane", "Più controllo, meno sforzo"] },
+  { icon: Users, title: "Customer Segments", items: ["Lisa: professionista urbana (primario)", "Marco: famiglia con figli (secondario)", "Siria: studentessa fuori sede (secondario)"] },
   { icon: Megaphone, title: "Channels", items: ["App mobile (iOS/Android)", "App Store & Play Store", "Social media & passaparola"] },
   { icon: ShoppingCart, title: "Cost Structure", items: ["Sviluppo e manutenzione tech", "Infrastruttura cloud/digitale", "Marketing e acquisizione utenti"] },
-  { icon: CreditCard, title: "Revenue Streams", items: ["Abbonamento Premium (€3-5/mese)", "Affiliazione con GDO", "Native advertising", "White-label B2B"] },
+  { icon: CreditCard, title: "Revenue Streams", items: ["Freemium → monetizzazione progressiva", "Abbonamento Premium (€3-5/mese)", "Affiliazione GDO & advertising"] },
 ];
 
 const Index = () => {
@@ -302,7 +306,10 @@ const Index = () => {
                     const isPlanEat = c.name === "PlanEat";
                     return (
                       <tr key={c.name} className={`border-b border-border/40 ${isPlanEat ? "bg-primary/5" : ""}`}>
-                        <td className={`py-3 px-4 font-medium ${isPlanEat ? "text-primary font-semibold" : "text-foreground"}`}>{c.name}</td>
+                        <td className={`py-3 px-4 ${isPlanEat ? "text-primary font-semibold" : "text-foreground font-medium"}`}>
+                          <div>{c.name}</div>
+                          <div className="text-[10px] text-muted-foreground font-normal">{c.desc}</div>
+                        </td>
                         {[c.lista, c.meal, c.prezzi, c.ai].map((v, i) => (
                           <td key={i} className="py-3 px-4 text-center">
                             {v ? <Check className={`h-4 w-4 mx-auto ${isPlanEat ? "text-primary" : "text-muted-foreground"}`} /> : <X className="h-4 w-4 mx-auto text-border" />}
@@ -316,7 +323,7 @@ const Index = () => {
             </div>
             <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-center">
               <p className="text-sm font-medium text-primary">
-                🎯 PlanEat è l'unico che integra lista spesa, meal planning, confronto prezzi e AI in un'unica soluzione.
+                🎯 Il mercato è frammentato: ogni player copre una singola funzione. PlanEat è l'unico che integra pasti + dispensa + lista + prezzi + AI in un'unica soluzione.
               </p>
             </div>
           </div>
@@ -375,23 +382,82 @@ const Index = () => {
         </section>
       </RevealSection>
 
-      {/* ─── BUYER PERSONAS ─── */}
+      {/* ─── INSIGHT STRATEGICO ─── */}
       <RevealSection>
         <section className="py-16 px-4 md:py-24">
+          <div className="container max-w-3xl">
+            <div className="mb-6 text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 text-sm font-medium text-accent">
+                <Lightbulb className="h-4 w-4" />
+                Insight Strategico
+              </div>
+              <h2 className="text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground">
+                Non vogliono spendere meno.{" "}
+                <span className="gradient-primary-text">Vogliono decidere meno.</span>
+              </h2>
+            </div>
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+                    <TrendingUp className="h-4 w-4 text-accent" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">La disponibilità gratuita è il fattore con maggiore impatto</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">Gli utenti sono molto sensibili al prezzo. Tuttavia, il risparmio economico diretto NON è statisticamente significativo come driver di adozione.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Brain className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Il vero bisogno: meno decisioni, non meno spesa</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">Gli utenti non cercano principalmente di spendere meno — cercano di decidere meno. Questo valida la value proposition: PlanEat riduce il carico decisionale, non solo la spesa.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm text-center">
+                  <p className="text-3xl font-bold text-primary">3.26<span className="text-base text-muted-foreground">/5</span></p>
+                  <p className="mt-1 text-xs text-muted-foreground">Propensione media all'utilizzo</p>
+                  <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">Il bisogno esiste già, ma non è ancora completamente consapevole</p>
+                </div>
+                <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <AlertTriangle className="h-4 w-4 text-accent" />
+                    <p className="text-sm font-semibold text-foreground">Implicazione</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Onboarding semplice, immediato e senza attrito. L'utente deve percepire valore prima ancora di configurare.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ─── BUYER PERSONAS ─── */}
+      <RevealSection>
+        <section className="bg-secondary py-16 px-4 md:py-24">
           <div className="container">
             <h2 className="text-center text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground">
               Per chi è <span className="gradient-primary-text">PlanEat?</span>
             </h2>
             <p className="mx-auto mt-3 max-w-md text-center text-sm text-muted-foreground md:mt-4 md:text-base">
-              Utenti con alto carico decisionale nella gestione alimentare quotidiana.
+              Segmentazione comportamentale basata su carico decisionale e abitudini di spesa.
             </p>
             <div className="mt-10 grid gap-6 md:mt-16 md:grid-cols-3 md:gap-8">
               {personas.map((p) => (
-                <div key={p.title} className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
+                <div key={p.name} className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary md:h-14 md:w-14">
                     <p.icon className="h-5 w-5 text-primary md:h-6 md:w-6" />
                   </div>
-                  <h3 className="text-base font-semibold text-foreground md:text-lg">{p.title}</h3>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-base font-semibold text-foreground md:text-lg">{p.name}</h3>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">{p.title}</span>
+                  </div>
                   <p className="text-xs text-muted-foreground mb-3">{p.age} anni</p>
                   <div className="space-y-2">
                     <div className="rounded-lg bg-destructive/5 p-2.5">
@@ -401,6 +467,10 @@ const Index = () => {
                     <div className="rounded-lg bg-primary/5 p-2.5">
                       <p className="text-xs font-semibold text-primary mb-0.5">Bisogno</p>
                       <p className="text-xs text-muted-foreground">{p.need}</p>
+                    </div>
+                    <div className="rounded-lg bg-accent/5 p-2.5">
+                      <p className="text-xs font-semibold text-accent mb-0.5">Comportamento</p>
+                      <p className="text-xs text-muted-foreground">{p.behavior}</p>
                     </div>
                   </div>
                 </div>
@@ -514,14 +584,14 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground mb-6">Per sempre</p>
                 <ul className="space-y-3">
                   {[
-                    "Pianificazione base dei pasti",
-                    "Lista spesa automatica",
-                    "Gestione dispensa",
-                    "Supporto diete e allergie",
+                    { label: "Pianificazione base dei pasti", driver: "→ meal planning" },
+                    { label: "Lista spesa automatica", driver: "→ integrazione" },
+                    { label: "Gestione dispensa", driver: "→ dispensa" },
+                    { label: "Supporto diete e allergie", driver: "" },
                   ].map((f) => (
-                    <li key={f} className="flex items-center gap-2.5 text-sm text-foreground">
+                    <li key={f.label} className="flex items-center gap-2.5 text-sm text-foreground">
                       <Check className="h-4 w-4 shrink-0 text-primary" />
-                      {f}
+                      <span>{f.label}{f.driver && <span className="text-[10px] text-muted-foreground ml-1">{f.driver}</span>}</span>
                     </li>
                   ))}
                 </ul>
@@ -559,14 +629,17 @@ const Index = () => {
                 <RefreshCw className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-semibold text-foreground md:text-base">Ciclo virtuoso</h3>
               </div>
+              <p className="text-xs text-muted-foreground mb-3">Prima adozione, poi monetizzazione. Il valore gratuito guida la crescita organica.</p>
               <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground md:text-sm">
                 <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Più utenti</span>
                 <ArrowRight className="h-3 w-3 text-primary" />
                 <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Più dati</span>
                 <ArrowRight className="h-3 w-3 text-primary" />
-                <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Algoritmo migliore</span>
+                <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">AI migliore</span>
                 <ArrowRight className="h-3 w-3 text-primary" />
                 <span className="rounded-lg bg-secondary px-3 py-1.5 font-medium text-foreground">Più retention</span>
+                <ArrowRight className="h-3 w-3 text-accent" />
+                <span className="rounded-lg bg-accent/10 px-3 py-1.5 font-medium text-accent">Conversione Premium</span>
               </div>
             </div>
           </div>
@@ -584,10 +657,10 @@ const Index = () => {
             </h2>
             <div className="mx-auto mt-8 grid gap-4 sm:grid-cols-2 md:mt-10 max-w-2xl">
               {[
-                { icon: Brain, label: "Problema reale", desc: "Decision fatigue + spreco alimentare: un costo invisibile per milioni di famiglie." },
-                { icon: BarChart3, label: "Soluzione validata", desc: "Ricerca su 240+ utenti, driver coerenti, R² = 61.7%." },
-                { icon: Lock, label: "Posizionamento unico", desc: "Unica piattaforma integrata nel mercato italiano food-tech." },
-                { icon: Handshake, label: "Sfida principale", desc: "Partnership strategiche con la GDO per dati prodotti e prezzi reali." },
+                { icon: Brain, label: "Problema reale", desc: "Decision fatigue + spreco alimentare: un costo invisibile per milioni di famiglie italiane." },
+                { icon: BarChart3, label: "Soluzione validata", desc: "Ricerca su 240+ utenti, driver coerenti, R² = 61.7%. Il bisogno è reale e misurabile." },
+                { icon: Lock, label: "Mercato frammentato", desc: "Nessun competitor integra tutte le funzioni. PlanEat è l'unica piattaforma end-to-end nel food-tech italiano." },
+                { icon: Database, label: "Sfida principale", desc: "Qualità e aggiornamento continuo dei dati sui prezzi: il fattore critico per la credibilità del sistema." },
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-border/60 bg-card p-5 text-left shadow-sm">
                   <div className="flex items-center gap-2 mb-2">
@@ -600,7 +673,7 @@ const Index = () => {
             </div>
             <div className="mt-10 rounded-2xl border border-accent/20 bg-accent/5 p-6 md:mt-12">
               <p className="text-base font-semibold text-foreground md:text-lg">
-                🚀 PlanEat trasforma la spesa da attività complessa a <span className="text-accent">esperienza intelligente e automatizzata.</span>
+                🚀 PlanEat trasforma la spesa da attività frammentata e stressante a <span className="text-accent">esperienza integrata, intelligente e senza sforzo.</span>
               </p>
             </div>
             <Button
