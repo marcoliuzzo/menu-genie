@@ -81,16 +81,18 @@ const marketData = [
 ];
 
 const competitors = [
-  { name: "App Lista Spesa", lista: true, meal: false, prezzi: false, ai: false },
-  { name: "App Ricette", lista: false, meal: true, prezzi: false, ai: false },
-  { name: "Volantini online", lista: false, meal: false, prezzi: true, ai: false },
-  { name: "PlanEat", lista: true, meal: true, prezzi: true, ai: true },
+  { name: "Bring! / Listonic", desc: "Lista spesa condivisa, input manuale", lista: true, meal: false, prezzi: false, ai: false },
+  { name: "DoveConviene", desc: "Offerte e volantini digitali", lista: false, meal: false, prezzi: true, ai: false },
+  { name: "Zeuler", desc: "Confronto prezzi e delivery", lista: true, meal: false, prezzi: true, ai: false },
+  { name: "Foodder", desc: "Gestione dispensa anti-spreco", lista: false, meal: false, prezzi: false, ai: false },
+  { name: "EasyPlan", desc: "Nutrizione e meal planning", lista: false, meal: true, prezzi: false, ai: false },
+  { name: "PlanEat", desc: "Ecosistema AI integrato", lista: true, meal: true, prezzi: true, ai: true },
 ];
 
 const personas = [
-  { icon: Briefcase, title: "Giovane professionista", age: "25-35", pain: "Poco tempo, troppe decisioni dopo il lavoro. Mangia fuori troppo spesso.", need: "Piani rapidi, automatici e senza stress" },
-  { icon: Home, title: "Famiglia", age: "30-45", pain: "Bilanciare gusti diversi, allergie dei figli, budget settimanale limitato.", need: "Personalizzazione per più persone e controllo spesa" },
-  { icon: GraduationCap, title: "Studente", age: "18-25", pain: "Budget molto limitato, poca esperienza in cucina, nessuna organizzazione.", need: "Ricette facili, economiche e lista spesa ottimizzata" },
+  { icon: Briefcase, name: "Lisa", title: "Target Primario", age: "27-35", pain: "Usa strumenti separati (note, app ricette, delivery). Frammentazione e perdita di tempo ogni giorno.", need: "Semplificazione totale: un unico flusso, zero decisioni inutili", behavior: "Alto carico decisionale quotidiano. Cerca semplificazione, non solo risparmio. Alta probabilità di adozione." },
+  { icon: Home, name: "Marco", title: "Target Secondario", age: "35-50", pain: "Coordinare pasti, dispensa e budget familiare. Pianificazione parziale e attenzione alle promozioni.", need: "Ottimizzare e avere controllo su spesa e alimentazione familiare", behavior: "Pianifica parzialmente. Più propenso alla conversione Premium." },
+  { icon: GraduationCap, name: "Siria", title: "Target Secondario", age: "20-26", pain: "Budget limitato, comportamento impulsivo, poca organizzazione. Sprechi frequenti e disordine.", need: "Soluzione immediata, semplice, zero configurazione", behavior: "Alta sensibilità al prezzo. Forte fit con la versione gratuita." },
 ];
 
 const differentiators = [
@@ -101,14 +103,14 @@ const differentiators = [
 ];
 
 const canvasItems = [
-  { icon: Handshake, title: "Key Partners", items: ["Provider dati retail (GDO)", "Partner tecnologici AI/ML", "Piattaforme food & delivery"] },
-  { icon: Cpu, title: "Key Activities", items: ["Sviluppo algoritmi AI", "Integrazione dati GDO", "Ottimizzazione UX continua"] },
-  { icon: Database, title: "Key Resources", items: ["Tecnologia e algoritmi proprietari", "Database prodotti e prezzi", "Dati comportamentali utenti"] },
-  { icon: Target, title: "Value Proposition", items: ["Riduzione carico decisionale", "Meal planning automatizzato", "Lista spesa ottimizzata", "Più controllo, meno sforzo"] },
-  { icon: Users, title: "Customer Segments", items: ["Giovani professionisti urbani", "Famiglie con figli", "Studenti universitari"] },
+  { icon: Handshake, title: "Key Partners", items: ["Provider dati retail", "Partner tecnologici AI/ML", "Piattaforme food & delivery"] },
+  { icon: Cpu, title: "Key Activities", items: ["Sviluppo AI e personalizzazione", "Integrazione dati prodotti/prezzi", "Ottimizzazione UX e onboarding"] },
+  { icon: Database, title: "Key Resources", items: ["Algoritmo AI proprietario", "Database prodotti e prezzi", "Dati comportamentali utenti"] },
+  { icon: Target, title: "Value Proposition", items: ["Riduzione decision fatigue", "Automazione scelte quotidiane", "Più controllo, meno sforzo"] },
+  { icon: Users, title: "Customer Segments", items: ["Lisa: professionista urbana (primario)", "Marco: famiglia con figli (secondario)", "Siria: studentessa fuori sede (secondario)"] },
   { icon: Megaphone, title: "Channels", items: ["App mobile (iOS/Android)", "App Store & Play Store", "Social media & passaparola"] },
   { icon: ShoppingCart, title: "Cost Structure", items: ["Sviluppo e manutenzione tech", "Infrastruttura cloud/digitale", "Marketing e acquisizione utenti"] },
-  { icon: CreditCard, title: "Revenue Streams", items: ["Abbonamento Premium (€3-5/mese)", "Affiliazione con GDO", "Native advertising", "White-label B2B"] },
+  { icon: CreditCard, title: "Revenue Streams", items: ["Freemium → monetizzazione progressiva", "Abbonamento Premium (€3-5/mese)", "Affiliazione GDO & advertising"] },
 ];
 
 const Index = () => {
