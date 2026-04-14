@@ -382,23 +382,82 @@ const Index = () => {
         </section>
       </RevealSection>
 
-      {/* ─── BUYER PERSONAS ─── */}
+      {/* ─── INSIGHT STRATEGICO ─── */}
       <RevealSection>
         <section className="py-16 px-4 md:py-24">
+          <div className="container max-w-3xl">
+            <div className="mb-6 text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-4 py-1.5 text-sm font-medium text-accent">
+                <Lightbulb className="h-4 w-4" />
+                Insight Strategico
+              </div>
+              <h2 className="text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground">
+                Non vogliono spendere meno.{" "}
+                <span className="gradient-primary-text">Vogliono decidere meno.</span>
+              </h2>
+            </div>
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+                    <TrendingUp className="h-4 w-4 text-accent" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">La disponibilità gratuita è il fattore con maggiore impatto</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">Gli utenti sono molto sensibili al prezzo. Tuttavia, il risparmio economico diretto NON è statisticamente significativo come driver di adozione.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Brain className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Il vero bisogno: meno decisioni, non meno spesa</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">Gli utenti non cercano principalmente di spendere meno — cercano di decidere meno. Questo valida la value proposition: PlanEat riduce il carico decisionale, non solo la spesa.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm text-center">
+                  <p className="text-3xl font-bold text-primary">3.26<span className="text-base text-muted-foreground">/5</span></p>
+                  <p className="mt-1 text-xs text-muted-foreground">Propensione media all'utilizzo</p>
+                  <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">Il bisogno esiste già, ma non è ancora completamente consapevole</p>
+                </div>
+                <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm text-center">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <AlertTriangle className="h-4 w-4 text-accent" />
+                    <p className="text-sm font-semibold text-foreground">Implicazione</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Onboarding semplice, immediato e senza attrito. L'utente deve percepire valore prima ancora di configurare.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
+      {/* ─── BUYER PERSONAS ─── */}
+      <RevealSection>
+        <section className="bg-secondary py-16 px-4 md:py-24">
           <div className="container">
             <h2 className="text-center text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground">
               Per chi è <span className="gradient-primary-text">PlanEat?</span>
             </h2>
             <p className="mx-auto mt-3 max-w-md text-center text-sm text-muted-foreground md:mt-4 md:text-base">
-              Utenti con alto carico decisionale nella gestione alimentare quotidiana.
+              Segmentazione comportamentale basata su carico decisionale e abitudini di spesa.
             </p>
             <div className="mt-10 grid gap-6 md:mt-16 md:grid-cols-3 md:gap-8">
               {personas.map((p) => (
-                <div key={p.title} className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
+                <div key={p.name} className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary md:h-14 md:w-14">
                     <p.icon className="h-5 w-5 text-primary md:h-6 md:w-6" />
                   </div>
-                  <h3 className="text-base font-semibold text-foreground md:text-lg">{p.title}</h3>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-base font-semibold text-foreground md:text-lg">{p.name}</h3>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">{p.title}</span>
+                  </div>
                   <p className="text-xs text-muted-foreground mb-3">{p.age} anni</p>
                   <div className="space-y-2">
                     <div className="rounded-lg bg-destructive/5 p-2.5">
@@ -408,6 +467,10 @@ const Index = () => {
                     <div className="rounded-lg bg-primary/5 p-2.5">
                       <p className="text-xs font-semibold text-primary mb-0.5">Bisogno</p>
                       <p className="text-xs text-muted-foreground">{p.need}</p>
+                    </div>
+                    <div className="rounded-lg bg-accent/5 p-2.5">
+                      <p className="text-xs font-semibold text-accent mb-0.5">Comportamento</p>
+                      <p className="text-xs text-muted-foreground">{p.behavior}</p>
                     </div>
                   </div>
                 </div>
