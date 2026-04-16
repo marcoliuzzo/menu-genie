@@ -104,30 +104,82 @@ serve(async (req) => {
       profile.allergies || []
     );
 
-    const systemPrompt = `Sei PlanEat, un assistente AI avanzato per la pianificazione dei pasti. Genera un piano alimentare settimanale ottimizzato.
+    // ── Strict time constraint ──
+    const maxTime: number = Number(profile.cookingTime) || 45;
+    const timeBucket =
+      maxTime <= 15 ? "ULTRA RAPIDE (max 15 min, no preparazioni complesse)"
+      : maxTime <= 30 ? "RAPIDE (max 30 min, una sola pentola/padella se possibile)"
+      : maxTime <= 45 ? "MEDIE (max 45 min)"
+      : "ELABORATE consentite (max " + maxTime + " min)";
 
-REGOLE:
-1. TRADUZIONE DEL MOOD: Interpreta il mood dell'utente in stile culinario. "Energetico" = piatti colorati, speziati. "Relax" = comfort food, zuppe. "Avventuroso" = cucina etnica, sapori nuovi. "Nostalgico" = ricette della tradizione. "Leggero" = insalate, piatti freschi. "Festivo" = piatti elaborati e conviviali.
-2. OTTIMIZZAZIONE DISPENSA: Usa prioritariamente gli ingredienti che l'utente ha già in casa.
-3. LOGICA ECONOMICA: Proponi ricette che condividono ingredienti comuni per ottimizzare la spesa.
-4. CALIBRAZIONE ENERGIA: Se l'energia è bassa (<5), proponi ricette "One-Pot" o con meno di 15 min di preparazione.
-5. Rispondi SEMPRE in italiano.
-6. IMPORTANTE: Rispondi SOLO con il JSON richiesto tramite tool call, senza markdown o testo aggiuntivo.
-${constraintsPrompt}`;
+    // ── Mood weighting ──
+    const mood: string = (profile.mood || "neutro").toLowerCase();
+    const moodWeight: number = typeof profile.moodWeight === "number" ? profile.moodWeight : 0.6;
+    const moodPriority =
+      moodWeight >= 0.7 ? "ALTA — il mood deve dominare lo stile delle ricette (purché rispetti dieta+allergie+tempo)"
+      : moodWeight >= 0.4 ? "MEDIA — il mood influenza significativamente le scelte"
+      : "BASSA — il mood è solo un suggerimento";
+
+    // ── Anti-repetition (last 2-3 weeks of recipes) ──
+    const recentRecipes: string[] = Array.isArray(profile.recentRecipes) ? profile.recentRecipes : [];
+    const recentBlock = recentRecipes.length > 0
+      ? `\n\n=== RICETTE GIÀ PROPOSTE (NON ripetere) ===\nL'utente ha già visto recentemente: ${recentRecipes.slice(0, 30).join(", ")}.\nNON proporre nessuna di queste ricette. Trova alternative diverse.`
+      : "";
+
+    // ── Disliked ingredients ──
+    const disliked: string[] = Array.isArray(profile.dislikedIngredients) ? profile.dislikedIngredients : [];
+    const dislikedBlock = disliked.length > 0
+      ? `\n\n=== INGREDIENTI SGRADITI ===\nEvita (vincolo forte ma non assoluto): ${disliked.join(", ")}. Se proprio necessario, usa al massimo 1 volta nel piano.`
+      : "";
+
+    const systemPrompt = `Sei PlanEat, un motore intelligente di pianificazione pasti. Genera un piano settimanale OTTIMIZZATO, VARIO e PERSONALIZZATO.
+
+═══ GERARCHIA DEI VINCOLI (RIGIDA) ═══
+1. ALLERGIE → vincolo ASSOLUTO, mai violare
+2. DIETA → vincolo ASSOLUTO, mai violare
+3. TEMPO MAX (${maxTime} min) → vincolo HARD: OGNI ricetta deve avere prepTime ≤ ${maxTime}. Categoria: ${timeBucket}.
+4. INGREDIENTI SGRADITI → vincolo forte
+5. DISPENSA → priorità di utilizzo
+6. MOOD (${mood}) → priorità ${moodPriority}
+
+═══ REGOLE DI VARIETÀ (CRITICHE) ═══
+- I 14 piatti del piano (7 pranzi + 7 cene) DEVONO essere TUTTI DIVERSI tra loro: nessuna ripetizione interna.
+- L'ingrediente principale (proteina o pasta/riso/verdura dominante) NON deve ripetersi più di 2 volte in tutta la settimana.
+- Alterna stili culinari: italiano, mediterraneo, asiatico, mediorientale, comfort, fresco.
+- Bilancia: 2-3 piatti rapidi/comfort + 2-3 healthy + 1-2 più elaborati (rispettando il tempo max).
+- Pranzo e cena dello stesso giorno devono essere DIVERSI per stile e ingrediente principale.
+
+═══ MOOD → STILE CULINARIO ═══
+- "energetico" / "energia": piatti colorati, speziati, ricchi di proteine, frutti rossi, agrumi.
+- "relax": comfort food, zuppe, vellutate, piatti caldi, risotti (se concessi).
+- "focus": piatti leggeri, omega-3, verdure verdi, semi.
+- "romantico": piatti curati, presentazione elegante, vino-friendly.
+- "conviviale" / "festivo": piatti da condividere, taglieri, paste al forno.
+- "avventuroso": cucine etniche, sapori nuovi (thai, marocchino, peruviano).
+- "leggero": insalate ricche, bowl, piatti freschi, bassa cottura.
+- "nostalgico": ricette della tradizione regionale italiana.
+
+═══ FALLBACK INTELLIGENTE ═══
+Se i vincoli sono troppo stretti: NON violare MAI allergie, dieta o tempo. Rilassa solo: mood (-30%), preferenze sgradite (-20%), varietà cuisine (consenti più piatti italiani).
+
+═══ OUTPUT ═══
+Rispondi SOLO tramite tool call generate_meal_plan, in italiano, senza markdown.
+${constraintsPrompt}${recentBlock}${dislikedBlock}`;
 
     const userPrompt = `Profilo utente:
 - Dieta: ${profile.diet || "onnivoro"}
 - Allergie: ${profile.allergies?.length ? profile.allergies.join(", ") : "Nessuna"}
+- Ingredienti sgraditi: ${disliked.length ? disliked.join(", ") : "Nessuno"}
 - Obiettivi: ${profile.goals?.length ? profile.goals.join(", ") : "Equilibrio generale"}
 - Budget settimanale: ${profile.budget}€
-- Tempo max per cucinare: ${profile.cookingTime} minuti
-- Livello energia (1-10): ${profile.energy}
-- Mood: ${profile.mood || "neutro"}
+- TEMPO MAX cucina: ${maxTime} minuti (HARD LIMIT)
+- Energia (1-10): ${profile.energy}
+- Mood: ${mood} (peso: ${moodWeight})
 - Attrezzatura: ${profile.equipment?.length ? profile.equipment.join(", ") : "fornelli"}
-- In dispensa: ${profile.pantry?.length ? profile.pantry.join(", ") : "niente di specifico"}
+- Dispensa: ${profile.pantry?.length ? profile.pantry.join(", ") : "vuota"}
 
-RICORDA: Rispetta RIGOROSAMENTE la dieta "${profile.diet || "onnivoro"}" e le allergie [${(profile.allergies || []).join(", ")}].
-Genera il piano alimentare settimanale.`;
+GENERA un piano settimanale di 14 ricette TUTTE DIVERSE, ognuna con prepTime ≤ ${maxTime} min, rispettando RIGOROSAMENTE dieta "${profile.diet || "onnivoro"}" e allergie [${(profile.allergies || []).join(", ")}].
+NON ripetere ricette già viste recentemente. Massimizza varietà di ingredienti, cuisine e stili.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
