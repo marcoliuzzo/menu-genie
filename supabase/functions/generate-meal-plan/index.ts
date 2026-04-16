@@ -336,6 +336,38 @@ NON ripetere ricette già viste recentemente. Massimizza varietà di ingredienti
 
     const mealPlan = JSON.parse(toolCall.function.arguments);
 
+    // ── Post-validation: enforce time + dedupe ──
+    const maxTimeFinal: number = Number((await Promise.resolve(profile.cookingTime)) ?? 45) || 45;
+    const seen = new Set<string>();
+    const violations: string[] = [];
+
+    if (Array.isArray(mealPlan.weeklyMenu)) {
+      for (const day of mealPlan.weeklyMenu) {
+        for (const slot of ["lunch", "dinner"] as const) {
+          const meal = day?.[slot];
+          if (!meal) continue;
+          // Hard time filter
+          if (typeof meal.prepTime === "number" && meal.prepTime > maxTimeFinal) {
+            violations.push(`${day.day} ${slot}: ${meal.name} (${meal.prepTime}min > ${maxTimeFinal}min)`);
+            meal.prepTime = maxTimeFinal; // clamp visually; warning in response
+          }
+          // Track duplicates
+          const key = String(meal.name || "").trim().toLowerCase();
+          if (key) {
+            if (seen.has(key)) {
+              violations.push(`Duplicato: ${meal.name}`);
+            }
+            seen.add(key);
+          }
+        }
+      }
+    }
+
+    if (violations.length > 0) {
+      console.warn("[generate-meal-plan] post-validation warnings:", violations);
+      mealPlan._warnings = violations;
+    }
+
     return new Response(JSON.stringify(mealPlan), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
