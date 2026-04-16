@@ -1,6 +1,6 @@
-import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import planeatLogo from "@/assets/planeat-logo.png";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -29,10 +29,7 @@ const Footer = () => {
       <div className="border-t border-border/40 py-6 px-4 md:py-8">
         <div className="container flex flex-col items-center gap-3 md:flex-row md:justify-between md:gap-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-md gradient-primary">
-              <Sparkles className="h-3.5 w-3.5 text-white" />
-            </div>
-            <span className="font-semibold text-foreground">PlanEat</span>
+            <img src={planeatLogo} alt="PlanEat" className="h-8 w-auto" loading="lazy" />
           </div>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <button className="transition-colors hover:text-foreground">About</button>

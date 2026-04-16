@@ -1,10 +1,12 @@
-import { Sparkles, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import planeatLogo from "@/assets/planeat-logo.png";
 
 const navLinks = [
   { label: "Home", path: "/" },
+  { label: "Presentazione", path: "/presentazione" },
   { label: "Come funziona", path: "/come-funziona" },
   { label: "Demo", path: "/demo" },
   { label: "Dashboard", path: "/dashboard" },
@@ -17,13 +19,14 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-primary">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-lg font-semibold tracking-tight text-foreground">
-            PlanEat
-          </span>
+        <Link to="/" className="flex items-center gap-2" aria-label="PlanEat home">
+          <img
+            src={planeatLogo}
+            alt="PlanEat"
+            className="h-9 w-auto md:h-10"
+            loading="eager"
+            decoding="async"
+          />
         </Link>
 
         {/* Desktop nav */}
