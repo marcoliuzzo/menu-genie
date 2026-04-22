@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Clock, ChefHat, ShoppingCart, Check, RotateCcw, Settings, Download, Sparkles, Lightbulb } from "lucide-react";
+import { Clock, ChefHat, ShoppingCart, Check, RotateCcw, Settings, Download, Sparkles, Lightbulb, Zap, Wallet, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -47,13 +47,63 @@ const Results = () => {
       <main className="flex-1 px-4 py-8">
         <div className="container max-w-4xl">
           {/* Heading */}
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-foreground md:text-4xl">
-              Il tuo piano PlanEat
+          <div className="mb-6 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs font-medium text-accent">
+              <Wand2 className="h-3.5 w-3.5" />
+              Piano generato automaticamente
+            </span>
+            <h1 className="mt-3 text-3xl font-bold text-foreground md:text-4xl">
+              È già pronto.
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Ecco il piano personalizzato che abbiamo creato per te. Buon appetito!
+              Abbiamo organizzato la tua settimana. Puoi lasciarlo così — o ritoccarlo in un tap.
             </p>
+          </div>
+
+          {/* AI EXPLANATION — perché abbiamo scelto questo */}
+          <div className="mb-6 rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/5 via-card to-card p-5 shadow-sm">
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Sparkles className="h-4 w-4 text-accent" />
+              Creato per te in base a:
+            </h2>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <div className="flex items-center gap-2 rounded-xl bg-card/60 px-3 py-2">
+                <Clock className="h-4 w-4 text-accent shrink-0" />
+                <span className="text-xs text-foreground">Tempo disponibile</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-xl bg-card/60 px-3 py-2">
+                <ChefHat className="h-4 w-4 text-accent shrink-0" />
+                <span className="text-xs text-foreground">Le tue preferenze</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-xl bg-card/60 px-3 py-2">
+                <Check className="h-4 w-4 text-accent shrink-0" />
+                <span className="text-xs text-foreground">Ingredienti in dispensa</span>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">
+              Ottimizzato per ridurre lo sforzo. Nessuna scelta da fare.
+            </p>
+          </div>
+
+          {/* QUICK ACTIONS — controllo leggero */}
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 rounded-full"
+              onClick={() => navigate("/generazione")}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Rigenera settimana
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1.5 rounded-full" onClick={() => navigate("/generazione")}>
+              <Zap className="h-3.5 w-3.5" />
+              Più veloce
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1.5 rounded-full" onClick={() => navigate("/generazione")}>
+              <Wallet className="h-3.5 w-3.5" />
+              Più economico
+            </Button>
           </div>
 
           {/* Mood Analysis */}
@@ -61,7 +111,7 @@ const Results = () => {
             <div className="mb-8 rounded-2xl border bg-primary/5 p-6 shadow-sm">
               <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-foreground">
                 <Sparkles className="h-5 w-5 text-primary" />
-                Analisi del tuo Mood
+                Perché questo piano funziona per te
               </h2>
               <p className="text-sm leading-relaxed text-foreground/80">
                 {plan.moodAnalysis}
@@ -144,9 +194,12 @@ const Results = () => {
           <div className="mb-8 rounded-2xl border bg-card p-6 shadow-sm">
             <h2 className="mb-1 flex items-center gap-2 text-lg font-semibold text-foreground">
               <ShoppingCart className="h-5 w-5 text-primary" />
-              Lista della spesa
+              Lista generata automaticamente
             </h2>
-            <p className="mb-6 text-sm text-muted-foreground">
+            <p className="mb-1 text-sm text-muted-foreground">
+              Basata sul tuo piano pasti · ottimizzata per ridurre sprechi
+            </p>
+            <p className="mb-6 text-xs text-muted-foreground">
               {totalItems} ingredienti · {inPantryCount} già in dispensa
             </p>
             <div className="space-y-6">
