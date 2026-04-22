@@ -99,10 +99,10 @@ const Index = () => {
               <Button
                 size="lg"
                 onClick={() => navigate("/demo")}
-                className="rounded-full bg-accent px-8 text-base font-semibold text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-200 hover:shadow-xl hover:shadow-accent/30 hover:scale-105"
+                className="group rounded-full bg-accent px-8 text-base font-semibold text-accent-foreground shadow-lg shadow-accent/25 transition-all duration-200 hover:shadow-xl hover:shadow-accent/40 hover:scale-105 animate-cta-glow"
               >
                 Prova la Demo
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-1 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
               </Button>
               <Button
                 size="lg"
@@ -144,8 +144,8 @@ const Index = () => {
             },
           ].map((f, i) => (
             <Reveal key={f.title} delay={120 + i * 100}>
-              <div className="h-full rounded-2xl border border-border/60 bg-card p-5 text-center transition-all duration-200 hover:border-accent/40 hover:shadow-md">
-                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
+              <div className="group h-full rounded-2xl border border-border/60 bg-card p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-lg">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 transition-transform duration-300 group-hover:scale-110">
                   <f.icon className="h-5 w-5 text-accent" />
                 </div>
                 <h3 className="mt-3 text-sm font-semibold text-foreground">{f.title}</h3>
@@ -184,8 +184,8 @@ const Index = () => {
               },
             ].map((f, i) => (
               <Reveal key={f.title} delay={120 + i * 100}>
-                <div className="h-full rounded-2xl border border-border/60 bg-card p-5 text-center transition-all duration-200 hover:border-primary/40 hover:shadow-md">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <div className="group h-full rounded-2xl border border-border/60 bg-card p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform duration-300 group-hover:scale-110">
                     <f.icon className="h-5 w-5 text-primary" />
                   </div>
                   <h3 className="mt-3 text-sm font-semibold text-foreground">{f.title}</h3>
