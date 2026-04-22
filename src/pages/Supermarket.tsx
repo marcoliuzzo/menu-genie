@@ -49,10 +49,10 @@ const Supermarket = () => {
           </Button>
 
           <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-4xl">
-            Dove conviene fare la spesa questa settimana?
+            Consigliato per te
           </h1>
           <p className="mt-2 text-sm text-muted-foreground md:text-base">
-            Confronto basato su volantini settimanali, offerte online e prezzi medi indicativi della tua zona.
+            Tutto in un unico posto. Minimo sforzo, prezzi sempre aggiornati.
           </p>
 
           {/* CAP input */}

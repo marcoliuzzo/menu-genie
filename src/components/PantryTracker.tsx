@@ -90,7 +90,9 @@ const PantryTracker = () => {
             <p className="text-xs font-semibold text-amber-800">
               {expiringSoon.length} prodott{expiringSoon.length === 1 ? "o" : "i"} da consumare presto
             </p>
-            <p className="text-xs text-amber-700 mt-0.5">L'AI darà priorità a questi ingredienti nel piano settimanale.</p>
+            <p className="text-xs text-amber-700 mt-0.5">
+              ✓ Abbiamo aggiornato il piano per usarli — già integrato nel piano settimanale.
+            </p>
           </div>
         </div>
       )}

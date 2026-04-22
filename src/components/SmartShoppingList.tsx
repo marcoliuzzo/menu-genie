@@ -81,9 +81,12 @@ const SmartShoppingList = () => {
         <div>
           <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-primary" />
-            Lista della spesa intelligente
+            Lista generata automaticamente
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
+            Basata sul tuo piano · ottimizzata per ridurre sprechi
+          </p>
+          <p className="text-xs text-muted-foreground mt-0.5">
             {neededItems.length} da comprare · {pantryMatched.length} già in dispensa
           </p>
         </div>
