@@ -1,65 +1,48 @@
-# Pagina Pitch — Presentazione a slide
+# Ristrutturazione Pitch PlanEat
 
-Nuova route `/pitch` isolata dal resto del sito: presentazione professionale a 16 slide navigabile da tastiera/telecomando, riutilizzando design system, colori, tipografia e componenti già presenti in PlanEat. Nessuna modifica alle pagine esistenti.
+Riscrivo le 16 slide esistenti e ne aggiungo 1 nuova (totale 17), riposizionando PlanEat come **Ecosistema Decisionale Alimentare AI**. Nessuna modifica a colori, tipografia, `SlideShell`, header, routing o altre pagine — solo contenuto e composizione delle slide.
 
-## Struttura file
+## Struttura finale (17 slide)
 
-- `src/pages/Pitch.tsx` — contenitore deck (state slide corrente, listener tastiera, transizioni, contatore).
-- `src/components/pitch/SlideShell.tsx` — wrapper riusabile: `h-screen w-screen`, `overflow-hidden`, flex center, padding coerente, opzionale `eyebrow`/numero slide, footer minimale con logo PlanEat + progress dots.
-- `src/components/pitch/slides/Slide01Hero.tsx` … `Slide16Closing.tsx` — una per file, ciascuna un'unica schermata autonoma.
-- `src/components/pitch/index.ts` — array ordinato dei 16 componenti slide (ordine fisso, facile aggiungere/riordinare).
-- Registrazione route in `src/App.tsx`: `<Route path="/pitch" element={<Pitch />} />`. Nessun link in Header/Footer (accesso diretto via URL, come richiesto per non alterare il resto).
+| # | Slide | Note |
+|---|---|---|
+| 1 | Hero — "365 volte. La stessa decisione." | Riscritta |
+| 2 | Il Problema — carico decisionale (6 pensieri) | Riscritta |
+| 3 | Validazione — 227 intervistati, focus semplicità | Riscritta |
+| 4 | **Perché ora?** — 4 driver di mercato | **NUOVA** |
+| 5 | Opportunità di mercato — TAM/SAM/SOM snellito | Riscritta (era Slide04) |
+| 6 | L'Ecosistema PlanEat — flusso 6 step | Riscritta (era Solution) |
+| 7 | Esperienza prodotto — mockup + user journey | Aggiornata |
+| 8 | Mood Planning — parte da come ti senti | Riscritta, più centrale |
+| 9 | **Il vuoto di mercato** — matrice con competitor reali (Bring!, KitchenPal, Whisk, Mealia, Grocery AI) | **NUOVA** (sostituisce vecchia Competitive) |
+| 10 | Perché vinciamo — tabella comparativa 6 feature | Riscritta |
+| 11 | Business Model — Freemium → Marketplace | Aggiornata |
+| 12 | **Data Flywheel** — loop utenti/dati/AI | **NUOVA** (sostituisce Growth) |
+| 13 | Roadmap — 5 fasi (no date) | Riscritta |
+| 14 | Financial Highlights — 4 KPI dal Business Plan | Aggiornata |
+| 15 | Team — 7 founder per area (Strategia/Tech/Prodotto/Marketing/Ops) | Aggiornata |
+| 16 | **Vision** — "Oltre il Meal Planning" | **NUOVA** |
+| 17 | Chiusura — insight centrale finale | Riscritta |
 
-## Navigazione
+Slide rimosse/assorbite: vecchia Slide10 GoToMarket e Slide11 Acquisition (fuse implicitamente nella narrativa; GTM copre solo la roadmap in questa versione investor-ready per non appesantire).
 
-Dentro `Pitch.tsx`:
-- `useState<number>` per indice slide corrente (0-based).
-- `useEffect` con `keydown` su `window`:
-  - `ArrowRight`, `Space`, `PageDown` → next
-  - `ArrowLeft`, `PageUp` → prev
-  - `Home` → prima, `End` → ultima
-  - `preventDefault` su Space per evitare scroll.
-- Nessuno scroll verticale: `<html>`/`<body>` restano invariati, ma la pagina usa `h-screen overflow-hidden` a livello contenitore.
-- Transizione fluida tra slide: contenitore `relative`, ogni slide `absolute inset-0` con `transition-opacity duration-500` + leggero `translate-x` (fade + slide sottile). Nessuna libreria esterna.
-- Progress: dots discreti in basso + `Slide N / 16` in basso a destra, entrambi con stile chrome esistente (`text-muted-foreground`, `text-xs`).
-- Click sui dots → salto diretto (utile in prova live).
+## File toccati
 
-## Stile visivo
+- `src/components/pitch/slides/Slide01Hero.tsx` → `Slide17.tsx` — riscritti con nuovi contenuti
+- Nuovi file: `Slide04WhyNow.tsx`, `Slide09MarketGap.tsx`, `Slide12Flywheel.tsx`, `Slide16Vision.tsx`, `Slide17Closing.tsx`
+- File eliminati: `Slide10GoToMarket.tsx`, `Slide11Acquisition.tsx`, vecchio `Slide16Closing.tsx` (sostituito da Slide17)
+- `src/components/pitch/index.ts` — nuova lista ordinata di 17 slide
 
-- Riuso totale: `bg-background`, `text-foreground`, `gradient-primary-text`, `text-accent`, `text-primary`, card `rounded-2xl border border-border/60 bg-card`, spacing `container mx-auto px-4`, font Inter già configurato.
-- Titoli grandi con `text-[clamp(2.5rem,7vw,6rem)] font-bold tracking-tight leading-[1.05]` — coerente con hero Index.
-- Logo PlanEat: stesso asset usato in `Header.tsx`/`Footer.tsx`.
-- Ogni slide: un solo messaggio principale, ampio whitespace, gerarchia forte (eyebrow uppercase piccolo → titolo enorme → contenuto).
+## Principi di design mantenuti
 
-## Contenuto delle 16 slide
+- `SlideShell` invariato (eyebrow + contenitore)
+- Titoli grandi con `gradient-primary-text` sull'accento chiave
+- Icone `lucide-react`, card `rounded-2xl border border-border/60 bg-card`
+- Poche parole per slide, gerarchia forte, molto whitespace
+- Data e insight dal Business Plan (227 intervistati, competitor reali, KPI freemium→premium)
 
-Testi esattamente come da brief. Layout per slide:
+## Fuori scope
 
-1. **Hero** — logo centrato in alto, titolo enorme su due righe con grande gap, sottotitolo virgolettato in `text-muted-foreground`.
-2. **Problema** — titolo + 4 card in griglia (Ricette / Lista / Dispensa / Offerte) con icone Lucide (`ChefHat`, `ShoppingCart`, `Package`, `Tag`), visivamente sconnesse (bordi tratteggiati o gap ampio) per suggerire frammentazione.
-3. **Validazione** — numero `227` gigante gradient-primary, sottotitolo, 3 card insight, citazione in basso in stile pull-quote.
-4. **Mercato** — titolo + 3 cerchi concentrici placeholder (TAM/SAM/SOM) con label e importo placeholder.
-5. **Soluzione** — titolo + flow verticale/orizzontale a 5 step con frecce (Mood → Meal → Dispensa → Lista → Ricette) usando card compatte + `ArrowRight`.
-6. **Product experience** — cornice smartphone placeholder (div con `rounded-[2.5rem] border-8` + gradient interno) a sinistra, 4 step flow a destra.
-7. **Mood Planning** — titolo + 4 card mood con emoji/icone (`Sparkles`, `Heart`, `Zap`, `Users`).
-8. **Vantaggio competitivo** — matrice 2×2: assi Personalizzazione (Y) × Integrazione (X), PlanEat dot accent in alto a destra, competitor placeholder dot muted.
-9. **Business Model** — 5 blocchi (Free → Premium → Partnership → Advertising → Marketplace) come flow.
-10. **Go to Market** — timeline orizzontale con 3 tappe (Anno 1/2/3).
-11. **Customer Acquisition** — funnel a 4 stadi (trapezio composto da 4 div che si restringono) + 4 badge canali sopra.
-12. **Growth Engine** — 5 nodi disposti a cerchio con frecce curve (SVG) o layout circolare CSS che rappresenta il flywheel.
-13. **Financial Highlights** — 4 card KPI placeholder (grafico sparkline SVG statico) per Utenti / Premium / Ricavi / EBITDA.
-14. **Roadmap** — timeline orizzontale con 3 milestone 2026/2027/2028.
-15. **Team** — griglia 7 card founder (avatar circolare placeholder, nome placeholder, ruolo, competenze come tag).
-16. **Chiusura** — narrativa a 3 momenti (titolo grande → pausa "Una di queste è sempre…" → messaggio finale + logo), stesso stile visivo della hero per chiudere il cerchio.
-
-## Estensibilità futura (preparata, non implementata ora)
-
-- Ogni slide riceve prop `step: number` (default 0) che potrà pilotare la comparsa progressiva di elementi al click.
-- Il controller `Pitch.tsx` è già predisposto per gestire un contatore di step interno per slide prima di avanzare: struttura pronta, ma per questa versione ogni freccia avanza direttamente di slide.
-- Componenti slide isolati → facile sostituire placeholder con screenshot reali MVP, grafici dati, embed demo.
-
-## Fuori scope (esplicito)
-
-- Nessuna modifica a `Header`, `Footer`, `Index`, `Presentazione`, altre pagine, `index.css`, `tailwind.config.ts`, palette, componenti UI condivisi.
-- Nessuna animazione avanzata (solo transizione fade+slide tra slide).
-- Nessun link di navigazione verso `/pitch` aggiunto altrove.
+- Animazioni progressive avanzate (reveal step-by-step, click-to-advance) → restano da aggiungere in una fase successiva come già concordato
+- Screenshot reali dell'MVP → placeholder mockup mantenuto
+- Dati finanziari reali → sparkline placeholder con label dal BP
