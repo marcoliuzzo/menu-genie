@@ -1,10 +1,10 @@
 import SlideShell from "../SlideShell";
 
 const kpis = [
-  { label: "Crescita utenti", trend: "up" },
-  { label: "Utenti premium", trend: "up" },
-  { label: "Ricavi", trend: "up" },
-  { label: "EBITDA", trend: "up" },
+  { label: "Crescita utenti", value: "0 → 250K", horizon: "Anno 3" },
+  { label: "Utenti premium", value: "8% conv.", horizon: "Anno 3" },
+  { label: "Ricavi", value: "€4.2M ARR", horizon: "Anno 3" },
+  { label: "Break-even", value: "Mese 28", horizon: "EBITDA+" },
 ];
 
 const Sparkline = () => (
@@ -25,7 +25,7 @@ const Sparkline = () => (
   </svg>
 );
 
-const Slide13Financials = () => (
+const Slide14Financials = () => (
   <SlideShell eyebrow="Financial highlights">
     <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tight text-foreground text-center">
       Traiettoria <span className="gradient-primary-text">scalabile</span> e sostenibile.
@@ -39,11 +39,12 @@ const Slide13Financials = () => (
           <div className="mt-3">
             <Sparkline />
           </div>
-          <div className="mt-2 text-xs text-muted-foreground">Placeholder</div>
+          <div className="mt-2 text-lg font-bold text-foreground">{k.value}</div>
+          <div className="text-xs text-muted-foreground">{k.horizon}</div>
         </div>
       ))}
     </div>
   </SlideShell>
 );
 
-export default Slide13Financials;
+export default Slide14Financials;
