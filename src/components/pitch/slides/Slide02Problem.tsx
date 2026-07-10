@@ -1,36 +1,33 @@
-import { ChefHat, ShoppingCart, Package, Tag } from "lucide-react";
 import SlideShell from "../SlideShell";
 
-const items = [
-  { icon: ChefHat, label: "Ricette", desc: "App e blog sparsi" },
-  { icon: ShoppingCart, label: "Lista della spesa", desc: "Note e post-it" },
-  { icon: Package, label: "Dispensa", desc: "A memoria" },
-  { icon: Tag, label: "Offerte supermercati", desc: "Volantini cartacei" },
+const thoughts = [
+  "Non so cosa mangiare",
+  "Perdo tempo a pianificare",
+  "Spreco ingredienti",
+  "Faccio acquisti inutili",
+  "Non riesco a organizzarmi",
+  "Non ho voglia di decidere",
 ];
 
 const Slide02Problem = () => (
   <SlideShell eyebrow="Il problema">
     <h2 className="text-[clamp(2.25rem,6vw,4.5rem)] font-bold tracking-tight leading-[1.05] text-foreground">
-      Troppi strumenti.
-      <span className="block gradient-primary-text mt-2">Un solo problema.</span>
+      Il vero peso non è il cibo.
+      <span className="block gradient-primary-text mt-2">È il carico decisionale.</span>
     </h2>
-    <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-      L'utente oggi è costretto a coordinare da solo un ecosistema completamente frammentato.
-    </p>
-    <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-5">
-      {items.map((it) => (
+    <div className="mt-14 grid grid-cols-2 md:grid-cols-3 gap-4">
+      {thoughts.map((t) => (
         <div
-          key={it.label}
-          className="rounded-2xl border border-dashed border-border bg-card p-6 text-center"
+          key={t}
+          className="rounded-2xl border border-dashed border-border bg-card p-6"
         >
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-secondary">
-            <it.icon className="h-6 w-6 text-primary" />
-          </div>
-          <div className="text-base font-semibold text-foreground">{it.label}</div>
-          <div className="mt-1 text-sm text-muted-foreground">{it.desc}</div>
+          <p className="text-base md:text-lg text-foreground italic">"{t}"</p>
         </div>
       ))}
     </div>
+    <p className="mt-12 text-lg md:text-xl text-muted-foreground max-w-3xl">
+      Il problema non è il cibo. È tutto il processo decisionale che lo precede.
+    </p>
   </SlideShell>
 );
 

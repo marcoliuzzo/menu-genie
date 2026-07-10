@@ -1,9 +1,13 @@
-import { ArrowRight } from "lucide-react";
 import SlideShell from "../SlideShell";
 
-const flow = ["Mood", "Meal Plan", "Dispensa", "Lista della Spesa"];
+const flow = [
+  { step: "Scelta del mood", desc: "L'utente indica come si sente" },
+  { step: "Pianificazione pasti", desc: "L'AI compone la settimana" },
+  { step: "Gestione dispensa", desc: "Ingredienti già in casa valorizzati" },
+  { step: "Lista della spesa", desc: "Solo ciò che serve davvero" },
+];
 
-const Slide06Product = () => (
+const Slide07Product = () => (
   <SlideShell eyebrow="Esperienza prodotto">
     <div className="grid md:grid-cols-2 gap-16 items-center">
       <div className="flex justify-center">
@@ -18,16 +22,19 @@ const Slide06Product = () => (
       </div>
       <div>
         <h2 className="text-[clamp(1.75rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground">
-          Un flusso pensato per <span className="gradient-primary-text">zero sforzo</span>.
+          Un'esperienza continua.
+          <span className="block gradient-primary-text mt-1">Non funzionalità separate.</span>
         </h2>
         <div className="mt-8 space-y-4">
           {flow.map((f, i) => (
-            <div key={f} className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent font-bold">
+            <div key={f.step} className="flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent font-bold">
                 {i + 1}
               </div>
-              <span className="text-lg font-semibold text-foreground">{f}</span>
-              {i < flow.length - 1 && <ArrowRight className="h-4 w-4 text-muted-foreground ml-auto" />}
+              <div>
+                <div className="text-base font-semibold text-foreground">{f.step}</div>
+                <div className="text-sm text-muted-foreground">{f.desc}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -36,4 +43,4 @@ const Slide06Product = () => (
   </SlideShell>
 );
 
-export default Slide06Product;
+export default Slide07Product;
