@@ -1,7 +1,8 @@
 import { Check, Minus } from "lucide-react";
 import SlideShell from "../SlideShell";
 
-const features = [
+type Val = boolean | "partial";
+const features: { name: string; competitors: Val; planeat: Val }[] = [
   { name: "Meal Planning", competitors: true, planeat: true },
   { name: "Gestione Dispensa", competitors: "partial", planeat: true },
   { name: "Lista Spesa", competitors: true, planeat: true },
