@@ -13,6 +13,7 @@ import Supermarket from "./pages/Supermarket";
 import Profile from "./pages/Profile";
 import Generating from "./pages/Generating";
 import Results from "./pages/Results";
+import Pitch from "./pages/Pitch";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/profilo" element={<Profile />} />
             <Route path="/generazione" element={<Generating />} />
             <Route path="/risultati" element={<Results />} />
+            <Route path="/pitch" element={<Pitch />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
