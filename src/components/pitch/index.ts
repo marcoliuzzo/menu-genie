@@ -1,6 +1,6 @@
 import Slide01Hero from "./slides/Slide01Hero";
-import Slide02Problem from "./slides/Slide02Problem";
-import Slide03Validation from "./slides/Slide03Validation";
+import Slide02Validation from "./slides/Slide02Validation";
+import Slide03Problem from "./slides/Slide03Problem";
 import Slide04WhyNow from "./slides/Slide04WhyNow";
 import Slide05Market from "./slides/Slide05Market";
 import Slide06Ecosystem from "./slides/Slide06Ecosystem";
@@ -18,8 +18,8 @@ import Slide17Closing from "./slides/Slide17Closing";
 
 export const slides = [
   Slide01Hero,
-  Slide02Problem,
-  Slide03Validation,
+  Slide02Validation,
+  Slide03Problem,
   Slide04WhyNow,
   Slide05Market,
   Slide06Ecosystem,
@@ -35,3 +35,6 @@ export const slides = [
   Slide16Vision,
   Slide17Closing,
 ];
+
+// Total interactive steps per slide (must match order above)
+export const slideSteps = [5, 4, 5, 5, 4, 5, 4, 5, 4, 7, 4, 5, 5, 4, 1, 5, 4];
