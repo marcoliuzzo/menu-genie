@@ -1,31 +1,57 @@
 import SlideShell from "../SlideShell";
+import GlassCard from "../GlassCard";
+import { useStep } from "../stepContext";
 
 const phases = [
-  { n: "01", label: "Sviluppo MVP" },
-  { n: "02", label: "Validazione" },
-  { n: "03", label: "Lancio sul mercato" },
-  { n: "04", label: "Partnership strategiche" },
-  { n: "05", label: "Espansione ecosistema" },
+  { title: "MVP Development", desc: "Costruzione del prodotto core: meal planner, dispensa, mood." },
+  { title: "Validation", desc: "Test con early adopter urbani, iterazione rapida su retention." },
+  { title: "Launch", desc: "Go-to-market su Milano, Roma, Torino. Freemium + Premium." },
+  { title: "Partnerships", desc: "Integrazioni con GDO, nutrizionisti e wellness partner." },
+  { title: "Ecosystem Expansion", desc: "PlanEat diventa la piattaforma decisionale alimentare." },
 ];
 
-const Slide13Roadmap = () => (
-  <SlideShell eyebrow="Roadmap">
-    <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold tracking-tight text-foreground text-center">
-      Da MVP a <span className="gradient-primary-text">ecosistema</span>.
-    </h2>
-    <div className="mt-16 relative">
-      <div className="absolute left-8 right-8 top-6 h-px bg-border" />
-      <div className="grid grid-cols-5 gap-4">
-        {phases.map((p) => (
-          <div key={p.n} className="flex flex-col items-center text-center">
-            <div className="h-4 w-4 rounded-full bg-primary ring-4 ring-primary/20" />
-            <div className="mt-6 text-2xl md:text-3xl font-bold gradient-primary-text">{p.n}</div>
-            <div className="mt-2 text-sm md:text-base text-foreground px-2">{p.label}</div>
+const Slide13Roadmap = () => {
+  const { step } = useStep();
+  const current = Math.min(step, phases.length - 1);
+  return (
+    <SlideShell eyebrow="Roadmap" background="sand">
+      <div className="relative min-h-[75vh] flex items-center justify-center">
+        {/* Background completed milestones */}
+        <div className="absolute inset-x-0 top-20 flex justify-center gap-8">
+          {phases.map((p, i) => (
+            <div
+              key={p.title}
+              className={`flex flex-col items-center transition-all duration-500 ${
+                i < current ? "opacity-40" : i === current ? "opacity-0" : "opacity-20"
+              }`}
+            >
+              <div
+                className={`h-3 w-3 rounded-full ${
+                  i < current ? "bg-primary" : "bg-border"
+                }`}
+              />
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground mt-2">
+                {p.title}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Current phase */}
+        <div key={current} className="text-center animate-fade-in">
+          <div className="text-xs uppercase tracking-[0.28em] text-muted-foreground">
+            Fase {String(current + 1).padStart(2, "0")} / {String(phases.length).padStart(2, "0")}
           </div>
-        ))}
+          <h2 className="mt-4 text-[clamp(2.5rem,6vw,4.5rem)] font-bold tracking-tight text-foreground">
+            {phases[current].title}
+          </h2>
+          <GlassCard className="mt-8 max-w-xl mx-auto p-6">
+            <p className="text-base md:text-lg text-foreground">{phases[current].desc}</p>
+          </GlassCard>
+        </div>
       </div>
-    </div>
-  </SlideShell>
-);
+    </SlideShell>
+  );
+};
 
 export default Slide13Roadmap;
