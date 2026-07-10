@@ -7,6 +7,7 @@ import planeatLogo from "@/assets/planeat-logo.png";
 const navLinks = [
   { label: "Home", path: "/" },
   { label: "Presentazione", path: "/presentazione" },
+  { label: "Pitch", path: "/pitch" },
   { label: "Come funziona", path: "/come-funziona" },
   { label: "Demo", path: "/demo" },
   { label: "Dashboard", path: "/dashboard" },
