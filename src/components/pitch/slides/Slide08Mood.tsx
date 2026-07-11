@@ -1,74 +1,91 @@
 import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
+import GlassCard from "../GlassCard";
+import LogoMark from "../LogoMark";
 import { useStep } from "../stepContext";
 
-const moods = [
-  { label: "Stressato", color: "hsl(0 70% 60%)", start: { x: -220, y: -80 } },
-  { label: "Stanco",    color: "hsl(240 40% 55%)", start: { x:  220, y: -100 } },
-  { label: "Energico",  color: "hsl(35 90% 55%)",  start: { x: -180, y:  120 } },
-  { label: "Rilassato", color: "hsl(160 36% 45%)", start: { x:  180, y:  140 } },
-  { label: "Concentrato", color: "hsl(222 100% 59%)", start: { x: 0, y: -180 } },
+const words = [
+  { label: "Stressato",   start: { x: -280, y: -80 } },
+  { label: "Stanco",      start: { x:  260, y: -120 } },
+  { label: "Energico",    start: { x: -220, y:  140 } },
+  { label: "Rilassato",   start: { x:  220, y:  160 } },
+  { label: "Concentrato", start: { x:    0, y: -200 } },
 ];
 
 const Slide08Mood = () => {
   const { step } = useStep();
-  const converged = step >= 2;
+  const showWords = step >= 1;
+  const converge = step >= 2;
+  const sphere = step >= 3;
   return (
     <SlideShell eyebrow="Mood planning" background="mesh">
-      <div className="relative h-[75vh] flex items-center justify-center">
-        <StepReveal at={0} until={2} className="absolute top-0 left-0 right-0 text-center">
-          <p className="text-[clamp(2rem,5vw,3.75rem)] font-bold tracking-tight text-foreground">
+      <div className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        {/* Question */}
+        <StepReveal at={0} until={3} keepSpace={false} className="absolute top-10 left-0 right-0 text-center">
+          <p className="type-premium text-[clamp(2rem,5vw,3.75rem)] text-foreground">
             Come ti senti oggi?
           </p>
         </StepReveal>
 
-        {/* Spheres */}
-        {moods.map((m, i) => {
-          const x = converged ? 0 : m.start.x;
-          const y = converged ? 0 : m.start.y;
-          const scale = step >= 3 ? 0 : 1;
+        {/* Words */}
+        {words.map((w, i) => {
+          const x = converge ? 0 : w.start.x;
+          const y = converge ? 0 : w.start.y;
+          const scale = sphere ? 0 : converge ? 0.6 : 1;
+          const opacity = sphere ? 0 : showWords ? 1 : 0;
           return (
             <div
-              key={m.label}
-              className="absolute flex flex-col items-center"
+              key={w.label}
+              className="absolute"
               style={{
                 transform: `translate(${x}px, ${y}px) scale(${scale})`,
-                transition: "transform 700ms cubic-bezier(0.22,1,0.36,1)",
-                transitionDelay: `${i * 60}ms`,
-                opacity: step >= 1 ? 1 : 0,
+                opacity,
+                transition: "transform 900ms cubic-bezier(0.22,1,0.36,1), opacity 500ms ease-out",
+                transitionDelay: `${i * 70}ms`,
               }}
             >
-              <div
-                className="h-20 w-20 md:h-24 md:w-24 rounded-full"
-                style={{
-                  background: `radial-gradient(circle at 30% 30%, white, ${m.color})`,
-                  boxShadow: `0 10px 40px -8px ${m.color}`,
-                }}
-              />
-              <span className="mt-3 text-sm font-medium text-foreground">{m.label}</span>
+              <span className="type-premium text-2xl md:text-4xl gradient-primary-text">
+                {w.label}
+              </span>
             </div>
           );
         })}
 
-        {/* AI burst */}
-        <StepReveal at={3} until={4} keepSpace={false} className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="h-56 w-56 rounded-full"
-            style={{
-              background:
-                "conic-gradient(from 0deg, hsl(160 36% 36%), hsl(222 100% 59%), hsl(160 36% 36%))",
-              filter: "blur(20px)",
-              animation: "spin 3s linear infinite",
-            }}
-          />
-          <div className="absolute text-lg font-semibold text-foreground bg-background/80 backdrop-blur px-6 py-3 rounded-full border border-border">
-            Generazione piano…
+        {/* Blur sphere with logo */}
+        {sphere && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div
+              className="h-[380px] w-[380px] rounded-full"
+              style={{
+                background:
+                  "radial-gradient(circle at 30% 30%, hsl(222 100% 78%), hsl(160 36% 55%) 55%, hsl(222 100% 40% / 0.6))",
+                filter: "blur(20px)",
+                animation: "moodSpin 12s linear infinite",
+              }}
+            />
+            <div className="absolute" style={{ filter: "blur(1.5px)", opacity: 0.9 }}>
+              <LogoMark size={180} glow={false} animateIn={false} />
+            </div>
+            <style>{`@keyframes moodSpin{to{transform:rotate(360deg)}}`}</style>
           </div>
-          <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+        )}
+
+        {/* Piano generato card */}
+        <StepReveal at={3} delay={400} className="absolute" style={{ top: "58%" }}>
+          <GlassCard glow className="px-8 py-5">
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-xs uppercase tracking-[0.32em] text-muted-foreground">Generazione AI</span>
+            </div>
+            <div className="type-premium text-2xl md:text-3xl text-foreground mt-2">
+              Piano generato
+            </div>
+          </GlassCard>
         </StepReveal>
 
-        <StepReveal at={4} className="absolute bottom-2 left-0 right-0 text-center">
-          <p className="text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground max-w-4xl mx-auto">
+        {/* Final message */}
+        <StepReveal at={4} className="absolute bottom-6 left-0 right-0 text-center">
+          <p className="type-premium text-[clamp(1.5rem,3.5vw,2.5rem)] text-foreground max-w-4xl mx-auto">
             La prima pianificazione alimentare
             <span className="block gradient-primary-text">guidata dalle emozioni.</span>
           </p>

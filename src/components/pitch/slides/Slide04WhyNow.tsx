@@ -8,55 +8,52 @@ const drivers = [
   { icon: Brain, label: "AI", desc: "Modelli accessibili e personalizzati" },
   { icon: ShoppingBag, label: "Digital Grocery", desc: "GDO online in crescita costante" },
   { icon: Recycle, label: "Food Waste", desc: "Consapevolezza anti-spreco crescente" },
-  { icon: Sparkles, label: "Simplicità", desc: "Sovraccarico decisionale quotidiano" },
+  { icon: Sparkles, label: "Semplicità", desc: "Sovraccarico decisionale quotidiano" },
 ];
 
 const Slide04WhyNow = () => {
   const { step } = useStep();
+  // step 0 title; 1-4 activate each card (index i-1 highlighted); step 4 also shows final line
+  const focus = step >= 1 && step <= 4 ? step - 1 : -1;
   return (
     <SlideShell eyebrow="Perché ora" background="mesh">
-      <div className="min-h-[70vh] flex flex-col justify-center">
+      <div className="min-h-[75vh] flex flex-col justify-center">
         <StepReveal at={0}>
-          <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold tracking-tight text-foreground max-w-3xl">
+          <h2 className="type-premium text-[clamp(2rem,4.5vw,3.25rem)] text-foreground max-w-3xl">
             Quattro forze convergono.
             <span className="block gradient-primary-text mt-1">Oggi è il momento.</span>
           </h2>
         </StepReveal>
 
-        <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-5 relative">
+        <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6">
           {drivers.map((d, i) => {
-            const active = step >= i;
+            const active = focus === i;
+            const dim = focus !== -1 && !active;
             return (
-              <StepReveal key={d.label} at={i} delay={i * 40}>
+              <StepReveal key={d.label} at={i + 1} delay={0}>
                 <GlassCard
-                  glow={active && step < 4}
-                  className={`p-6 min-h-[200px] transition-all duration-500 ${
-                    active ? "opacity-100" : "opacity-40"
-                  }`}
+                  glow={active}
+                  className="p-7 min-h-[220px] transition-all duration-500 ease-out"
+                  style={{
+                    transform: active ? "translateY(-6px) scale(1.04)" : "scale(1)",
+                    opacity: dim ? 0.35 : 1,
+                    filter: dim ? "blur(2px)" : "blur(0)",
+                  }}
                 >
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10">
                     <d.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <div className="text-lg font-bold text-foreground">{d.label}</div>
-                  <div className="mt-2 text-sm text-muted-foreground">{d.desc}</div>
+                  <div className="type-premium text-xl text-foreground">{d.label}</div>
+                  <div className="mt-2 text-sm text-muted-foreground leading-relaxed">{d.desc}</div>
                 </GlassCard>
               </StepReveal>
             );
           })}
-
-          {/* Connecting lines at final step */}
-          <StepReveal at={4} keepSpace={false} className="absolute inset-0 pointer-events-none">
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
-              <line x1="50" y1="100" x2="150" y2="100" stroke="hsl(160 36% 36% / 0.5)" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="150" y1="100" x2="250" y2="100" stroke="hsl(160 36% 36% / 0.5)" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="250" y1="100" x2="350" y2="100" stroke="hsl(222 100% 59% / 0.5)" strokeWidth="1" strokeDasharray="4 4" />
-            </svg>
-          </StepReveal>
         </div>
 
-        <StepReveal at={4} delay={200} className="mt-14 text-center">
-          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto">
-            Le decisioni alimentari diventano sempre più complesse.
+        <StepReveal at={4} delay={250} className="mt-12 text-center">
+          <p className="text-base md:text-lg text-foreground/80 max-w-2xl mx-auto">
+            Le decisioni alimentari diventano più complesse.
             <span className="block text-muted-foreground">Gli strumenti per gestirle sono ancora frammentati.</span>
           </p>
         </StepReveal>
