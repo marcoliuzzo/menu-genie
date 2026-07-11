@@ -13,9 +13,9 @@ const Slide11Business = () => (
   <SlideShell eyebrow="Business model" background="white">
     <div className="min-h-[75vh] flex flex-col justify-center">
       <StepReveal at={0}>
-        <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold tracking-tight text-foreground text-center max-w-3xl mx-auto">
+        <h2 className="type-premium text-[clamp(1.75rem,4vw,3rem)] text-foreground text-center max-w-3xl mx-auto">
           Un modello pensato per
-          <span className="gradient-primary-text"> crescere.</span>
+          <span className="gradient-primary-text"> evolvere.</span>
         </h2>
       </StepReveal>
 

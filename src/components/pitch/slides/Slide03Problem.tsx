@@ -13,9 +13,9 @@ const Slide03Problem = () => (
   <SlideShell eyebrow="Il problema" background="sand">
     <div className="min-h-[70vh] flex flex-col justify-center">
       <StepReveal at={0}>
-        <h2 className="text-[clamp(1.75rem,4vw,3rem)] font-bold tracking-tight text-foreground max-w-3xl">
-          Una giornata qualunque.
-          <span className="block text-muted-foreground font-light mt-1">Sempre gli stessi dubbi.</span>
+        <h2 className="type-premium text-[clamp(2rem,5vw,3.75rem)] text-foreground max-w-4xl">
+          UNA GIORNATA QUALUNQUE.
+          <span className="block text-muted-foreground font-semibold mt-2">SEMPRE LE STESSE DOMANDE.</span>
         </h2>
       </StepReveal>
 
@@ -35,9 +35,9 @@ const Slide03Problem = () => (
       </div>
 
       <StepReveal at={4} className="mt-16 text-center">
-        <p className="text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold tracking-tight text-foreground">
-          Decine di micro-decisioni.
-          <span className="block gradient-primary-text">Ogni giorno.</span>
+        <p className="type-premium text-[clamp(1.75rem,4vw,2.75rem)] text-foreground">
+          Tempo perso. <span className="text-muted-foreground">Stress inutile.</span>
+          <span className="block gradient-primary-text mt-1">Ogni giorno.</span>
         </p>
       </StepReveal>
     </div>

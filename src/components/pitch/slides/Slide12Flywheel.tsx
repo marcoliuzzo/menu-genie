@@ -1,69 +1,116 @@
 import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
-import LogoMark from "../LogoMark";
 import { useStep } from "../stepContext";
 
-const nodes = ["Utenti", "Dati", "AI", "Personalizzazione", "Retention"];
+const nodes = [
+  { label: "Utenti",          desc: "Nuovi utenti entrano nell'ecosistema PlanEat." },
+  { label: "Dati",            desc: "Ogni interazione genera dati alimentari granulari." },
+  { label: "AI",              desc: "I modelli migliorano su preferenze, mood e dispensa." },
+  { label: "Personalizzazione", desc: "Il piano diventa sempre più preciso e rilevante." },
+  { label: "Retention",       desc: "Più valore percepito. Più uso ricorrente. Più utenti." },
+];
 
 const Slide12Flywheel = () => {
   const { step } = useStep();
-  const rotation = step * 72;
+  const activeIdx = Math.min(step, nodes.length - 1);
   return (
     <SlideShell eyebrow="Data flywheel" background="mesh">
-      <div className="relative min-h-[75vh] flex items-center justify-center">
-        {/* Center logo */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <GlassCard glow className="h-40 w-40 rounded-full flex items-center justify-center">
-            <LogoMark size={56} />
-          </GlassCard>
-        </div>
+      <div className="relative min-h-[78vh] grid grid-cols-1 md:grid-cols-5 gap-8 items-center">
+        {/* Left: spiral flow */}
+        <div className="md:col-span-3 relative h-[560px] flex items-center justify-center">
+          {/* Spiral SVG background */}
+          <svg viewBox="0 0 500 560" className="absolute inset-0 w-full h-full pointer-events-none">
+            <defs>
+              <linearGradient id="spiralGrad" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stopColor="hsl(160 36% 36%)" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="hsl(222 100% 59%)" stopOpacity="0.55" />
+              </linearGradient>
+            </defs>
+            {/* Growing spiral / flow path */}
+            <path
+              d="M 60 500 Q 180 480 220 420 T 320 320 T 260 200 T 380 120 T 460 60"
+              fill="none"
+              stroke="url(#spiralGrad)"
+              strokeWidth="2.5"
+              strokeDasharray="6 6"
+            />
+            {/* Arrow tip */}
+            <polygon points="460,60 448,58 452,72" fill="hsl(222 100% 59%)" />
+          </svg>
 
-        {/* Rotating ring */}
-        <div
-          className="relative h-[520px] w-[520px] md:h-[560px] md:w-[560px]"
-          style={{
-            transform: `rotate(${rotation}deg)`,
-            transition: "transform 700ms cubic-bezier(0.22,1,0.36,1)",
-          }}
-        >
-          {nodes.map((n, i) => {
-            const angle = (i / nodes.length) * Math.PI * 2 - Math.PI / 2;
-            const radius = 230;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius;
-            const active = i === (step % nodes.length);
+          {/* Node cards along the spiral (positioned absolutely) */}
+          {[
+            { label: nodes[0].label, top: "82%", left: "10%",  size: 84  },
+            { label: nodes[1].label, top: "62%", left: "34%",  size: 100 },
+            { label: nodes[2].label, top: "42%", left: "56%",  size: 118 },
+            { label: nodes[3].label, top: "24%", left: "40%",  size: 138 },
+            { label: nodes[4].label, top: "8%",  left: "68%",  size: 168 },
+          ].map((p, i) => {
+            const active = i === activeIdx;
+            const passed = i < activeIdx;
             return (
               <div
-                key={n}
-                className="absolute top-1/2 left-1/2"
+                key={p.label}
+                className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-out"
                 style={{
-                  transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${-rotation}deg)`,
-                  transition: "transform 700ms cubic-bezier(0.22,1,0.36,1)",
+                  top: p.top,
+                  left: p.left,
+                  opacity: active ? 1 : passed ? 0.7 : 0.35,
                 }}
               >
-                <GlassCard
-                  glow={active}
-                  className={`px-5 py-4 min-w-[160px] text-center transition-all ${
-                    active ? "scale-110" : "opacity-70"
-                  }`}
+                <div
+                  className="rounded-full flex items-center justify-center"
+                  style={{
+                    height: p.size,
+                    width: p.size,
+                    background: active
+                      ? "linear-gradient(135deg, hsl(160 36% 36% / 0.24), hsl(222 100% 59% / 0.28))"
+                      : "linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25))",
+                    backdropFilter: "blur(20px)",
+                    border: "1px solid rgba(255,255,255,0.6)",
+                    boxShadow: active
+                      ? "0 20px 60px -14px hsl(222 100% 59% / 0.45), 0 0 0 1px hsl(222 100% 59% / 0.25)"
+                      : "0 12px 32px -12px rgba(20,25,40,0.18)",
+                    transform: active ? "scale(1.08)" : "scale(1)",
+                    transition: "all 700ms cubic-bezier(0.22,1,0.36,1)",
+                  }}
                 >
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
-                  <div className="text-lg font-bold text-foreground">{n}</div>
-                </GlassCard>
+                  <span
+                    className={`type-premium text-center px-3 ${
+                      active ? "gradient-primary-text" : "text-foreground"
+                    }`}
+                    style={{ fontSize: Math.max(13, p.size * 0.16) }}
+                  >
+                    {p.label}
+                  </span>
+                </div>
               </div>
             );
           })}
         </div>
 
-        <StepReveal at={4} className="absolute bottom-4 left-0 right-0 text-center">
-          <p className="text-[clamp(1.25rem,3vw,2rem)] font-bold tracking-tight text-foreground">
-            Ogni interazione rende PlanEat
-            <span className="gradient-primary-text"> più intelligente.</span>
-          </p>
-        </StepReveal>
+        {/* Right: focus card */}
+        <div className="md:col-span-2">
+          <div key={activeIdx} className="animate-fade-in">
+            <div className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">
+              Step {String(activeIdx + 1).padStart(2, "0")} / {String(nodes.length).padStart(2, "0")}
+            </div>
+            <h3 className="mt-3 type-premium text-4xl md:text-5xl gradient-primary-text">
+              {nodes[activeIdx].label}
+            </h3>
+            <GlassCard className="mt-6 p-6">
+              <p className="text-base md:text-lg text-foreground/85">{nodes[activeIdx].desc}</p>
+            </GlassCard>
+          </div>
+
+          <StepReveal at={4} delay={200} className="mt-8">
+            <p className="type-premium text-lg md:text-xl text-foreground">
+              Ogni ciclo rende PlanEat
+              <span className="gradient-primary-text"> più intelligente.</span>
+            </p>
+          </StepReveal>
+        </div>
       </div>
     </SlideShell>
   );

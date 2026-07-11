@@ -37,4 +37,4 @@ export const slides = [
 ];
 
 // Total interactive steps per slide (must match order above)
-export const slideSteps = [5, 4, 5, 5, 4, 5, 4, 5, 4, 7, 4, 5, 5, 4, 1, 5, 4];
+export const slideSteps = [5, 3, 5, 5, 4, 5, 4, 5, 5, 7, 5, 5, 5, 5, 1, 5, 5];

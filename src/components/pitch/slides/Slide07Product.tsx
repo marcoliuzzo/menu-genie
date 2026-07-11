@@ -5,56 +5,86 @@ import { useStep } from "../stepContext";
 import { Sparkles, CalendarDays, ShoppingCart } from "lucide-react";
 
 const keys = [
-  { label: "Mood", icon: Sparkles, at: 1 },
-  { label: "Plan", icon: CalendarDays, at: 2 },
-  { label: "Shop", icon: ShoppingCart, at: 3 },
+  { label: "Mood", icon: Sparkles, at: 1, desc: "Il piano si adatta a come ti senti oggi." },
+  { label: "Plan", icon: CalendarDays, at: 2, desc: "21 pasti settimanali generati e riequilibrati dall'AI." },
+  { label: "Shop", icon: ShoppingCart, at: 3, desc: "Una lista sola, ottimizzata su offerte e dispensa." },
 ];
 
 const Slide07Product = () => {
   const { step } = useStep();
+  // Show one card at a time — the one whose "at" equals current step (steps 1..3)
+  const currentIdx = keys.findIndex((k) => k.at === step);
   return (
     <SlideShell eyebrow="Product experience" background="sand">
-      <div className="min-h-[75vh] grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-        {/* Left keywords */}
-        <div className="flex flex-col gap-6 order-2 md:order-1">
-          {keys.map((k) => {
-            const active = step >= k.at;
-            return (
-              <StepReveal key={k.label} at={k.at}>
-                <GlassCard
-                  glow={active}
-                  className={`px-6 py-5 flex items-center gap-4 transition-all duration-500 ${
-                    active ? "opacity-100" : "opacity-50"
-                  }`}
-                >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-                    <k.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <span className="text-xl font-bold text-foreground">{k.label}</span>
-                </GlassCard>
-              </StepReveal>
-            );
-          })}
-        </div>
-
+      <div className="min-h-[80vh] grid grid-cols-1 md:grid-cols-5 gap-10 items-center">
         {/* iPhone mockup */}
-        <StepReveal at={0} className="order-1 md:order-2 flex justify-center md:col-span-2">
-          <div
-            className="relative rounded-[52px] border-[10px] border-foreground/90 bg-foreground/95 shadow-2xl overflow-hidden"
-            style={{ width: 300, height: 620 }}
-          >
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 h-6 w-24 rounded-full bg-black" />
+        <StepReveal at={0} className="md:col-span-3 flex justify-center">
+          <div className="relative">
+            {/* Glow behind */}
             <div
-              className="absolute inset-3 rounded-[42px] flex items-center justify-center text-background/70 text-sm"
+              aria-hidden
+              className="absolute inset-0 -z-10 rounded-[80px] blur-3xl opacity-70"
               style={{
                 background:
-                  "linear-gradient(160deg, hsl(160 36% 36%) 0%, hsl(222 100% 59%) 100%)",
+                  "radial-gradient(closest-side, hsl(222 100% 59% / 0.35), hsl(160 36% 36% / 0.20) 55%, transparent 75%)",
+                transform: "scale(1.15)",
               }}
+            />
+            <div
+              className="relative rounded-[62px] bg-black shadow-[0_40px_120px_-30px_rgba(0,0,0,0.5)] overflow-hidden"
+              style={{ width: 340, height: 700, padding: 6 }}
             >
-              <span className="uppercase tracking-[0.24em] text-xs">Video demo</span>
+              <div className="relative h-full w-full rounded-[56px] overflow-hidden">
+                {/* Dynamic Island */}
+                <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 h-7 w-28 rounded-full bg-black" />
+                <div
+                  className="absolute inset-0 flex items-center justify-center text-white/70 text-xs"
+                  style={{
+                    background:
+                      "linear-gradient(160deg, hsl(160 36% 36%) 0%, hsl(222 100% 59%) 100%)",
+                  }}
+                >
+                  <span className="uppercase tracking-[0.32em]">Video demo · placeholder</span>
+                </div>
+              </div>
             </div>
           </div>
         </StepReveal>
+
+        {/* Right side — one card at a time */}
+        <div className="md:col-span-2 relative min-h-[280px] flex items-center">
+          {keys.map((k, i) => {
+            const active = i === currentIdx;
+            return (
+              <div
+                key={k.label}
+                className="absolute inset-0 flex items-center transition-all duration-700 ease-out"
+                style={{
+                  opacity: active ? 1 : 0,
+                  transform: active ? "translateY(0)" : "translateY(20px)",
+                  pointerEvents: active ? "auto" : "none",
+                }}
+              >
+                <GlassCard glow className="p-8 w-full">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10">
+                      <k.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <span className="type-premium text-3xl text-foreground">{k.label}</span>
+                  </div>
+                  <p className="text-base md:text-lg text-foreground/80 leading-relaxed">
+                    {k.desc}
+                  </p>
+                </GlassCard>
+              </div>
+            );
+          })}
+          {currentIdx === -1 && step === 0 && (
+            <p className="text-sm uppercase tracking-[0.28em] text-muted-foreground">
+              Un'app. Tre gesti.
+            </p>
+          )}
+        </div>
       </div>
     </SlideShell>
   );
