@@ -27,12 +27,12 @@ const Slide08Mood = () => {
           </p>
         </StepReveal>
 
-        {/* Words */}
+        {/* Words — fade out on converge */}
         {words.map((w, i) => {
           const x = converge ? 0 : w.start.x;
           const y = converge ? 0 : w.start.y;
-          const scale = sphere ? 0 : converge ? 0.6 : 1;
-          const opacity = sphere ? 0 : showWords ? 1 : 0;
+          const scale = converge ? 0.4 : 1;
+          const opacity = converge ? 0 : showWords ? 1 : 0;
           return (
             <div
               key={w.label}
@@ -40,7 +40,7 @@ const Slide08Mood = () => {
               style={{
                 transform: `translate(${x}px, ${y}px) scale(${scale})`,
                 opacity,
-                transition: "transform 900ms cubic-bezier(0.22,1,0.36,1), opacity 500ms ease-out",
+                transition: "transform 900ms cubic-bezier(0.22,1,0.36,1), opacity 600ms ease-out",
                 transitionDelay: `${i * 70}ms`,
               }}
             >
@@ -78,7 +78,7 @@ const Slide08Mood = () => {
               <span className="text-xs uppercase tracking-[0.32em] text-muted-foreground">Generazione AI</span>
             </div>
             <div className="type-premium text-2xl md:text-3xl text-foreground mt-2">
-              Piano generato
+              Piano settimanale generato
             </div>
           </GlassCard>
         </StepReveal>

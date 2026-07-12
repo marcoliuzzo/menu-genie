@@ -26,9 +26,8 @@ const Slide16Vision = () => {
         {/* Step 2: frase forte */}
         <StepReveal at={2} variant="zoom" until={3} keepSpace={false} className="absolute inset-0 flex items-center justify-center text-center">
           <h2 className="type-premium-tight text-[clamp(2.5rem,7vw,6rem)] gradient-primary-text max-w-4xl">
-            LIBERIAMO LE PERSONE
-            <span className="block text-foreground">DALLA FATICA DI DECIDERE</span>
-            <span className="block gradient-primary-text">COSA MANGIARE.</span>
+            È UN ECOSISTEMA
+            <span className="block text-foreground">INTEGRATO</span>
           </h2>
         </StepReveal>
 

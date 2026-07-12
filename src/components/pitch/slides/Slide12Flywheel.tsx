@@ -5,7 +5,7 @@ import { useStep } from "../stepContext";
 
 const nodes = [
   { label: "Utenti",          desc: "Nuovi utenti entrano nell'ecosistema PlanEat." },
-  { label: "Dati",            desc: "Ogni interazione genera dati alimentari granulari." },
+  { label: "Dati Grezzi",     desc: "Ogni interazione dell'utente genera nuovi dati per l'algoritmo." },
   { label: "AI",              desc: "I modelli migliorano su preferenze, mood e dispensa." },
   { label: "Personalizzazione", desc: "Il piano diventa sempre più preciso e rilevante." },
   { label: "Retention",       desc: "Più valore percepito. Più uso ricorrente. Più utenti." },
@@ -105,9 +105,9 @@ const Slide12Flywheel = () => {
           </div>
 
           <StepReveal at={4} delay={200} className="mt-8">
-            <p className="type-premium text-lg md:text-xl text-foreground">
+            <p className="type-premium text-[clamp(1.75rem,3.6vw,2.75rem)] text-foreground leading-tight">
               Ogni ciclo rende PlanEat
-              <span className="gradient-primary-text"> più intelligente.</span>
+              <span className="block gradient-primary-text">più intelligente.</span>
             </p>
           </StepReveal>
         </div>

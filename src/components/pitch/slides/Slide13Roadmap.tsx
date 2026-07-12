@@ -5,8 +5,8 @@ import { useStep } from "../stepContext";
 const phases = [
   { title: "MVP Development",   desc: "Costruzione del prodotto core: meal planner, dispensa, mood." },
   { title: "Validation",        desc: "Test con early adopter urbani, iterazione rapida su retention." },
-  { title: "Launch",            desc: "Go-to-market su Milano, Roma, Torino. Freemium + Premium." },
-  { title: "Partnerships",      desc: "Integrazioni con GDO, nutrizionisti e wellness partner." },
+  { title: "Launch",            desc: "Go-to-market su Milano, Roma, Torino, Bologna, Firenze e Napoli. Freemium + Premium." },
+  { title: "Partnerships",      desc: "Collaborazioni con nutrizionisti e wellness partner." },
   { title: "Ecosystem Expansion", desc: "PlanEat diventa la piattaforma decisionale alimentare." },
 ];
 
