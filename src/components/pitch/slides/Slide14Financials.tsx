@@ -11,6 +11,8 @@ import {
   ReferenceLine,
   BarChart,
   Bar,
+  LabelList,
+  CartesianGrid,
 } from "recharts";
 
 // Financial coherence — Business Plan projections (valori assoluti in €)
