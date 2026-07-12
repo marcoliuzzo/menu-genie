@@ -61,11 +61,11 @@ const Slide15Team = () => (
         </p>
       </StepReveal>
 
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         {team.map((f, i) => (
           <StepReveal key={f.name} at={0} delay={i * 60}>
-            <GlassCard className="p-5 h-full flex flex-col">
-              <div className="flex items-center gap-3">
+            <GlassCard className="p-4 h-full flex flex-col">
+              <div className="flex flex-col items-center text-center gap-2">
                 <div
                   className="flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold text-white shrink-0"
                   style={{
@@ -76,25 +76,14 @@ const Slide15Team = () => (
                   {initials(f.name)}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-bold text-foreground leading-tight truncate">{f.name}</div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] gradient-primary-text font-semibold mt-0.5">
+                  <div className="text-xs font-bold text-foreground leading-tight">{f.name}</div>
+                  <div className="text-[10px] uppercase tracking-[0.16em] gradient-primary-text font-semibold mt-1">
                     {f.role}
                   </div>
                 </div>
               </div>
-              <div className="mt-4 space-y-3 text-left">
-                <div>
-                  <div className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground/80 mb-1">
-                    Responsabilità
-                  </div>
-                  <p className="text-xs text-foreground/85 leading-snug">{f.responsibility}</p>
-                </div>
-                <div>
-                  <div className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground/80 mb-1">
-                    Perché
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-snug">{f.why}</p>
-                </div>
+              <div className="mt-3 pt-3 border-t border-border/40">
+                <p className="text-[11px] text-foreground/85 leading-snug text-center">{f.responsibility}</p>
               </div>
             </GlassCard>
           </StepReveal>
