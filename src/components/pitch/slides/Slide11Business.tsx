@@ -4,9 +4,9 @@ import GlassCard from "../GlassCard";
 
 const phases = [
   { when: "Oggi", title: "Freemium", desc: "Onboarding senza attrito, valore immediato per l'utente." },
-  { when: "Oggi", title: "Premium — 3,99€/mese", desc: "Mood planning avanzato, dispensa AI, sync retail illimitato." },
+  { when: "Oggi", title: "Premium — 3,99€/mese", desc: "Mood Planning avanzato. Generazioni illimitate." },
   { when: "Anno 2", title: "Advertising contestuale", desc: "Placement nativi su ricette, lista spesa e mood." },
-  { when: "Anno 3", title: "Nutrizionisti & Consulenze", desc: "Marketplace di servizi premium personalizzati." },
+  { when: "Anno 3", title: "Nutrizionisti & Consulenze", desc: "Servizi premium personalizzati con professionisti verificati." },
 ];
 
 const Slide11Business = () => (

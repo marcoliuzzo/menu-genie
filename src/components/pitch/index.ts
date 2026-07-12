@@ -3,7 +3,6 @@ import Slide02Validation from "./slides/Slide02Validation";
 import Slide03Problem from "./slides/Slide03Problem";
 import Slide04WhyNow from "./slides/Slide04WhyNow";
 import Slide05Market from "./slides/Slide05Market";
-import Slide06Ecosystem from "./slides/Slide06Ecosystem";
 import Slide07Product from "./slides/Slide07Product";
 import Slide08Mood from "./slides/Slide08Mood";
 import Slide09MarketGap from "./slides/Slide09MarketGap";
@@ -22,7 +21,6 @@ export const slides = [
   Slide03Problem,
   Slide04WhyNow,
   Slide05Market,
-  Slide06Ecosystem,
   Slide07Product,
   Slide08Mood,
   Slide09MarketGap,
@@ -37,4 +35,4 @@ export const slides = [
 ];
 
 // Total interactive steps per slide (must match order above)
-export const slideSteps = [5, 3, 5, 5, 4, 5, 4, 5, 5, 7, 5, 5, 5, 5, 1, 5, 5];
+export const slideSteps = [4, 3, 5, 5, 4, 4, 5, 5, 7, 5, 5, 5, 5, 1, 5, 5];

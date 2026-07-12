@@ -51,8 +51,8 @@ const Slide04WhyNow = () => {
           })}
         </div>
 
-        <StepReveal at={4} delay={250} className="mt-12 text-center">
-          <p className="text-base md:text-lg text-foreground/80 max-w-2xl mx-auto">
+        <StepReveal at={4} delay={250} className="mt-8 text-center pb-4">
+          <p className="text-sm md:text-base text-foreground/80 max-w-2xl mx-auto leading-relaxed">
             Le decisioni alimentari diventano più complesse.
             <span className="block text-muted-foreground">Gli strumenti per gestirle sono ancora frammentati.</span>
           </p>

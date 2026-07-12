@@ -2,26 +2,23 @@ import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
 import { useStep } from "../stepContext";
+import italyMap from "@/assets/italy-map.png";
 
 const tiers = [
-  { label: "TAM", value: "€48B", desc: "Food-tech consumer globale", at: 1 },
-  { label: "SAM", value: "€6,2B", desc: "Europa — meal planning + grocery AI", at: 2 },
-  { label: "SOM", value: "€180M", desc: "Italia urbana — early adopter", at: 3 },
+  { label: "TAM", value: "10-12M", desc: "Popolazione italiana target — meal planning digitale", at: 1 },
+  { label: "SAM", value: "2,4-3,1M", desc: "Utenti urbani interessati a soluzioni AI food-tech", at: 2 },
+  { label: "SOM", value: "180.000", desc: "Utenti attivi nei primi 3 anni", at: 3 },
 ];
 
-// Approximate city coords on a 400x520 viewBox tuned to path below
+// Coordinates as % on the uploaded italy-map.png
 const cities = [
-  { name: "Milano",  x: 155, y: 105 },
-  { name: "Torino",  x: 105, y: 118 },
-  { name: "Bologna", x: 190, y: 175 },
-  { name: "Firenze", x: 195, y: 215 },
-  { name: "Roma",    x: 220, y: 295 },
-  { name: "Napoli",  x: 260, y: 345 },
+  { name: "Torino",  x: 20, y: 22 },
+  { name: "Milano",  x: 32, y: 19 },
+  { name: "Bologna", x: 42, y: 33 },
+  { name: "Firenze", x: 45, y: 41 },
+  { name: "Roma",    x: 54, y: 56 },
+  { name: "Napoli",  x: 64, y: 65 },
 ];
-
-// More faithful stylised silhouette of Italy
-const ITALY_PATH =
-  "M150,55 C165,50 185,55 200,70 C215,80 225,95 235,110 C245,120 255,125 260,140 C263,155 255,168 245,175 C240,185 250,200 245,215 C240,230 220,235 215,250 C220,270 240,280 250,295 C260,310 275,315 285,330 C295,345 300,365 295,380 C288,395 275,405 260,405 C245,405 240,395 235,380 C232,368 240,355 232,345 C218,335 205,345 195,335 C185,325 180,310 175,295 C168,280 158,270 152,255 C145,240 140,225 138,210 C136,195 145,180 140,165 C132,150 125,135 128,120 C130,100 138,80 150,55 Z M300,395 C310,395 315,405 312,415 C308,425 295,428 288,420 C282,412 288,398 300,395 Z M85,180 C92,178 98,185 95,192 C92,198 82,200 78,193 C75,186 80,182 85,180 Z";
 
 const Slide05Market = () => {
   const { step } = useStep();
@@ -38,26 +35,32 @@ const Slide05Market = () => {
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Italy map */}
           <StepReveal at={0} className="flex justify-center">
-            <div className="relative w-full max-w-[400px]">
-              <svg viewBox="0 0 400 480" className="w-full h-auto">
-                <defs>
-                  <linearGradient id="italyFill" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(160 36% 36%)" stopOpacity="0.14" />
-                    <stop offset="100%" stopColor="hsl(222 100% 59%)" stopOpacity="0.10" />
-                  </linearGradient>
-                </defs>
-                <path d={ITALY_PATH} fill="url(#italyFill)" stroke="hsl(160 36% 36% / 0.55)" strokeWidth="1.4" strokeLinejoin="round" />
-                {cities.map((c, i) => (
-                  <g key={c.name}>
-                    <circle cx={c.x} cy={c.y} r="14" fill="hsl(222 100% 59% / 0.16)">
-                      <animate attributeName="r" values="10;18;10" dur="2.4s" begin={`${i * 0.25}s`} repeatCount="indefinite" />
-                      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.4s" begin={`${i * 0.25}s`} repeatCount="indefinite" />
-                    </circle>
-                    <circle cx={c.x} cy={c.y} r="5" fill="hsl(222 100% 59%)" />
-                    <text x={c.x + 12} y={c.y + 4} fontSize="11" fontWeight="600" fill="hsl(0 0% 20%)">{c.name}</text>
-                  </g>
-                ))}
-              </svg>
+            <div className="relative w-full max-w-[420px] aspect-[5/6]">
+              <img
+                src={italyMap}
+                alt="Italia"
+                className="absolute inset-0 w-full h-full object-contain opacity-80"
+                draggable={false}
+              />
+              {cities.map((c, i) => (
+                <div
+                  key={c.name}
+                  className="absolute -translate-x-1/2 -translate-y-1/2"
+                  style={{ left: `${c.x}%`, top: `${c.y}%` }}
+                >
+                  <div className="relative flex items-center">
+                    <span
+                      className="absolute h-4 w-4 rounded-full bg-primary/25"
+                      style={{ animation: `mapPulse 2.4s ${i * 0.25}s ease-out infinite` }}
+                    />
+                    <span className="relative h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_0_3px_hsl(222_100%_59%_/_0.18)]" />
+                    <span className="ml-2 text-[11px] font-semibold text-foreground bg-background/70 backdrop-blur px-1.5 py-0.5 rounded">
+                      {c.name}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <style>{`@keyframes mapPulse{0%{transform:scale(0.6);opacity:0.7}80%{transform:scale(2.6);opacity:0}100%{transform:scale(2.6);opacity:0}}`}</style>
             </div>
           </StepReveal>
 
@@ -89,7 +92,7 @@ const Slide05Market = () => {
                         </div>
                         <div
                           className="text-sm text-muted-foreground mt-1 transition-all duration-500 overflow-hidden"
-                          style={{ maxHeight: active ? 60 : 0, opacity: active ? 1 : 0 }}
+                          style={{ maxHeight: active ? 80 : 0, opacity: active ? 1 : 0 }}
                         >
                           {t.desc}
                         </div>

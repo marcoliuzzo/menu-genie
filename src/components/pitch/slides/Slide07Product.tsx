@@ -7,7 +7,7 @@ import { Sparkles, CalendarDays, ShoppingCart } from "lucide-react";
 const keys = [
   { label: "Mood", icon: Sparkles, at: 1, desc: "Il piano si adatta a come ti senti oggi." },
   { label: "Plan", icon: CalendarDays, at: 2, desc: "21 pasti settimanali generati e riequilibrati dall'AI." },
-  { label: "Shop", icon: ShoppingCart, at: 3, desc: "Una lista sola, ottimizzata su offerte e dispensa." },
+  { label: "Gestione Dispensa", icon: ShoppingCart, at: 3, desc: "Una lista sola, ottimizzata su offerte e dispensa." },
 ];
 
 const Slide07Product = () => {

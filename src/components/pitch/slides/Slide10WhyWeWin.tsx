@@ -50,23 +50,34 @@ const Slide10WhyWeWin = () => {
           {capabilities.map((c, i) => {
             const isActive = i === activeIdx;
             const dim = activeIdx !== -1 && !isActive;
+            const exclusive = !c.competitor;
             return (
               <GlassCard
                 key={c.label}
-                glow={isActive}
+                glow={isActive || exclusive}
                 className="px-3 py-3 md:px-4 md:py-4 transition-all duration-500 ease-out"
                 style={{
                   transform: isActive ? "translateY(-8px) scale(1.05)" : "scale(1)",
                   opacity: dim ? 0.35 : 1,
                   filter: dim ? "blur(1.5px)" : "blur(0)",
+                  ...(exclusive
+                    ? {
+                        background:
+                          "linear-gradient(135deg, hsl(160 36% 36% / 0.14), hsl(222 100% 59% / 0.18))",
+                        borderColor: "hsl(222 100% 59% / 0.55)",
+                        boxShadow: isActive
+                          ? "0 24px 60px -18px hsl(222 100% 59% / 0.55), 0 0 0 1px hsl(222 100% 59% / 0.35)"
+                          : "0 12px 32px -14px hsl(222 100% 59% / 0.35), 0 0 0 1px hsl(222 100% 59% / 0.25)",
+                      }
+                    : {}),
                 }}
               >
                 <div className="flex flex-col items-center text-center gap-2">
-                  <c.icon className={`h-5 w-5 ${c.hero ? "text-accent" : "text-primary"}`} />
-                  <span className="text-[11px] md:text-xs font-semibold text-foreground leading-tight">
+                  <c.icon className={`h-5 w-5 ${exclusive ? "text-accent" : "text-primary"}`} />
+                  <span className={`text-[11px] md:text-xs font-semibold leading-tight ${exclusive ? "text-foreground" : "text-foreground"}`}>
                     {c.label}
                   </span>
-                  <span className="text-[9px] uppercase tracking-widest text-muted-foreground">
+                  <span className={`text-[9px] uppercase tracking-widest ${exclusive ? "gradient-primary-text font-bold" : "text-muted-foreground"}`}>
                     {c.competitor ? "Anche altri" : "Solo PlanEat"}
                   </span>
                 </div>
