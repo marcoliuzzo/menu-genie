@@ -95,37 +95,53 @@ const Slide14Financials = () => {
             <div key={c.title} className="h-[340px] animate-fade-in">
               <ResponsiveContainer width="100%" height="100%">
                 {c.type === "bar" ? (
-                  <BarChart data={c.data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                  <BarChart data={c.data} margin={{ top: 30, right: 30, left: 20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(222 100% 59%)" />
                         <stop offset="100%" stopColor="hsl(160 36% 36%)" />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={12} />
-                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} tickFormatter={(v) => num(v)} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(30 12% 90%)" vertical={false} />
+                    <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={13} />
+                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} tickFormatter={(v) => num(v)} width={70} />
                     <Tooltip
                       contentStyle={{ background: "white", border: "1px solid hsl(30 12% 90%)", borderRadius: 8 }}
                       formatter={(v: number) => [c.format(v), ""]}
                     />
-                    <Bar dataKey="v" fill="url(#barGrad)" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="v" fill="url(#barGrad)" radius={[8, 8, 0, 0]}>
+                      <LabelList
+                        dataKey="v"
+                        position="top"
+                        formatter={(v: number) => c.format(v)}
+                        style={{ fill: "hsl(222 40% 20%)", fontSize: 14, fontWeight: 700 }}
+                      />
+                    </Bar>
                   </BarChart>
                 ) : (
-                  <AreaChart data={c.data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
+                  <AreaChart data={c.data} margin={{ top: 30, right: 30, left: 20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(222 100% 59%)" stopOpacity={0.6} />
                         <stop offset="100%" stopColor="hsl(160 36% 36%)" stopOpacity={0.05} />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={12} />
-                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} tickFormatter={(v) => num(v)} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(30 12% 90%)" vertical={false} />
+                    <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={13} />
+                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} tickFormatter={(v) => num(v)} width={80} />
                     <Tooltip
                       contentStyle={{ background: "white", border: "1px solid hsl(30 12% 90%)", borderRadius: 8 }}
                       formatter={(v: number) => [c.format(v), ""]}
                     />
                     <ReferenceLine y={0} stroke="hsl(160 36% 36%)" strokeDasharray="3 3" />
-                    <Area type="monotone" dataKey="v" stroke="hsl(222 100% 59%)" strokeWidth={2.5} fill="url(#areaGrad)" />
+                    <Area type="monotone" dataKey="v" stroke="hsl(222 100% 59%)" strokeWidth={2.5} fill="url(#areaGrad)">
+                      <LabelList
+                        dataKey="v"
+                        position="top"
+                        formatter={(v: number) => c.format(v)}
+                        style={{ fill: "hsl(222 40% 20%)", fontSize: 14, fontWeight: 700 }}
+                      />
+                    </Area>
                   </AreaChart>
                 )}
               </ResponsiveContainer>
@@ -142,7 +158,7 @@ const Slide14Financials = () => {
                 AL TERZO ANNO
               </div>
               <p className="mt-5 text-sm text-muted-foreground">
-                +4.861 € di utile netto. Modello scalabile con leva SaaS, advertising contestuale e servizi premium.
+                Modello scalabile con leva SaaS, advertising contestuale e servizi premium.
               </p>
             </GlassCard>
           )}
