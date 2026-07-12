@@ -13,20 +13,62 @@ import {
   Bar,
 } from "recharts";
 
-// Financial coherence — Business Plan projections
-const revenue    = [{ y: "Y1", v: 0.08 }, { y: "Y2", v: 1.2 }, { y: "Y3", v: 4.5 }];
-const premium    = [{ y: "Y1", v: 1.2 },  { y: "Y2", v: 8 },   { y: "Y3", v: 22 }];
-const ebitda     = [{ y: "Y1", v: -420 }, { y: "Y2", v: -180 }, { y: "Y3", v: 640 }];
-const breakeven  = [
-  { y: "M6", v: -180 }, { y: "M12", v: -320 }, { y: "M18", v: -260 },
-  { y: "M24", v: -110 }, { y: "M30", v: 0 }, { y: "M36", v: 420 },
+// Financial coherence — Business Plan projections (valori assoluti in €)
+const revenue = [
+  { y: "Anno 1", v: 23940 },
+  { y: "Anno 2", v: 136912 },
+  { y: "Anno 3", v: 337280 },
+];
+const premium = [
+  { y: "Anno 1", v: 500 },
+  { y: "Anno 2", v: 2400 },
+  { y: "Anno 3", v: 6000 },
+];
+const ebitda = [
+  { y: "Anno 1", v: -50549 },
+  { y: "Anno 2", v: -45227 },
+  { y: "Anno 3", v: 92396 },
+];
+const netResult = [
+  { y: "Anno 1", v: -69149 },
+  { y: "Anno 2", v: -88681 },
+  { y: "Anno 3", v: 4861 },
 ];
 
+const eur = (n: number) =>
+  n.toLocaleString("it-IT", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+const num = (n: number) => n.toLocaleString("it-IT");
+
 const steps = [
-  { title: "Ricavi",         subtitle: "€4,5M ARR entro l'Anno 3", data: revenue,   unit: "€M ARR",     type: "area" },
-  { title: "Utenti Premium", subtitle: "22K premium — conversion ~8%", data: premium, unit: "K utenti", type: "bar" },
-  { title: "EBITDA",         subtitle: "Da −420K a +640K in tre anni", data: ebitda, unit: "€K",       type: "area" },
-  { title: "Break-even",     subtitle: "Cash flow positivo al mese 30", data: breakeven, unit: "€K",   type: "area", highlight: true },
+  {
+    title: "Ricavi",
+    subtitle: "Da 23.940 € a 337.280 € in tre anni",
+    data: revenue,
+    type: "area" as const,
+    format: eur,
+  },
+  {
+    title: "Utenti Premium",
+    subtitle: "500 → 2.400 → 6.000 abbonati (3,99 €/mese)",
+    data: premium,
+    type: "bar" as const,
+    format: num,
+  },
+  {
+    title: "EBITDA",
+    subtitle: "Da −50.549 € a +92.396 €",
+    data: ebitda,
+    type: "area" as const,
+    format: eur,
+  },
+  {
+    title: "Risultato Netto",
+    subtitle: "Break-even raggiunto al terzo anno",
+    data: netResult,
+    type: "area" as const,
+    format: eur,
+    highlight: true,
+  },
 ];
 
 const Slide14Financials = () => {
@@ -46,12 +88,12 @@ const Slide14Financials = () => {
         </h2>
         <p className="mt-2 text-muted-foreground">{c.subtitle}</p>
 
-        <div className="mt-8 w-full max-w-4xl grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
+        <div className="mt-8 w-full max-w-5xl grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
           <GlassCard className={`p-6 ${isBreakeven ? "md:col-span-3" : "md:col-span-5"}`} glow={isBreakeven}>
             <div key={c.title} className="h-[340px] animate-fade-in">
               <ResponsiveContainer width="100%" height="100%">
                 {c.type === "bar" ? (
-                  <BarChart data={c.data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                  <BarChart data={c.data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
                     <defs>
                       <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(222 100% 59%)" />
@@ -59,15 +101,15 @@ const Slide14Financials = () => {
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={12} />
-                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} />
+                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} tickFormatter={(v) => num(v)} />
                     <Tooltip
                       contentStyle={{ background: "white", border: "1px solid hsl(30 12% 90%)", borderRadius: 8 }}
-                      formatter={(v: number) => [`${v} ${c.unit}`, ""]}
+                      formatter={(v: number) => [c.format(v), ""]}
                     />
                     <Bar dataKey="v" fill="url(#barGrad)" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 ) : (
-                  <AreaChart data={c.data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                  <AreaChart data={c.data} margin={{ top: 10, right: 20, left: 10, bottom: 0 }}>
                     <defs>
                       <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(222 100% 59%)" stopOpacity={0.6} />
@@ -75,14 +117,12 @@ const Slide14Financials = () => {
                       </linearGradient>
                     </defs>
                     <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={12} />
-                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} />
+                    <YAxis stroke="hsl(0 0% 42%)" fontSize={12} tickFormatter={(v) => num(v)} />
                     <Tooltip
                       contentStyle={{ background: "white", border: "1px solid hsl(30 12% 90%)", borderRadius: 8 }}
-                      formatter={(v: number) => [`${v} ${c.unit}`, ""]}
+                      formatter={(v: number) => [c.format(v), ""]}
                     />
-                    {(c.title === "Break-even" || c.title === "EBITDA") && (
-                      <ReferenceLine y={0} stroke="hsl(160 36% 36%)" strokeDasharray="3 3" />
-                    )}
+                    <ReferenceLine y={0} stroke="hsl(160 36% 36%)" strokeDasharray="3 3" />
                     <Area type="monotone" dataKey="v" stroke="hsl(222 100% 59%)" strokeWidth={2.5} fill="url(#areaGrad)" />
                   </AreaChart>
                 )}
@@ -100,7 +140,7 @@ const Slide14Financials = () => {
                 AL TERZO ANNO
               </div>
               <p className="mt-5 text-sm text-muted-foreground">
-                Modello scalabile, con leva SaaS + revenue share retail e advertising contestuale.
+                +4.861 € di utile netto. Modello scalabile con leva SaaS, advertising contestuale e servizi premium.
               </p>
             </GlassCard>
           )}
