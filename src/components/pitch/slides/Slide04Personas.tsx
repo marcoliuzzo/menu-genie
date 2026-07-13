@@ -27,7 +27,7 @@ const personas = [
   {
     icon: Users,
     emoji: "👨‍👩‍👧",
-    title: "Urban Families",
+    title: "Famiglie Urbane",
     tag: "Target di espansione",
     age: null,
     location: null,
