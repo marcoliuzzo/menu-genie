@@ -52,14 +52,15 @@ const Slide07Product = () => {
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 h-7 w-28 rounded-full bg-black" />
                 <video
+                  ref={videoRef}
                   src={demoVideo.url}
-                  autoPlay
                   muted
                   loop
                   playsInline
+                  preload="auto"
                   disablePictureInPicture
                   controls={false}
-                  className="absolute inset-0 h-full w-full object-cover animate-fade-in"
+                  className="absolute inset-0 h-full w-full object-contain animate-fade-in bg-black"
                 />
               </div>
             </div>
