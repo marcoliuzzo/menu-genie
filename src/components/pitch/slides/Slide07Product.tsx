@@ -3,6 +3,7 @@ import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
 import { useStep } from "../stepContext";
 import { Sparkles, CalendarDays, ShoppingCart } from "lucide-react";
+import demoVideo from "@/assets/planeat-demo.mp4.asset.json";
 
 const keys = [
   { label: "Mood", icon: Sparkles, at: 1, desc: "Il piano si adatta a come ti senti oggi." },
@@ -34,18 +35,19 @@ const Slide07Product = () => {
               className="relative rounded-[62px] bg-black shadow-[0_40px_120px_-30px_rgba(0,0,0,0.5)] overflow-hidden"
               style={{ width: 340, height: 700, padding: 6 }}
             >
-              <div className="relative h-full w-full rounded-[56px] overflow-hidden">
+              <div className="relative h-full w-full rounded-[56px] overflow-hidden bg-black">
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 h-7 w-28 rounded-full bg-black" />
-                <div
-                  className="absolute inset-0 flex items-center justify-center text-white/70 text-xs"
-                  style={{
-                    background:
-                      "linear-gradient(160deg, hsl(160 36% 36%) 0%, hsl(222 100% 59%) 100%)",
-                  }}
-                >
-                  <span className="uppercase tracking-[0.32em]">Video demo · placeholder</span>
-                </div>
+                <video
+                  src={demoVideo.url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  disablePictureInPicture
+                  controls={false}
+                  className="absolute inset-0 h-full w-full object-cover animate-fade-in"
+                />
               </div>
             </div>
           </div>

@@ -27,7 +27,7 @@ const personas = [
   {
     icon: Users,
     emoji: "👨‍👩‍👧",
-    title: "Urban Families",
+    title: "Famiglie Urbane",
     tag: "Target di espansione",
     age: null,
     location: null,
@@ -41,8 +41,8 @@ const Slide04Personas = () => (
     <div className="min-h-[75vh] flex flex-col justify-center py-6">
       <StepReveal at={0}>
         <h2 className="type-premium text-[clamp(1.75rem,4vw,3rem)] text-foreground max-w-4xl">
-          Built for people who are
-          <span className="gradient-primary-text"> tired of deciding.</span>
+          Progettato per chi è
+          <span className="gradient-primary-text"> stanco di decidere.</span>
         </h2>
         <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-3xl">
           Target differenti, stesso problema: la fatica decisionale alimentare.
@@ -93,10 +93,10 @@ const Slide04Personas = () => (
 
       <StepReveal at={4} delay={200} className="mt-10 text-center pb-4">
         <p className="text-base md:text-lg text-muted-foreground">
-          Differenti utenti. Stesso problema.
+          Target differenti. Stesso problema.
         </p>
         <p className="type-premium mt-2 text-[clamp(2rem,5vw,3.5rem)] gradient-primary-text leading-none tracking-tight">
-          DECISION FATIGUE.
+          FATICA DECISIONALE.
         </p>
       </StepReveal>
     </div>
