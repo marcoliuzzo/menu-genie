@@ -54,13 +54,13 @@ const Slide05Market = () => {
               />
               <div className="absolute inset-6">
                 <img
-                  src={italyMap}
+                  src={italyMap.url}
                   alt="Italia"
                   className="absolute inset-0 w-full h-full object-contain"
                   draggable={false}
                   style={{
                     filter:
-                      "brightness(0) saturate(100%) invert(29%) sepia(55%) saturate(1200%) hue-rotate(130deg) brightness(90%) contrast(95%) drop-shadow(0 8px 24px hsl(160 36% 36% / 0.35))",
+                      "brightness(0) saturate(100%) invert(38%) sepia(30%) saturate(700%) hue-rotate(115deg) brightness(88%) contrast(92%) drop-shadow(0 10px 28px hsl(160 36% 36% / 0.30))",
                   }}
                 />
                 {cities.map((c, i) => (
