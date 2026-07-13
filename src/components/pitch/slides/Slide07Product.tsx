@@ -3,6 +3,7 @@ import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
 import { useStep } from "../stepContext";
 import { Sparkles, CalendarDays, ShoppingCart } from "lucide-react";
+import demoVideo from "@/assets/planeat-demo.mp4.asset.json";
 
 const keys = [
   { label: "Mood", icon: Sparkles, at: 1, desc: "Il piano si adatta a come ti senti oggi." },
