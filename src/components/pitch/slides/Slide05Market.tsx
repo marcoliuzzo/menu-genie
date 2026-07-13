@@ -52,34 +52,36 @@ const Slide05Market = () => {
                     "radial-gradient(closest-side, hsl(160 36% 36% / 0.18), transparent 70%)",
                 }}
               />
-              <img
-                src={italyMap}
-                alt="Italia"
-                className="absolute inset-6 w-[calc(100%-3rem)] h-[calc(100%-3rem)] object-contain"
-                draggable={false}
-                style={{
-                  filter:
-                    "brightness(0) saturate(100%) invert(29%) sepia(55%) saturate(1200%) hue-rotate(130deg) brightness(90%) contrast(95%) drop-shadow(0 8px 24px hsl(160 36% 36% / 0.35))",
-                }}
-              />
-              {cities.map((c, i) => (
-                <div
-                  key={c.name}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
-                  style={{ left: `calc(1.5rem + ${c.x}% * (100% - 3rem) / 100%)`, top: `calc(1.5rem + ${c.y}% * (100% - 3rem) / 100%)` }}
-                >
-                  <div className="relative flex items-center">
-                    <span
-                      className="absolute h-4 w-4 rounded-full bg-accent/40"
-                      style={{ animation: `mapPulse 2.4s ${i * 0.25}s ease-out infinite` }}
-                    />
-                    <span className="relative h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_0_3px_hsl(222_100%_59%_/_0.25)]" />
-                    <span className="ml-2 text-[11px] font-semibold text-foreground bg-background/80 backdrop-blur px-1.5 py-0.5 rounded shadow-sm">
-                      {c.name}
-                    </span>
+              <div className="absolute inset-6">
+                <img
+                  src={italyMap}
+                  alt="Italia"
+                  className="absolute inset-0 w-full h-full object-contain"
+                  draggable={false}
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(29%) sepia(55%) saturate(1200%) hue-rotate(130deg) brightness(90%) contrast(95%) drop-shadow(0 8px 24px hsl(160 36% 36% / 0.35))",
+                  }}
+                />
+                {cities.map((c, i) => (
+                  <div
+                    key={c.name}
+                    className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
+                    style={{ left: `${c.x}%`, top: `${c.y}%` }}
+                  >
+                    <div className="relative flex items-center">
+                      <span
+                        className="absolute h-4 w-4 rounded-full bg-accent/40"
+                        style={{ animation: `mapPulse 2.4s ${i * 0.25}s ease-out infinite` }}
+                      />
+                      <span className="relative h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_0_3px_hsl(222_100%_59%_/_0.25)]" />
+                      <span className="ml-2 text-[11px] font-semibold text-foreground bg-background/85 backdrop-blur px-1.5 py-0.5 rounded shadow-sm">
+                        {c.name}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
               <style>{`@keyframes mapPulse{0%{transform:scale(0.6);opacity:0.7}80%{transform:scale(2.6);opacity:0}100%{transform:scale(2.6);opacity:0}}`}</style>
             </div>
           </StepReveal>
