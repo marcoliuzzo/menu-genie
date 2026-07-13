@@ -18,19 +18,19 @@ import Slide16Vision from "./slides/Slide16Vision";
 import Slide17Closing from "./slides/Slide17Closing";
 
 // New narrative order:
-// 1 Hero, 2 Problem, 3 Validation, 4 Product, 5 Personas,
-// 6 WhyNow, 7 Market, 8 Mood, 9 MarketGap, 10 WhyWeWin,
+// 1 Hero, 2 Problem, 3 Validation, 4 Mood, 5 Product, 6 Personas,
+// 7 WhyNow, 8 Market, 9 MarketGap, 10 WhyWeWin,
 // 11 Business, 12 GTM, 13 Flywheel, 14 Roadmap, 15 Financials,
 // 16 Team, 17 Vision, 18 Closing
 export const slides = [
   Slide01Hero,
   Slide03Problem,
   Slide02Validation,
+  Slide08Mood,
   Slide07Product,
   Slide04Personas,
   Slide04WhyNow,
   Slide05Market,
-  Slide08Mood,
   Slide09MarketGap,
   Slide10WhyWeWin,
   Slide11Business,
@@ -44,4 +44,4 @@ export const slides = [
 ];
 
 // Steps per slide, matching order above
-export const slideSteps = [4, 5, 3, 4, 5, 5, 4, 6, 5, 7, 5, 7, 5, 5, 5, 1, 5, 5];
+export const slideSteps = [4, 5, 3, 6, 4, 5, 5, 4, 5, 7, 5, 7, 5, 5, 5, 1, 5, 5];

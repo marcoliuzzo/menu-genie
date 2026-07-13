@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
@@ -13,6 +14,18 @@ const keys = [
 
 const Slide07Product = () => {
   const { step } = useStep();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  // Delay video autoplay by 5s to let presenter introduce the concept
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.pause();
+    try { v.currentTime = 0; } catch {}
+    const t = setTimeout(() => {
+      v.play().catch(() => {});
+    }, 5000);
+    return () => clearTimeout(t);
+  }, []);
   // Show one card at a time — the one whose "at" equals current step (steps 1..3)
   const currentIdx = keys.findIndex((k) => k.at === step);
   return (
@@ -39,14 +52,15 @@ const Slide07Product = () => {
                 {/* Dynamic Island */}
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 h-7 w-28 rounded-full bg-black" />
                 <video
+                  ref={videoRef}
                   src={demoVideo.url}
-                  autoPlay
                   muted
                   loop
                   playsInline
+                  preload="auto"
                   disablePictureInPicture
                   controls={false}
-                  className="absolute inset-0 h-full w-full object-cover animate-fade-in"
+                  className="absolute inset-0 h-full w-full object-contain animate-fade-in bg-black"
                 />
               </div>
             </div>
