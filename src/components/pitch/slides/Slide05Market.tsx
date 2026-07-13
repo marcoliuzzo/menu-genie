@@ -2,7 +2,7 @@ import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
 import { useStep } from "../stepContext";
-import italyMap from "@/assets/italy-map.png";
+import italyMap from "@/assets/italy-map-outline.png.asset.json";
 
 const tiers = [
   { label: "TAM", value: "10-12M", desc: "Popolazione italiana target — meal planning digitale", at: 1 },
