@@ -15,17 +15,18 @@ const keys = [
 const Slide07Product = () => {
   const { step } = useStep();
   const videoRef = useRef<HTMLVideoElement>(null);
-  // Delay video autoplay by 5s to let presenter introduce the concept
+  // Video is paused on step 0. First click (step >= 1) starts playback from the beginning.
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    v.pause();
-    try { v.currentTime = 0; } catch {}
-    const t = setTimeout(() => {
+    if (step === 0) {
+      v.pause();
+      try { v.currentTime = 0; } catch {}
+    } else if (v.paused) {
+      try { v.currentTime = 0; } catch {}
       v.play().catch(() => {});
-    }, 5000);
-    return () => clearTimeout(t);
-  }, []);
+    }
+  }, [step]);
   // Show one card at a time — the one whose "at" equals current step (steps 1..3)
   const currentIdx = keys.findIndex((k) => k.at === step);
   return (

@@ -91,12 +91,9 @@ const Slide04Personas = () => (
         ))}
       </div>
 
-      <StepReveal at={4} delay={200} className="mt-10 text-center pb-4">
-        <p className="text-base md:text-lg text-muted-foreground">
-          Target differenti. Stesso problema.
-        </p>
-        <p className="type-premium mt-2 text-[clamp(2rem,5vw,3.5rem)] gradient-primary-text leading-none tracking-tight">
-          FATICA DECISIONALE.
+      <StepReveal at={4} delay={200} className="mt-12 text-center pb-4">
+        <p className="type-premium text-[clamp(2.5rem,6vw,5rem)] gradient-primary-text leading-[1.1] tracking-tight">
+          Target differenti.<br />Stesso problema.
         </p>
       </StepReveal>
     </div>
