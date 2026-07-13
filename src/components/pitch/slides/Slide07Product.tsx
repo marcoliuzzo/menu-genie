@@ -14,6 +14,18 @@ const keys = [
 
 const Slide07Product = () => {
   const { step } = useStep();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  // Delay video autoplay by 5s to let presenter introduce the concept
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.pause();
+    try { v.currentTime = 0; } catch {}
+    const t = setTimeout(() => {
+      v.play().catch(() => {});
+    }, 5000);
+    return () => clearTimeout(t);
+  }, []);
   // Show one card at a time — the one whose "at" equals current step (steps 1..3)
   const currentIdx = keys.findIndex((k) => k.at === step);
   return (
