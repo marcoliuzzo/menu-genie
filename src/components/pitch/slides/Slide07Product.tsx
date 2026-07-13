@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
