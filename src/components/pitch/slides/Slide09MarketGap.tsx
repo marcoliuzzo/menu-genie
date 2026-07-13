@@ -67,14 +67,16 @@ const Slide09MarketGap = () => {
                 style={{
                   left: `${c.x}%`,
                   top: `${100 - c.y}%`,
-                  opacity: showCompetitors ? 1 : revealWhite ? 0 : 0,
+                  opacity: showCompetitors ? 1 : revealWhite ? 0.35 : 0,
                   transitionDelay: `${i * 60}ms`,
                 }}
               >
-                <div className="h-2.5 w-2.5 rounded-full bg-muted-foreground/70 ring-4 ring-muted-foreground/10" />
-                <span className="text-[11px] text-muted-foreground mt-1 block whitespace-nowrap font-medium">
-                  {c.name}
-                </span>
+                <div className="relative flex flex-col items-center">
+                  <div className="h-3.5 w-3.5 rounded-full bg-muted-foreground/80 ring-[6px] ring-muted-foreground/15 shadow-sm" />
+                  <span className="text-[11px] text-foreground/70 mt-1.5 block whitespace-nowrap font-semibold tracking-wide">
+                    {c.name}
+                  </span>
+                </div>
               </div>
             ))}
 
@@ -88,19 +90,33 @@ const Slide09MarketGap = () => {
                 transform: `translate(-50%, -50%) scale(${showPlanEat || revealWhite ? 1 : 0.6})`,
               }}
             >
-              <div className="flex flex-col items-center">
-                <div className="relative">
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background: "radial-gradient(closest-side, hsl(222 100% 59% / 0.45), transparent 70%)",
-                      filter: "blur(20px)",
-                      transform: "scale(2.4)",
-                    }}
-                  />
-                  <LogoMark size={64} animateIn={false} />
+              <div className="relative flex flex-col items-center">
+                {/* Pulsing halo rings */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 rounded-full animate-ping"
+                  style={{
+                    background: "radial-gradient(closest-side, hsl(222 100% 59% / 0.35), transparent 70%)",
+                    transform: "scale(2.6)",
+                    animationDuration: "2.4s",
+                  }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background:
+                      "radial-gradient(closest-side, hsl(222 100% 59% / 0.55), hsl(160 36% 36% / 0.35) 50%, transparent 75%)",
+                    filter: "blur(28px)",
+                    transform: "scale(3)",
+                  }}
+                />
+                <div className="relative rounded-full p-3 bg-background/70 backdrop-blur-md border border-accent/40 shadow-[0_20px_60px_-15px_hsl(222_100%_59%/0.55)]">
+                  <LogoMark size={120} animateIn={false} glow={false} />
                 </div>
+                <span className="mt-3 text-xs uppercase tracking-[0.3em] gradient-primary-text font-bold">
+                  PlanEat
+                </span>
               </div>
             </div>
           </div>

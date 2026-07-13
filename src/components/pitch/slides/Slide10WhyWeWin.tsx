@@ -39,8 +39,8 @@ const Slide10WhyWeWin = () => {
             </div>
           )}
           {!focused && (
-            <p className="type-premium text-2xl md:text-3xl text-muted-foreground text-center max-w-2xl">
-              Sei capability. Un ecosistema che nessuno oggi offre insieme.
+            <p className="type-premium text-3xl md:text-4xl text-muted-foreground text-center max-w-3xl leading-tight">
+              Un ecosistema che nessuno oggi offre insieme.
             </p>
           )}
         </div>
