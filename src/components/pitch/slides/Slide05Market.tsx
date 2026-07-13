@@ -35,26 +35,46 @@ const Slide05Market = () => {
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           {/* Italy map */}
           <StepReveal at={0} className="flex justify-center">
-            <div className="relative w-full max-w-[420px] aspect-[5/6]">
+            <div
+              className="relative w-full max-w-[440px] aspect-[5/6] rounded-3xl p-6 border border-border/40 backdrop-blur-sm overflow-hidden"
+              style={{
+                background:
+                  "radial-gradient(120% 90% at 30% 20%, hsl(160 36% 36% / 0.10), transparent 60%), radial-gradient(120% 90% at 80% 90%, hsl(222 100% 59% / 0.12), transparent 60%), hsl(30 26% 97% / 0.4)",
+                boxShadow:
+                  "0 30px 80px -40px hsl(222 100% 59% / 0.25), inset 0 1px 0 hsl(0 0% 100% / 0.6)",
+              }}
+            >
+              <div
+                aria-hidden
+                className="absolute inset-0 opacity-60 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(closest-side, hsl(160 36% 36% / 0.18), transparent 70%)",
+                }}
+              />
               <img
                 src={italyMap}
                 alt="Italia"
-                className="absolute inset-0 w-full h-full object-contain opacity-80"
+                className="absolute inset-6 w-[calc(100%-3rem)] h-[calc(100%-3rem)] object-contain"
                 draggable={false}
+                style={{
+                  filter:
+                    "brightness(0) saturate(100%) invert(29%) sepia(55%) saturate(1200%) hue-rotate(130deg) brightness(90%) contrast(95%) drop-shadow(0 8px 24px hsl(160 36% 36% / 0.35))",
+                }}
               />
               {cities.map((c, i) => (
                 <div
                   key={c.name}
-                  className="absolute -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: `${c.x}%`, top: `${c.y}%` }}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 z-10"
+                  style={{ left: `calc(1.5rem + ${c.x}% * (100% - 3rem) / 100%)`, top: `calc(1.5rem + ${c.y}% * (100% - 3rem) / 100%)` }}
                 >
                   <div className="relative flex items-center">
                     <span
-                      className="absolute h-4 w-4 rounded-full bg-primary/25"
+                      className="absolute h-4 w-4 rounded-full bg-accent/40"
                       style={{ animation: `mapPulse 2.4s ${i * 0.25}s ease-out infinite` }}
                     />
-                    <span className="relative h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_0_3px_hsl(222_100%_59%_/_0.18)]" />
-                    <span className="ml-2 text-[11px] font-semibold text-foreground bg-background/70 backdrop-blur px-1.5 py-0.5 rounded">
+                    <span className="relative h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_0_3px_hsl(222_100%_59%_/_0.25)]" />
+                    <span className="ml-2 text-[11px] font-semibold text-foreground bg-background/80 backdrop-blur px-1.5 py-0.5 rounded shadow-sm">
                       {c.name}
                     </span>
                   </div>
