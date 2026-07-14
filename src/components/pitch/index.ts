@@ -35,4 +35,4 @@ export const slides = [
 ];
 
 // Steps per slide, matching order above
-export const slideSteps = [1, 4, 5, 3, 6, 4, 5, 5, 4, 5, 1, 5, 7, 3, 5, 5];
+export const slideSteps = [1, 4, 5, 3, 6, 5, 5, 5, 4, 5, 1, 5, 7, 3, 1, 5];

@@ -76,9 +76,9 @@ const Slide11GTM = () => {
     <SlideShell eyebrow="Go-to-market" background="white">
       <div className="min-h-[78vh] flex flex-col justify-center py-6">
         <StepReveal at={0}>
-          <h2 className="type-premium text-[clamp(1.75rem,4vw,3rem)] text-foreground text-center max-w-4xl mx-auto">
-            Go-To-Market
-            <span className="gradient-primary-text"> Strategy.</span>
+          <h2 className="type-premium text-[clamp(1.75rem,4vw,3rem)] text-foreground text-center max-w-4xl mx-auto leading-[1.2] pb-2">
+            Go-To-Market{" "}
+            <span className="gradient-primary-text">Strategy</span>
           </h2>
           <p className="mt-3 text-center text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
             Dalla scoperta del problema alla sottoscrizione Premium.
