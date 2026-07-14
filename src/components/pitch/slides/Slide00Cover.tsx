@@ -14,15 +14,6 @@ const Slide00Cover = () => {
             </h1>
           </div>
         </StepReveal>
-
-        <StepReveal at={1} delay={80} className="text-center">
-          <p className="type-premium text-2xl md:text-4xl text-foreground leading-tight">
-            Meno decisioni.
-          </p>
-          <p className="type-premium text-2xl md:text-4xl text-muted-foreground leading-tight mt-1">
-            Più semplicità.
-          </p>
-        </StepReveal>
       </div>
     </SlideShell>
   );
