@@ -40,9 +40,9 @@ const Slide04Personas = () => (
   <SlideShell eyebrow="Target" background="mesh">
     <div className="min-h-[75vh] flex flex-col justify-center py-6">
       <StepReveal at={0}>
-        <h2 className="type-premium text-[clamp(1.75rem,4vw,3rem)] text-foreground max-w-4xl">
-          Progettato per chi è
-          <span className="gradient-primary-text"> stanco di decidere.</span>
+        <h2 className="type-premium text-[clamp(1.75rem,4vw,3rem)] text-foreground max-w-4xl leading-[1.15]">
+          Progettato per chi
+          <span className="block gradient-primary-text">è stanco di decidere.</span>
         </h2>
         <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-3xl">
           Target differenti, stesso problema: la fatica decisionale alimentare.
