@@ -10,7 +10,7 @@ const keys = [
   { label: "Mood", icon: Sparkles, at: 1, desc: "Il piano si adatta a come ti senti oggi." },
   { label: "Plan", icon: CalendarDays, at: 2, desc: "21 pasti settimanali generati e riequilibrati dall'AI." },
   { label: "Lista della Spesa", icon: ShoppingCart, at: 3, desc: "Generata automaticamente in base ai pasti pianificati e alla dispensa a casa." },
-  { label: "Gestione Dispensa", icon: ShoppingCart, at: 4, desc: "Una sola lista, ottimizzata su ciò che hai già a casa." },
+  { label: "Gestione Dispensa", icon: Package, at: 4, desc: "Una sola lista, ottimizzata su ciò che hai già a casa." },
 ];
 
 const Slide07Product = () => {
