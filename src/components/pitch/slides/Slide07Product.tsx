@@ -99,7 +99,7 @@ const Slide07Product = () => {
           })}
           {currentIdx === -1 && step === 0 && (
             <p className="text-sm uppercase tracking-[0.28em] text-muted-foreground">
-              Un'app. Tre gesti.
+              Un'app. Pochi gesti.
             </p>
           )}
         </div>
