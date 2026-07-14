@@ -111,8 +111,8 @@ const Slide09MarketGap = () => {
                     transform: "scale(3)",
                   }}
                 />
-                <div className="relative rounded-full p-3 bg-background/70 backdrop-blur-md border border-accent/40 shadow-[0_20px_60px_-15px_hsl(222_100%_59%/0.55)]">
-                  <LogoMark size={120} animateIn={false} glow={false} />
+                <div className="relative">
+                  <LogoMark size={140} animateIn={false} glow={true} />
                 </div>
                 <span className="mt-3 text-xs uppercase tracking-[0.3em] gradient-primary-text font-bold">
                   PlanEat
