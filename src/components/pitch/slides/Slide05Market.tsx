@@ -7,7 +7,7 @@ import italyMap from "@/assets/italy-map-outline.png.asset.json";
 const tiers = [
   { label: "TAM", value: "10-12M", desc: "Popolazione italiana target — meal planning digitale", at: 1 },
   { label: "SAM", value: "2,4-3,1M", desc: "Utenti urbani interessati a soluzioni AI food-tech", at: 2 },
-  { label: "SOM", value: "180.000", desc: "Utenti attivi nei primi 3 anni", at: 3 },
+  { label: "SOM", value: "180.000", desc: "Utenti potenziali nei primi 3 anni", at: 3 },
 ];
 
 // Coordinates as % on the uploaded italy-map.png
