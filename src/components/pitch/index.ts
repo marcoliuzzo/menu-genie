@@ -11,15 +11,10 @@ import Slide09MarketGap from "./slides/Slide09MarketGap";
 import Slide10WhyWeWin from "./slides/Slide10WhyWeWin";
 import Slide11Business from "./slides/Slide11Business";
 import Slide11GTM from "./slides/Slide11GTM";
-import Slide12Flywheel from "./slides/Slide12Flywheel";
 import Slide14Financials from "./slides/Slide14Financials";
 import Slide15Team from "./slides/Slide15Team";
-import Slide16Vision from "./slides/Slide16Vision";
 import Slide17Closing from "./slides/Slide17Closing";
 
-// Order: 1 Cover, 2 Hero, 3 Problem, 4 Validation, 5 Mood, 6 Product,
-// 7 Personas, 8 WhyNow, 9 Market, 10 MarketGap, 11 WhyWeWin,
-// 12 Business, 13 GTM, 14 Flywheel, 15 Financials, 16 Team, 17 Vision, 18 Closing
 export const slides = [
   Slide00Cover,
   Slide01Hero,
@@ -34,12 +29,10 @@ export const slides = [
   Slide10WhyWeWin,
   Slide11Business,
   Slide11GTM,
-  Slide12Flywheel,
   Slide14Financials,
   Slide15Team,
-  Slide16Vision,
   Slide17Closing,
 ];
 
 // Steps per slide, matching order above
-export const slideSteps = [2, 4, 5, 3, 6, 4, 5, 5, 4, 5, 7, 5, 7, 5, 5, 1, 5, 5];
+export const slideSteps = [1, 4, 5, 3, 6, 4, 5, 5, 4, 5, 1, 5, 7, 3, 5, 5];
