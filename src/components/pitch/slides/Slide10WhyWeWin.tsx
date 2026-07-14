@@ -1,96 +1,120 @@
 import SlideShell from "../SlideShell";
 import StepReveal from "../StepReveal";
 import GlassCard from "../GlassCard";
-import { useStep } from "../stepContext";
 import { CalendarDays, Package, ShoppingCart, Sparkles, Brain, Layers } from "lucide-react";
 
 const capabilities = [
-  { label: "Meal Planning",         icon: CalendarDays, competitor: true,  desc: "Presente in molti tool, ma isolato dal resto del flusso alimentare." },
-  { label: "Gestione Dispensa",     icon: Package,      competitor: true,  desc: "Alcuni competitor la offrono, senza collegarla a piano e spesa." },
-  { label: "Lista Spesa",           icon: ShoppingCart, competitor: true,  desc: "Statica, manuale, scollegata da offerte reali e dispensa." },
-  { label: "Personalizzazione AI",  icon: Brain,        competitor: false, desc: "Vincoli dietetici, budget, allergie, mood: tutto orchestrato dall'AI." },
-  { label: "Mood Planning",         icon: Sparkles,     competitor: false, hero: true, desc: "Il piano si adatta a come stai. Nessuno lo fa oggi." },
-  { label: "Ecosistema Integrato",  icon: Layers,       competitor: false, hero: true, desc: "Dispensa, ricette, spesa e offerte in un unico flusso decisionale." },
+  {
+    label: "Meal Planning",
+    icon: CalendarDays,
+    exclusive: false,
+    desc: "Organizzazione automatica dei pasti.",
+    who: "Anche altri",
+    brands: "Whisk, Mealtime",
+  },
+  {
+    label: "Gestione Dispensa",
+    icon: Package,
+    exclusive: false,
+    desc: "Controllo ingredienti e scorte disponibili.",
+    who: "Anche altri",
+    brands: "KitchenPal",
+  },
+  {
+    label: "Lista Spesa",
+    icon: ShoppingCart,
+    exclusive: false,
+    desc: "Generazione intelligente della spesa.",
+    who: "Anche altri",
+    brands: "Bring!",
+  },
+  {
+    label: "Personalizzazione AI",
+    icon: Brain,
+    exclusive: true,
+    desc: "Suggerimenti basati su preferenze e comportamenti.",
+    who: "Solo PlanEat",
+  },
+  {
+    label: "Mood Planning",
+    icon: Sparkles,
+    exclusive: true,
+    desc: "Pianificazione basata sul contesto e sullo stato emotivo.",
+    who: "Solo PlanEat",
+  },
+  {
+    label: "Ecosistema Integrato",
+    icon: Layers,
+    exclusive: true,
+    desc: "Meal planning, dispensa, spesa e AI in un'unica piattaforma.",
+    who: "Solo PlanEat",
+  },
 ];
 
 const Slide10WhyWeWin = () => {
-  const { step } = useStep();
-  // steps 1..6 sequentially highlight; step 0 = all faded; step 6 also shows final line
-  const activeIdx = step >= 1 && step <= 6 ? step - 1 : -1;
-  const focused = activeIdx !== -1 ? capabilities[activeIdx] : null;
-
   return (
     <SlideShell eyebrow="Perché vinciamo" background="mesh">
-      <div className="relative min-h-[78vh] flex flex-col">
-        {/* Focused capability — top hero */}
-        <div className="h-[240px] flex items-center justify-center">
-          {focused && (
-            <div key={focused.label} className="text-center animate-fade-in max-w-2xl px-6">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10">
-                <focused.icon className="h-7 w-7 text-primary" />
-              </div>
-              <h3 className={`type-premium text-3xl md:text-5xl ${focused.hero ? "gradient-primary-text" : "text-foreground"}`}>
-                {focused.label}
-              </h3>
-              <p className="mt-3 text-base md:text-lg text-foreground/80">{focused.desc}</p>
-              <div className="mt-3 text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                {focused.competitor ? "Presente anche in altri tool" : "Solo PlanEat"}
-              </div>
-            </div>
-          )}
-          {!focused && (
-            <p className="type-premium text-3xl md:text-4xl text-muted-foreground text-center max-w-3xl leading-tight">
-              Un ecosistema che nessuno oggi offre insieme.
-            </p>
-          )}
-        </div>
+      <div className="relative min-h-[78vh] flex flex-col justify-center py-6">
+        <StepReveal at={0}>
+          <h2 className="type-premium text-[clamp(2rem,4.5vw,3.5rem)] text-foreground max-w-5xl leading-[1.15]">
+            Un ecosistema che nessuno oggi
+            <span className="block gradient-primary-text">offre insieme.</span>
+          </h2>
+        </StepReveal>
 
-        {/* Wheel row of capabilities */}
-        <div className="mt-6 grid grid-cols-3 md:grid-cols-6 gap-3 px-4">
-          {capabilities.map((c, i) => {
-            const isActive = i === activeIdx;
-            const dim = activeIdx !== -1 && !isActive;
-            const exclusive = !c.competitor;
-            return (
+        <StepReveal at={0} delay={120}>
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {capabilities.map((c) => (
               <GlassCard
                 key={c.label}
-                glow={isActive || exclusive}
-                className="px-3 py-3 md:px-4 md:py-4 transition-all duration-500 ease-out"
-                style={{
-                  transform: isActive ? "translateY(-8px) scale(1.05)" : "scale(1)",
-                  opacity: dim ? 0.35 : 1,
-                  filter: dim ? "blur(1.5px)" : "blur(0)",
-                  ...(exclusive
+                glow={c.exclusive}
+                className="p-5 h-full"
+                style={
+                  c.exclusive
                     ? {
                         background:
-                          "linear-gradient(135deg, hsl(160 36% 36% / 0.14), hsl(222 100% 59% / 0.18))",
-                        borderColor: "hsl(222 100% 59% / 0.55)",
-                        boxShadow: isActive
-                          ? "0 24px 60px -18px hsl(222 100% 59% / 0.55), 0 0 0 1px hsl(222 100% 59% / 0.35)"
-                          : "0 12px 32px -14px hsl(222 100% 59% / 0.35), 0 0 0 1px hsl(222 100% 59% / 0.25)",
+                          "linear-gradient(135deg, hsl(160 36% 36% / 0.12), hsl(222 100% 59% / 0.16))",
+                        borderColor: "hsl(222 100% 59% / 0.5)",
+                        boxShadow:
+                          "0 16px 40px -18px hsl(222 100% 59% / 0.45), 0 0 0 1px hsl(222 100% 59% / 0.28)",
                       }
-                    : {}),
-                }}
+                    : {}
+                }
               >
-                <div className="flex flex-col items-center text-center gap-2">
-                  <c.icon className={`h-5 w-5 ${exclusive ? "text-accent" : "text-primary"}`} />
-                  <span className={`text-[11px] md:text-xs font-semibold leading-tight ${exclusive ? "text-foreground" : "text-foreground"}`}>
-                    {c.label}
-                  </span>
-                  <span className={`text-[9px] uppercase tracking-widest ${exclusive ? "gradient-primary-text font-bold" : "text-muted-foreground"}`}>
-                    {c.competitor ? "Anche altri" : "Solo PlanEat"}
-                  </span>
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                      c.exclusive
+                        ? "bg-gradient-to-br from-primary/25 to-accent/20"
+                        : "bg-muted/40"
+                    }`}
+                  >
+                    <c.icon className={`h-5 w-5 ${c.exclusive ? "text-accent" : "text-primary"}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="type-premium text-base md:text-lg text-foreground leading-tight">
+                      {c.label}
+                    </div>
+                    <p className="mt-1.5 text-xs md:text-[13px] text-muted-foreground leading-snug">
+                      {c.desc}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-border/50">
+                  <div
+                    className={`text-[10px] uppercase tracking-[0.22em] font-bold ${
+                      c.exclusive ? "gradient-primary-text" : "text-muted-foreground"
+                    }`}
+                  >
+                    {c.who}
+                  </div>
+                  {c.brands && (
+                    <div className="mt-1 text-[11px] text-foreground/60">{c.brands}</div>
+                  )}
                 </div>
               </GlassCard>
-            );
-          })}
-        </div>
-
-        <StepReveal at={6} delay={200} className="mt-10 text-center">
-          <p className="type-premium text-[clamp(1.25rem,3vw,2rem)] text-foreground max-w-4xl mx-auto">
-            PlanEat è l'unica piattaforma che integra
-            <span className="block gradient-primary-text">l'intero processo decisionale alimentare.</span>
-          </p>
+            ))}
+          </div>
         </StepReveal>
       </div>
     </SlideShell>
