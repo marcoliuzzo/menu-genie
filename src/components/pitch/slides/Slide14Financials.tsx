@@ -8,8 +8,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  BarChart,
-  Bar,
   LabelList,
   CartesianGrid,
 } from "recharts";
@@ -19,15 +17,13 @@ const revenue = [
   { y: "Anno 2", v: 137000 },
   { y: "Anno 3", v: 337000 },
 ];
-const premium = [
-  { y: "Anno 1", v: 500 },
-  { y: "Anno 2", v: 2400 },
-  { y: "Anno 3", v: 6000 },
+const costs = [
+  { y: "Anno 1", variabili: 19219.32, operativi: 55270 },
+  { y: "Anno 2", variabili: 52833.14, operativi: 129306 },
+  { y: "Anno 3", variabili: 113457.84, operativi: 131426 },
 ];
 
-const eur = (n: number) =>
-  `€${Math.round(n / 1000)}k`;
-const num = (n: number) => n.toLocaleString("it-IT");
+const eur = (n: number) => `€${Math.round(n / 1000)}k`;
 
 const kpis = [
   { label: "Ricavi Anno 3", value: "€337k" },
@@ -121,36 +117,65 @@ const Slide14Financials = () => {
 
             <GlassCard className="p-5">
               <div className="flex items-baseline justify-between">
-                <div className="type-premium text-lg text-foreground">Utenti Premium</div>
+                <div className="type-premium text-lg text-foreground">Costi</div>
                 <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                  3 anni
+                  Operativi e variabili
                 </div>
               </div>
               <div className="h-[240px] mt-3">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={premium} margin={{ top: 30, right: 20, left: 0, bottom: 0 }}>
+                  <AreaChart data={costs} margin={{ top: 30, right: 20, left: 0, bottom: 0 }}>
                     <defs>
-                      <linearGradient id="barPrem" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(222 100% 59%)" />
-                        <stop offset="100%" stopColor="hsl(160 36% 36%)" />
+                      <linearGradient id="varGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(160 36% 36%)" stopOpacity={0.6} />
+                        <stop offset="100%" stopColor="hsl(160 36% 36%)" stopOpacity={0.05} />
+                      </linearGradient>
+                      <linearGradient id="opGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(222 100% 59%)" stopOpacity={0.6} />
+                        <stop offset="100%" stopColor="hsl(222 100% 59%)" stopOpacity={0.05} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(30 12% 90%)" vertical={false} />
                     <XAxis dataKey="y" stroke="hsl(0 0% 42%)" fontSize={12} />
-                    <YAxis stroke="hsl(0 0% 42%)" fontSize={11} tickFormatter={num} width={50} />
+                    <YAxis stroke="hsl(0 0% 42%)" fontSize={11} tickFormatter={eur} width={50} />
                     <Tooltip
                       contentStyle={{ background: "white", border: "1px solid hsl(30 12% 90%)", borderRadius: 8 }}
-                      formatter={(v: number) => [num(v), "Utenti"]}
+                      formatter={(v: number, name: string) => [
+                        eur(v),
+                        name === "variabili" ? "Costi variabili" : "Costi operativi",
+                      ]}
                     />
-                    <Bar dataKey="v" fill="url(#barPrem)" radius={[8, 8, 0, 0]}>
+                    <Area
+                      type="monotone"
+                      dataKey="variabili"
+                      name="Costi variabili"
+                      stroke="hsl(160 36% 36%)"
+                      strokeWidth={2.5}
+                      fill="url(#varGrad)"
+                    >
                       <LabelList
-                        dataKey="v"
+                        dataKey="variabili"
                         position="top"
-                        formatter={(v: number) => num(v)}
+                        formatter={(v: number) => eur(v)}
                         style={{ fill: "hsl(222 40% 20%)", fontSize: 13, fontWeight: 700 }}
                       />
-                    </Bar>
-                  </BarChart>
+                    </Area>
+                    <Area
+                      type="monotone"
+                      dataKey="operativi"
+                      name="Costi operativi"
+                      stroke="hsl(222 100% 59%)"
+                      strokeWidth={2.5}
+                      fill="url(#opGrad)"
+                    >
+                      <LabelList
+                        dataKey="operativi"
+                        position="top"
+                        formatter={(v: number) => eur(v)}
+                        style={{ fill: "hsl(222 40% 20%)", fontSize: 13, fontWeight: 700 }}
+                      />
+                    </Area>
+                  </AreaChart>
                 </ResponsiveContainer>
               </div>
             </GlassCard>
