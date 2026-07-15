@@ -24,7 +24,7 @@ const Slide01Hero = () => {
         <StepReveal at={2} until={3} keepSpace={false} variant="zoom" className="absolute inset-0 flex items-center justify-center text-center">
           <h2 className="type-premium-tight text-[clamp(3.5rem,13vw,11rem)] text-foreground leading-[0.95]">
             COSA MANGIO
-            <span className="block gradient-primary-text mt-3">STASERA?</span>
+            <span className="block gradient-primary-text mt-3">OGGI?</span>
           </h2>
         </StepReveal>
 
