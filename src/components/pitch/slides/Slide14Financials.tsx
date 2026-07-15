@@ -8,8 +8,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  BarChart,
-  Bar,
   LabelList,
   CartesianGrid,
 } from "recharts";
@@ -19,15 +17,13 @@ const revenue = [
   { y: "Anno 2", v: 137000 },
   { y: "Anno 3", v: 337000 },
 ];
-const premium = [
-  { y: "Anno 1", v: 500 },
-  { y: "Anno 2", v: 2400 },
-  { y: "Anno 3", v: 6000 },
+const costs = [
+  { y: "Anno 1", variabili: 19219.32, operativi: 55270 },
+  { y: "Anno 2", variabili: 52833.14, operativi: 129306 },
+  { y: "Anno 3", variabili: 113457.84, operativi: 131426 },
 ];
 
-const eur = (n: number) =>
-  `€${Math.round(n / 1000)}k`;
-const num = (n: number) => n.toLocaleString("it-IT");
+const eur = (n: number) => `€${Math.round(n / 1000)}k`;
 
 const kpis = [
   { label: "Ricavi Anno 3", value: "€337k" },
